@@ -1,18 +1,9 @@
 # AppDynamics F5 Load Balancer Monitoring Extension
 
-- [Use Case](f5monitor-readme.md#use-case)
-- [Installation](f5monitor-readme.md#installation)
-     - [XML Example](f5monitor-readme.md#xml-example)
-     -   [monitor.xml](f5monitor-readme.md#monitorxml)
-- [Contents of f5monitor.tar.gz](f5monitor-readme.md#contents-of-f5monitortargz)
-- [Contributing](f5monitor-readme.md#contributing)
-
 ##Use Case
 
-The F5 load balancer from F5 Networks, Inc. directs traffic away from servers that are overloaded or 
-down to other servers that can handle the load. 
-The F5 load balancer extension collects key performance metrics from an F5 load balancer and 
-presents them in the AppDynamics Metric Browser. 
+The F5 load balancer from F5 Networks, Inc. directs traffic away from servers that are overloaded or down to other servers that can handle the load. 
+The F5 load balancer extension collects key performance metrics from an F5 load balancer and presents them in the AppDynamics Metric Browser. 
 
 
 ##Installation
@@ -62,7 +53,7 @@ presents them in the AppDynamics Metric Browser.
             </monitor-run-task>
     </monitor>
     
-##Contents of f5monitor.tar.gz
+##Directory Structure
 
 | Directory/File | Description |
 | --- | --- |
@@ -74,12 +65,14 @@ presents them in the AppDynamics Metric Browser.
 | build.xml | Ant build script to package the project (only required if changing java code)  |
 
 
-
 ##Contributing
 
-Always feel free to fork and contribute any changes directly via GitHub.
+Always feel free to fork and contribute any changes directly via [GitHub](https://github.com/Appdynamics/f5-monitoring-extension).
 
+##Community
+
+Find out more in the [AppSphere](http://appsphere.appdynamics.com/t5/Extensions/F5-Monitoring-Extension/idi-p/753) community.
 
 ##Support
 
-For any support questions, please contact ace@appdynamics.com.
+For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto://ace-request@appdynamics.com).
