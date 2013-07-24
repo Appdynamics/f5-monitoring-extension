@@ -21,7 +21,7 @@
 					   You can also provide the tier ID instead of the name.
                 -->
                 <task-arguments>
-                        <argument name="Hostname" is-required="true" default-value="172.16.0.0"/>
+                        <argument name="Hostname" is-required="true" default-value="bigip.abc.xyz.com"/>
                         <argument name="Username" is-required="true" default-value="Username"/>
                         <argument name="Password" is-required="true" default-value="Password"/>
                         <argument name="monitored-poolmembers" is-required="false" default-value="comma, separated, list, of, pool-members, to, monitor"/>
