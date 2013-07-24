@@ -14,7 +14,7 @@
                         <impl-class>com.appdynamics.monitors.f5.F5Monitor</impl-class>
                 </java-task>
                 <!-- 
-                        These are the mandatory parameters: F5 IP address, Username, Password
+                        These are the mandatory parameters: F5 Host name, Username, Password
                         Optional: Provide a comma-separated list of BigIP pool members you want to be monitored
 			Optional: configure your own metric path. This will limit the metric reporting to one single tier.
 				  Example: default-value="Server|Component:Tier123" where Tier123 is the name of the tier.
