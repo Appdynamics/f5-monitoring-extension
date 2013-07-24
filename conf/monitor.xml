@@ -15,7 +15,10 @@
                 </java-task>
                 <!-- 
                         These are the mandatory parameters: F5 IP address, Username, Password
-                        Optional: Provide a comma-separated list of metrics you don't want to see reported
+                        Optional: Provide a comma-separated list of BigIP pool members you want to be monitored
+			Optional: configure your own metric path. This will limit the metric reporting to one single tier.
+				  Example: default-value="Server|Component:Tier123" where Tier123 is the name of the tier.
+					   You can also provide the tier ID instead of the name.
                 -->
                 <task-arguments>
                         <argument name="Hostname" is-required="true" default-value="172.16.0.0"/>
