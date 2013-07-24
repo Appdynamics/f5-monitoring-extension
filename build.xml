@@ -1,0 +1,34 @@
+<project default="build">
+    <property name="build.dir" value="dist" />
+    <property name="conf.dir" value="conf" />
+    <property name="project.name" value="F5Monitor"/>
+    <property name="lib.dir" value="lib"/>
+    <path id="cp">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+    <target name="build">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac destdir="${build.dir}/classes" srcdir="src" classpathref="cp" debug="on"/>
+        <mkdir dir="${build.dir}/F5Monitor"/>
+        <mkdir dir="${build.dir}/F5Monitor/lib"/>
+        <jar destfile="${build.dir}/F5Monitor/${project.name}.jar">
+            <fileset dir="${build.dir}/classes"/>
+        </jar>
+    	<copy todir="${build.dir}/F5Monitor/lib/">
+    	   	<fileset dir="${lib.dir}" includes="**/*"/>
+    	</copy>
+        <copy todir="${build.dir}/F5Monitor">
+            <fileset dir="${conf.dir}" includes="monitor.xml"/>
+        </copy>
+        <delete dir="${build.dir}/classes"/>
+    </target>
+    <target name="package" depends="build">
+        <zip destfile="${build.dir}/F5Monitor.zip">
+            <zipfileset dir="${build.dir}" filemode="755"/>
+        </zip>
+        <delete dir="${build.dir}/F5Monitor"/>
+    </target>
+    <target name="clean">
+        <delete dir="${build.dir}/"/>
+    </target>
+</project>
