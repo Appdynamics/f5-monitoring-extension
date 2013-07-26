@@ -21,11 +21,13 @@ package com.appdynamics.monitors.f5;
 
 import iControl.CommonStatistic;
 import iControl.CommonULong64;
+import iControl.LocalLBNodeAddressV2;
 import iControl.SystemStatisticsBindingStub;
 import iControl.SystemStatisticsHostStatisticEntry;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,16 +47,15 @@ public class F5Monitor extends AManagedMonitor
 	private iControl.Interfaces m_interfaces;
 	private List<String> monitoredPoolMembers;
 	private List<String> poolMemberMetrics = new ArrayList<String>();
-	
+	private Map<String, String> poolMemberIPToName;
+
 	private String metricPath = "Custom Metrics|";
 
 	/**
-	 * This method is solely here for debugging purposes. If you would like to know
+	 * The main method is only for debugging purposes. If you would like to know
 	 * whether or not the metric retrieval works with the credentials you provide in
 	 * monitor.xml, you can simply run this java file and provide the credentials as
 	 * arguments.
-	 * Notice that the printed values are split up in high-order and low-order 32 bit
-	 * values, so they will be special representations of the metric values
 	 * @param args
 	 */
 	public static void main(String args[])
@@ -62,6 +63,7 @@ public class F5Monitor extends AManagedMonitor
 
 		F5Monitor monitor = new F5Monitor();
 		monitor.monitoredPoolMembers = new ArrayList<String>();
+		monitor.poolMemberIPToName = new HashMap<String, String>();
 
 		monitor.poolMemberMetrics.add("STATISTIC_SERVER_SIDE_BYTES_IN");
 		monitor.poolMemberMetrics.add("STATISTIC_SERVER_SIDE_BYTES_OUT");
@@ -75,7 +77,8 @@ public class F5Monitor extends AManagedMonitor
 
 		if(args.length != 3 && args.length != 4){
 			System.err.println("You have to provide three arguments in the correct order " +
-					"(IP, Username, Password)!");
+					"(IP, Username, Password)! In addition, as a 4th argument, you can provide a comma-separated" +
+					"list of pool member names you want to be monitored (no whitespaces in between).");
 			return;
 		}
 
@@ -88,28 +91,24 @@ public class F5Monitor extends AManagedMonitor
 		}
 
 		try{
-			iControl.Interfaces m_interfaces = new iControl.Interfaces();
-			m_interfaces.initialize(args[0], args[1], args[2]);
-			SystemStatisticsBindingStub stats = m_interfaces.getSystemStatistics();
-
+			monitor.m_interfaces = new iControl.Interfaces();
+			monitor.m_interfaces.initialize(args[0], args[1], args[2]);
+			
+			if(!monitor.areCredentialsValid()){
+				System.out.println("The credentials you provided to the F5 monitor are invalid." +
+						" Terminating Monitor.");
+				return;
+			}
+			
+			SystemStatisticsBindingStub stats = monitor.m_interfaces.getSystemStatistics();
 			System.out.println("-----GET ALL HOST STATISTICS-----");
 			for (SystemStatisticsHostStatisticEntry stat : stats.get_all_host_statistics().getStatistics())
 			{
 				for (CommonStatistic st : stat.getStatistics())
 				{
 					System.out.println(st.getType() + " : " + monitor.new UsefulU64(st.getValue()).doubleValue());
-					//System.out.println(st.getType() + " : " + st.getValue().getHigh());
-					//System.out.println(st.getType() + " : " + st.getValue().getLow());
 				}
 			}
-
-			/*System.out.println("-----GET HOST STATISTICS-----");
-			for (CommonStatistic stat : stats.get_authentication_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}*/
 
 			System.out.println("-----GET CLIENT SSL STATISTICS-----");
 			for (CommonStatistic stat : stats.get_client_ssl_statistics().getStatistics())
@@ -117,41 +116,9 @@ public class F5Monitor extends AManagedMonitor
 				if(stat.getType().getValue().equals("STATISTIC_SSL_COMMON_CURRENT_CONNECTIONS")){
 					System.out.println(stat.getType() + " : " + monitor.new UsefulU64(stat.getValue()).doubleValue());	
 				}
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
 			}
 
-			/*System.out.println("-----GET DIAMETER STATISTICS-----");
-			for (CommonStatistic stat : stats.get_diameter_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}*/
 
-			/*System.out.println("-----GET GLOBAL HOST STATISTICS-----");
-			for (CommonStatistic stat : stats.get_global_host_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}*/
-
-			/*	System.out.println("-----GET GLOBAL STATISTICS-----");
-			for (CommonStatistic stat : stats.get_global_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}*/
-
-			/*System.out.println("-----GET IP STATISTICS-----");
-			for (CommonStatistic stat : stats.get_ip_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}*/
 
 			System.out.println("-----GET TCP STATISTICS-----");
 			for (CommonStatistic stat : stats.get_tcp_statistics().getStatistics())
@@ -161,29 +128,11 @@ public class F5Monitor extends AManagedMonitor
 						stat.getType().getValue().equals("STATISTIC_TCP_ESTABLISHED_CONNECTIONS")){
 					System.out.println(stat.getType() + " : " + monitor.new UsefulU64(stat.getValue()).doubleValue());
 				}
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
 			}
 
-			/*System.out.println("-----GET HTTP STATISTICS-----");
-			for (CommonStatistic stat : stats.get_http_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}
 
-			System.out.println("-----GET UDP STATISTICS-----");
-			for (CommonStatistic stat : stats.get_udp_statistics().getStatistics())
-			{
-				System.out.println(stat.getType() + " : " + stat.getValue());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getHigh());
-				//System.out.println(stat.getType() + " : " + stat.getValue().getLow());
-			}*/
-
-
-			monitor.printPoolMemberStats(m_interfaces);
-			//monitor.getPoolMemberStatus(m_interfaces);
+			monitor.printPoolMemberStats();
+			monitor.getPoolMemberStatus();
 
 		} catch (RemoteException e) {
 			System.out.println("Could not retrieve metrics: " + e.getMessage() +
@@ -196,65 +145,87 @@ public class F5Monitor extends AManagedMonitor
 
 	}
 
-	public void printPoolMemberStats(iControl.Interfaces m_interfaces) throws Exception
+	public void printPoolMemberStats() throws Exception
 	{
 		String [] pool_list = m_interfaces.getLocalLBPool().get_list();
-
+		List<String> NodeNamesList = new ArrayList<String>();
 		iControl.LocalLBPoolMemberStatistics[] memberStats;
+
 		memberStats = m_interfaces.getLocalLBPool().get_all_member_statistics(pool_list);
 		for(iControl.LocalLBPoolMemberStatistics memberStatistics:memberStats){
 			iControl.LocalLBPoolMemberStatisticEntry[] memberStatsEntries = memberStatistics.getStatistics();
+
 			for(iControl.LocalLBPoolMemberStatisticEntry memberStatsEntry:memberStatsEntries){
 				iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();
 				System.out.println("   " + memberStatsEntry.getMember().getAddress() + " =");
-
-				//if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
-				for(iControl.CommonStatistic stat : stats){
-					//if(this.poolMemberMetrics.contains(stat.getType().getValue())){
-
-					System.out.println("    " + "Pool Members" + memberStatsEntry.getMember().getAddress().replaceAll("/", "|") + "|" + stat.getType().getValue() + ": " + (new UsefulU64(stat.getValue()).doubleValue()));//convert the value
-					//}
+				NodeNamesList.add(memberStatsEntry.getMember().getAddress()); // USE IF YOU WANT TO SEE OUTPUT OF ALL POOLMEMBERS
+				if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
+					//NodeNamesList.add(memberStatsEntry.getMember().getAddress()); // USE IF YOU WANT TO SEE OUTPUT OF SPECIFIED POOLMEMBERS
+					for(iControl.CommonStatistic stat : stats){
+						if(this.poolMemberMetrics.contains(stat.getType().getValue())){
+							System.out.println("    " + "Pool Members" + memberStatsEntry.getMember().getAddress().replaceAll("/", "|") + "|" + stat.getType().getValue() + ": " + (new UsefulU64(stat.getValue()).doubleValue()));							
+						}
+					}
 				}
-				//}
 			}
 		}
 
-
+		String[] NodeNamesArray = new String[1];
+		NodeNamesArray= NodeNamesList.toArray(NodeNamesArray);
+		String[] IPAddressesArray = m_interfaces.getLocalLBNodeAddressV2().get_address(NodeNamesArray);
+		for(int i = 0; i < IPAddressesArray.length; i++){
+			System.out.println(IPAddressesArray[i] + " TO " + NodeNamesArray[i]);
+			poolMemberIPToName.put(IPAddressesArray[i], NodeNamesArray[i]);
+		}
 
 	}
 
-	public void getPoolMemberStatus(String pool, String member) throws Exception
+	public void getPoolMemberStatus() throws Exception
 	{
-		String [] pool_list = { pool };
-		boolean found = false;
+		String [] pool_list = m_interfaces.getLocalLBPool().get_list();
 
 		iControl.LocalLBPoolMemberMemberObjectStatus [][] objStatusAofA = 
 				m_interfaces.getLocalLBPoolMember().get_object_status(pool_list);
-
-		iControl.LocalLBPoolMemberMemberObjectStatus [] objStatusA = objStatusAofA[0];
-		for(int i=0; i<objStatusA.length; i++)
-		{
-			String a2 = objStatusA[i].getMember().getAddress();
-			Long p2 = objStatusA[i].getMember().getPort();
-			String m2 = a2 + ":" + p2;
-			if ( member.equals(m2) )
-			{
-				iControl.LocalLBObjectStatus objStatus = objStatusA[i].getObject_status();
-				iControl.LocalLBAvailabilityStatus availability = objStatus.getAvailability_status();
-				iControl.LocalLBEnabledStatus enabled = objStatus.getEnabled_status();
-				String description = objStatus.getStatus_description();
-
-				System.out.println("Pool " + pool + ", Member " + member + " status:");
-				System.out.println("  Availability : " + availability);
-				System.out.println("  Enabled      : " + enabled);
-				System.out.println("  Description  : " + description);
-
-				found = true;
-			}
+		
+		for(String poolMemberIPToNameEntry : poolMemberIPToName.keySet()){
+			System.out.println("KEY: " + poolMemberIPToNameEntry);
 		}
-		if ( ! found )
+
+		for(iControl.LocalLBPoolMemberMemberObjectStatus [] objStatusA : objStatusAofA)
 		{
-			System.out.println("Member " + member + " could not be found in pool " + pool);
+
+
+			for(int i=0; i<objStatusA.length; i++)
+			{
+				String IPAddress = objStatusA[i].getMember().getAddress();
+				if (poolMemberIPToName.containsKey(IPAddress)){
+					iControl.LocalLBObjectStatus objStatus = objStatusA[i].getObject_status();
+					iControl.LocalLBAvailabilityStatus availability = objStatus.getAvailability_status();
+					iControl.LocalLBEnabledStatus enabled = objStatus.getEnabled_status();
+					String description = objStatus.getStatus_description();
+					System.out.println("Member " + poolMemberIPToName.get(IPAddress) + " status:");
+					System.out.println("  Availability : " + availability.getValue());
+					System.out.println("  Enabled      : " + enabled.getValue());
+					System.out.println("  Description  : " + description);
+					
+					int status;
+					
+					if(availability.getValue().contains("GREEN") && enabled.getValue().contains("STATUS_ENABLED")){
+						status = 4; // Available (Enabled)
+					} else if(availability.getValue().contains("RED") && enabled.getValue().contains("STATUS_ENABLED")){
+						status = 3; // Offline (Enabled)
+					} else if(availability.getValue().contains("GREEN") && enabled.getValue().contains("STATUS_DISABLED")){
+						status = 2; // Available (Disabled)
+					} else if(availability.getValue().contains("RED") && enabled.getValue().contains("STATUS_DISABLED")){
+						status = 1; // Offline (Disabled)
+					} else {
+						status = 5; // UNKNOWN
+					}
+					
+					System.out.println("  Pool Members" + poolMemberIPToName.get(IPAddress).replaceAll("/", "|") +  "|STATUS LIGHT =" + status);
+
+				}
+			}
 		}
 	}
 
@@ -267,13 +238,12 @@ public class F5Monitor extends AManagedMonitor
 		return false;
 	}
 
-
-
-
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext taskContext) throws TaskExecutionException
 	{
 
 		logger = Logger.getLogger(F5Monitor.class);
+		poolMemberIPToName = new HashMap<String, String>();
+		monitoredPoolMembers = new ArrayList<String>();
 		
 		poolMemberMetrics.add("STATISTIC_SERVER_SIDE_BYTES_IN");
 		poolMemberMetrics.add("STATISTIC_SERVER_SIDE_BYTES_OUT");
@@ -294,10 +264,18 @@ public class F5Monitor extends AManagedMonitor
 			//connecting to F5, initializing statistics retrieval
 			m_interfaces = new iControl.Interfaces();
 			m_interfaces.initialize(taskArguments.get("Hostname"), taskArguments.get("Username"), taskArguments.get("Password"));
-			stats = m_interfaces.getSystemStatistics();
-			monitoredPoolMembers = new ArrayList<String>();
+			
+			// check if the credentials provided are valid by trying to fetch some
+			// arbitrarily chosen statistics.
+			if(!areCredentialsValid()){
+				logger.error("The credentials you provided to the F5 Monitor are invalid." +
+						" Terminating Monitor.");
+				return null;
+			}
+		
+			stats = m_interfaces.getSystemStatistics();			
 
-			// fill the Arraylist with metrics to exclude
+			// fill the Arraylist with poolmembers to be monitored
 			if(taskArguments.containsKey("monitored-poolmembers") && !taskArguments.get("monitored-poolmembers").equals(""))
 			{
 				String[] metrics = taskArguments.get("monitored-poolmembers").split(",");
@@ -305,7 +283,8 @@ public class F5Monitor extends AManagedMonitor
 					monitoredPoolMembers.add(metric.trim());
 				}
 			}
-			
+
+			// see if there is a custom metric path in monitor.xml
 			if(taskArguments.containsKey("metric-path") && !taskArguments.get("metric-path").equals("")){
 				metricPath = taskArguments.get("metric-path");
 				logger.debug("Metric path: " + metricPath);
@@ -320,7 +299,7 @@ public class F5Monitor extends AManagedMonitor
 			return null;
 		}
 
-		// executing task, once per minute
+		// executing task to retrieve and report F5 metrics, once per minute
 		while(true){
 			(new PrintMetricsThread()).start();
 			try {
@@ -332,7 +311,21 @@ public class F5Monitor extends AManagedMonitor
 		}
 	}
 
-
+	/**
+	 * tries to fetch some arbitrarily chosen statistics to see if login
+	 * is successful with the credentials provided.
+	 * @return
+	 */
+	private boolean areCredentialsValid() {
+		try{
+			m_interfaces.getSystemStatistics().get_ftp_statistics().getStatistics();
+		} catch (Exception e){
+			if(e.getMessage().contains("(401)")){
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Returns the metric to the AppDynamics Controller.
@@ -403,17 +396,23 @@ public class F5Monitor extends AManagedMonitor
 			}
 		}
 
+		/**
+		 * retrieves and reports the statistics for each poolmember that the user wants to be monitored
+		 */
 		private void reportPoolMemberStats(){
 			try {
 
-				String[] pool_list = m_interfaces.getLocalLBPool().get_list();
+				String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+				List<String> NodeNamesList = new ArrayList<String>();
 				iControl.LocalLBPoolMemberStatistics[] memberStats;
+
 				memberStats = m_interfaces.getLocalLBPool().get_all_member_statistics(pool_list);
 				for(iControl.LocalLBPoolMemberStatistics memberStatistics:memberStats){
 					iControl.LocalLBPoolMemberStatisticEntry[] memberStatsEntries = memberStatistics.getStatistics();
 					for(iControl.LocalLBPoolMemberStatisticEntry memberStatsEntry:memberStatsEntries){
-						iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();
-						if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){							
+						iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();						
+						if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
+							NodeNamesList.add(memberStatsEntry.getMember().getAddress());
 							for(iControl.CommonStatistic stat : stats){
 								if(poolMemberMetrics.contains(stat.getType().getValue())){
 									printMetric("Pool Members" + memberStatsEntry.getMember().getAddress().replaceAll("/", "|") +  "|" + stat.getType().getValue(), (new UsefulU64(stat.getValue())).doubleValue(),
@@ -425,14 +424,65 @@ public class F5Monitor extends AManagedMonitor
 						}
 					}
 				}
+				
+				String[] NodeNamesArray = new String[1];
+				NodeNamesArray= NodeNamesList.toArray(NodeNamesArray);
+				String[] IPAddressesArray = m_interfaces.getLocalLBNodeAddressV2().get_address(NodeNamesArray);
+				for(int i = 0; i < IPAddressesArray.length; i++){
+					System.out.println(IPAddressesArray[i] + " TO " + NodeNamesArray[i]);
+					poolMemberIPToName.put(IPAddressesArray[i], NodeNamesArray[i]);
+				}
 
-
-
-
-			} catch (RemoteException e) {
-				logger.warn("Can't retrieve statistic for a poolMember. Error Message: " + e.getMessage());
+				// with the recent information obtained about which members to monitor, report their status lights
+				reportPoolMemberStatusLights();
+				
 			} catch (Exception e) {
 				logger.warn("Can't retrieve statistic for a poolMember. Error Message: " + e.getMessage());
+			}
+		}
+		
+		/**
+		 * addition to reportPoolMemberStats. This method retrieves the status lights.
+		 * @throws Exception
+		 */
+		public void reportPoolMemberStatusLights() throws Exception
+		{
+			String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+
+			iControl.LocalLBPoolMemberMemberObjectStatus [][] objStatusAofA = 
+					m_interfaces.getLocalLBPoolMember().get_object_status(pool_list);
+			
+
+			for(iControl.LocalLBPoolMemberMemberObjectStatus [] objStatusA : objStatusAofA)
+			{
+				for(int i=0; i<objStatusA.length; i++)
+				{
+					String IPAddress = objStatusA[i].getMember().getAddress();
+					if (poolMemberIPToName.containsKey(IPAddress)){
+						iControl.LocalLBObjectStatus objStatus = objStatusA[i].getObject_status();
+						iControl.LocalLBAvailabilityStatus availability = objStatus.getAvailability_status();
+						iControl.LocalLBEnabledStatus enabled = objStatus.getEnabled_status();
+						
+						int status;
+						
+						if(availability.getValue().contains("GREEN") && enabled.getValue().contains("STATUS_ENABLED")){
+							status = 4; // Available (Enabled)
+						} else if(availability.getValue().contains("RED") && enabled.getValue().contains("STATUS_ENABLED")){
+							status = 3; // Offline (Enabled)
+						} else if(availability.getValue().contains("GREEN") && enabled.getValue().contains("STATUS_DISABLED")){
+							status = 2; // Available (Disabled)
+						} else if(availability.getValue().contains("RED") && enabled.getValue().contains("STATUS_DISABLED")){
+							status = 1; // Offline (Disabled)
+						} else {
+							status = 5; // UNKNOWN
+						}
+						
+						printMetric("Pool Members" + poolMemberIPToName.get(IPAddress).replaceAll("/", "|") +  "|STATUS LIGHT", status,
+								MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
+								MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
+								MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
+					}
+				}
 			}
 		}
 
@@ -443,7 +493,7 @@ public class F5Monitor extends AManagedMonitor
 				}
 			}
 			return false;
-		}
+		}		
 	}
 
 	/**
@@ -451,6 +501,7 @@ public class F5Monitor extends AManagedMonitor
 	 * @author F5 devcentral
 	 * https://devcentral.f5.com/tech-tips/articles/a-class-to-handle-ulong64-return-values-in-java#.Ub-yZ6FAT-k
 	 *
+	 * Class for converting CommonULong64 to a double
 	 */
 	private class UsefulU64 extends CommonULong64 { 
 		// The following line is required of all serializable classes, but not utilized in our implementation.
