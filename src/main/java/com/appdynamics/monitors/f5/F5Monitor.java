@@ -93,22 +93,45 @@ public class F5Monitor extends AManagedMonitor
 		try{
 			monitor.m_interfaces = new iControl.Interfaces();
 			monitor.m_interfaces.initialize(args[0], args[1], args[2]);
-			
+
 			if(!monitor.areCredentialsValid()){
 				System.out.println("The credentials you provided to the F5 monitor are invalid." +
 						" Terminating Monitor.");
 				return;
 			}
-			
+
 			SystemStatisticsBindingStub stats = monitor.m_interfaces.getSystemStatistics();
-			System.out.println("-----GET ALL HOST STATISTICS-----");
+			System.out.println("-----GET MEMORY STATISTICS-----");
 			for (SystemStatisticsHostStatisticEntry stat : stats.get_all_host_statistics().getStatistics())
 			{
 				for (CommonStatistic st : stat.getStatistics())
 				{
-					System.out.println(st.getType() + " : " + monitor.new UsefulU64(st.getValue()).doubleValue());
+					if(st.getType().toString().equals("STATISTIC_MEMORY_TOTAL_BYTES") ||
+							st.getType().toString().equals("STATISTIC_MEMORY_USED_BYTES")){
+						System.out.println(st.getType() + " : " + monitor.new UsefulU64(st.getValue()).doubleValue());
+					}
 				}
 			}
+
+			System.out.println("-----GET CPU STATISTICS-----");
+			int count = 0;
+			int val = 0;
+			for (iControl.SystemCPUUsageExtended usage : monitor.m_interfaces.getSystemSystemInfo().get_all_cpu_usage_extended_information().getHosts())
+			{
+				for(CommonStatistic[] stats2 : usage.getStatistics()){
+					for(CommonStatistic stat : stats2){
+						if(stat.getType().toString().equals("STATISTIC_CPU_INFO_ONE_MIN_AVG_IDLE")){
+							count ++;
+							val += 100 - monitor.new UsefulU64(stat.getValue()).doubleValue();
+						}
+
+					}
+				}
+				if(count != 0){
+					System.out.println("CPU % BUSY : " + val / count);
+				}
+			}
+
 
 			System.out.println("-----GET CLIENT SSL STATISTICS-----");
 			for (CommonStatistic stat : stats.get_client_ssl_statistics().getStatistics())
@@ -131,8 +154,8 @@ public class F5Monitor extends AManagedMonitor
 			}
 
 
-			monitor.printPoolMemberStats();
-			monitor.getPoolMemberStatus();
+			//monitor.printPoolMemberStats();
+			//monitor.getPoolMemberStatus();
 
 		} catch (RemoteException e) {
 			System.out.println("Could not retrieve metrics: " + e.getMessage() +
@@ -145,6 +168,10 @@ public class F5Monitor extends AManagedMonitor
 
 	}
 
+	/**
+	 * used for main method (debugging)
+	 * @throws Exception
+	 */
 	public void printPoolMemberStats() throws Exception
 	{
 		String [] pool_list = m_interfaces.getLocalLBPool().get_list();
@@ -180,13 +207,17 @@ public class F5Monitor extends AManagedMonitor
 
 	}
 
+	/**
+	 * used for main method (debugging)
+	 * @throws Exception
+	 */
 	public void getPoolMemberStatus() throws Exception
 	{
 		String [] pool_list = m_interfaces.getLocalLBPool().get_list();
 
 		iControl.LocalLBPoolMemberMemberObjectStatus [][] objStatusAofA = 
 				m_interfaces.getLocalLBPoolMember().get_object_status(pool_list);
-		
+
 		for(String poolMemberIPToNameEntry : poolMemberIPToName.keySet()){
 			System.out.println("KEY: " + poolMemberIPToNameEntry);
 		}
@@ -207,9 +238,9 @@ public class F5Monitor extends AManagedMonitor
 					System.out.println("  Availability : " + availability.getValue());
 					System.out.println("  Enabled      : " + enabled.getValue());
 					System.out.println("  Description  : " + description);
-					
+
 					int status;
-					
+
 					if(availability.getValue().contains("GREEN") && enabled.getValue().contains("STATUS_ENABLED")){
 						status = 4; // Available (Enabled)
 					} else if(availability.getValue().contains("RED") && enabled.getValue().contains("STATUS_ENABLED")){
@@ -221,7 +252,7 @@ public class F5Monitor extends AManagedMonitor
 					} else {
 						status = 5; // UNKNOWN
 					}
-					
+
 					System.out.println("  Pool Members" + poolMemberIPToName.get(IPAddress).replaceAll("/", "|") +  "|STATUS LIGHT =" + status);
 
 				}
@@ -229,6 +260,11 @@ public class F5Monitor extends AManagedMonitor
 		}
 	}
 
+	/**
+	 * used for main method (debugging)
+	 * @param poolMemberCandidate - used to check if this one is in the list of monitored pool members
+	 * @return
+	 */
 	private boolean isSupposedToBeMonitored(String poolMemberCandidate){
 		for(String poolMember : monitoredPoolMembers){
 			if(poolMemberCandidate.substring(poolMemberCandidate.lastIndexOf('/') + 1, poolMemberCandidate.length()).equals(poolMember)){
@@ -238,13 +274,16 @@ public class F5Monitor extends AManagedMonitor
 		return false;
 	}
 
+	/**
+	 * execution method used by the machine agent
+	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext taskContext) throws TaskExecutionException
 	{
 
 		logger = Logger.getLogger(F5Monitor.class);
 		poolMemberIPToName = new HashMap<String, String>();
 		monitoredPoolMembers = new ArrayList<String>();
-		
+
 		poolMemberMetrics.add("STATISTIC_SERVER_SIDE_BYTES_IN");
 		poolMemberMetrics.add("STATISTIC_SERVER_SIDE_BYTES_OUT");
 		poolMemberMetrics.add("STATISTIC_SERVER_SIDE_PACKETS_IN");
@@ -264,7 +303,7 @@ public class F5Monitor extends AManagedMonitor
 			//connecting to F5, initializing statistics retrieval
 			m_interfaces = new iControl.Interfaces();
 			m_interfaces.initialize(taskArguments.get("Hostname"), taskArguments.get("Username"), taskArguments.get("Password"));
-			
+
 			// check if the credentials provided are valid by trying to fetch some
 			// arbitrarily chosen statistics.
 			if(!areCredentialsValid()){
@@ -272,7 +311,7 @@ public class F5Monitor extends AManagedMonitor
 						" Terminating Monitor.");
 				return null;
 			}
-		
+
 			stats = m_interfaces.getSystemStatistics();			
 
 			// fill the Arraylist with poolmembers to be monitored
@@ -356,11 +395,13 @@ public class F5Monitor extends AManagedMonitor
 				{
 					for (CommonStatistic st : stat.getStatistics())
 					{
-
-						printMetric("All Host Stats|" + st.getType().toString(), (new UsefulU64(st.getValue())).doubleValue(),
-								MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
-								MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
-								MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
+						if(st.getType().toString().equals("STATISTIC_MEMORY_TOTAL_BYTES") ||
+								st.getType().toString().equals("STATISTIC_MEMORY_USED_BYTES")){
+							printMetric("Memory Stats|" + st.getType().toString(), (new UsefulU64(st.getValue())).doubleValue(),
+									MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
+									MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
+									MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
+						}
 					}
 				}
 
@@ -388,9 +429,31 @@ public class F5Monitor extends AManagedMonitor
 					}
 				}
 
+				// GET CPU % BUSY
+				int count = 0;
+				int val = 0;
+				for (iControl.SystemCPUUsageExtended usage : m_interfaces.getSystemSystemInfo().get_all_cpu_usage_extended_information().getHosts())
+				{
+					for(CommonStatistic[] stats2 : usage.getStatistics()){
+						for(CommonStatistic stat : stats2){
+							if(stat.getType().toString().equals("STATISTIC_CPU_INFO_ONE_MIN_AVG_IDLE")){
+								count ++;
+								val += 100 - new UsefulU64(stat.getValue()).doubleValue();
+							}
+
+						}
+					}
+					if(count != 0){
+						printMetric("CPU Stats|CPU % BUSY", val / count,
+								MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
+								MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
+								MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
+					}
+				}
+
 				reportPoolMemberStats();
 
-			} catch (RemoteException e) {
+			} catch (Exception e) {
 				logger.error("Could not retrieve metrics: " + e.getMessage() +
 						"... Aborted metrics retrieval for this minute.");
 			}
@@ -424,7 +487,7 @@ public class F5Monitor extends AManagedMonitor
 						}
 					}
 				}
-				
+
 				String[] NodeNamesArray = new String[1];
 				NodeNamesArray= NodeNamesList.toArray(NodeNamesArray);
 				String[] IPAddressesArray = m_interfaces.getLocalLBNodeAddressV2().get_address(NodeNamesArray);
@@ -435,12 +498,12 @@ public class F5Monitor extends AManagedMonitor
 
 				// with the recent information obtained about which members to monitor, report their status lights
 				reportPoolMemberStatusLights();
-				
+
 			} catch (Exception e) {
 				logger.warn("Can't retrieve statistic for a poolMember. Error Message: " + e.getMessage());
 			}
 		}
-		
+
 		/**
 		 * addition to reportPoolMemberStats. This method retrieves the status lights.
 		 * @throws Exception
@@ -451,7 +514,7 @@ public class F5Monitor extends AManagedMonitor
 
 			iControl.LocalLBPoolMemberMemberObjectStatus [][] objStatusAofA = 
 					m_interfaces.getLocalLBPoolMember().get_object_status(pool_list);
-			
+
 
 			for(iControl.LocalLBPoolMemberMemberObjectStatus [] objStatusA : objStatusAofA)
 			{
@@ -462,9 +525,9 @@ public class F5Monitor extends AManagedMonitor
 						iControl.LocalLBObjectStatus objStatus = objStatusA[i].getObject_status();
 						iControl.LocalLBAvailabilityStatus availability = objStatus.getAvailability_status();
 						iControl.LocalLBEnabledStatus enabled = objStatus.getEnabled_status();
-						
+
 						int status;
-						
+
 						if(availability.getValue().contains("GREEN") && enabled.getValue().contains("STATUS_ENABLED")){
 							status = 4; // Available (Enabled)
 						} else if(availability.getValue().contains("RED") && enabled.getValue().contains("STATUS_ENABLED")){
@@ -476,7 +539,7 @@ public class F5Monitor extends AManagedMonitor
 						} else {
 							status = 5; // UNKNOWN
 						}
-						
+
 						printMetric("Pool Members" + poolMemberIPToName.get(IPAddress).replaceAll("/", "|") +  "|STATUS LIGHT", status,
 								MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
 								MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
