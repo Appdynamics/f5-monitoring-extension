@@ -311,10 +311,13 @@ public class F5Monitor extends AManagedMonitor
 						" Terminating Monitor.");
 				return null;
 			}
+			
+			printAllPoolMembers();
 
 			stats = m_interfaces.getSystemStatistics();			
 
 			// fill the Arraylist with poolmembers to be monitored
+			/*
 			if(taskArguments.containsKey("monitored-poolmembers") && !taskArguments.get("monitored-poolmembers").equals(""))
 			{
 				String[] metrics = taskArguments.get("monitored-poolmembers").split(",");
@@ -322,6 +325,7 @@ public class F5Monitor extends AManagedMonitor
 					monitoredPoolMembers.add(metric.trim());
 				}
 			}
+			*/
 
 			// see if there is a custom metric path in monitor.xml
 			if(taskArguments.containsKey("metric-path") && !taskArguments.get("metric-path").equals("")){
@@ -384,6 +388,31 @@ public class F5Monitor extends AManagedMonitor
 
 		// conversion/casting to long necessary for monitor:
 		metricWriter.printMetric(String.valueOf((long) metricValue));
+	}
+	
+	/**
+	 * prints all pool members to logger.info and the number of metrics collected.
+	 */
+	private void printAllPoolMembers(){
+		try {
+
+			String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+			iControl.LocalLBPoolMemberStatistics[] memberStats;
+			int numOfPools = 0;
+
+			memberStats = m_interfaces.getLocalLBPool().get_all_member_statistics(pool_list);
+			for(iControl.LocalLBPoolMemberStatistics memberStatistics:memberStats){
+				iControl.LocalLBPoolMemberStatisticEntry[] memberStatsEntries = memberStatistics.getStatistics();
+				for(iControl.LocalLBPoolMemberStatisticEntry memberStatsEntry:memberStatsEntries){
+					logger.info("Found Pool Member: " + memberStatsEntry.getMember().getAddress());
+					numOfPools ++;
+				}
+			}
+			
+			logger.info("This monitor reports " + (7 + 9*numOfPools) + " metrics each minute.");
+		} catch (Exception e) {
+			logger.warn("Can't retrieve name of a Pool Member. Error Message: " + e.getMessage());
+		}
 	}
 
 	private class PrintMetricsThread extends Thread{
@@ -474,7 +503,7 @@ public class F5Monitor extends AManagedMonitor
 					iControl.LocalLBPoolMemberStatisticEntry[] memberStatsEntries = memberStatistics.getStatistics();
 					for(iControl.LocalLBPoolMemberStatisticEntry memberStatsEntry:memberStatsEntries){
 						iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();						
-						if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
+						//if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
 							NodeNamesList.add(memberStatsEntry.getMember().getAddress());
 							for(iControl.CommonStatistic stat : stats){
 								if(poolMemberMetrics.contains(stat.getType().getValue())){
@@ -484,7 +513,7 @@ public class F5Monitor extends AManagedMonitor
 											MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
 								}
 							}
-						}
+						//}
 					}
 				}
 
@@ -549,6 +578,7 @@ public class F5Monitor extends AManagedMonitor
 			}
 		}
 
+		/*
 		private boolean isSupposedToBeMonitored(String poolMemberCandidate){
 			for(String poolMember : monitoredPoolMembers){
 				if(poolMemberCandidate.substring(poolMemberCandidate.lastIndexOf('/') + 1, poolMemberCandidate.length()).equals(poolMember)){
@@ -557,6 +587,7 @@ public class F5Monitor extends AManagedMonitor
 			}
 			return false;
 		}		
+		*/
 	}
 
 	/**
