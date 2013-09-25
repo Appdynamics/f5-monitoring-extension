@@ -21,15 +21,18 @@ package com.appdynamics.monitors.f5;
 
 import iControl.CommonStatistic;
 import iControl.CommonULong64;
-import iControl.LocalLBNodeAddressV2;
 import iControl.SystemStatisticsBindingStub;
 import iControl.SystemStatisticsHostStatisticEntry;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -313,20 +316,28 @@ public class F5Monitor extends AManagedMonitor
 			}
 			
 			printAllPoolMembers();
-
-			stats = m_interfaces.getSystemStatistics();			
-
-			// fill the Arraylist with poolmembers to be monitored
-			/*
-			if(taskArguments.containsKey("monitored-poolmembers") && !taskArguments.get("monitored-poolmembers").equals(""))
+			
+			stats = m_interfaces.getSystemStatistics();	
+			
+			// fill the Arraylist with poolmembers by excluding the pools listed in monitor.xml
+			String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+			monitoredPoolMembers.addAll(Arrays.asList(pool_list));
+			if(taskArguments.containsKey("pools-exclude") &&
+					null != taskArguments.get("pools-exclude") && !taskArguments.get("pools-exclude").equals(""))
 			{
-				String[] metrics = taskArguments.get("monitored-poolmembers").split(",");
-				for(String metric : metrics){
-					monitoredPoolMembers.add(metric.trim());
+				String [] poolsExclude = taskArguments.get("pools-exclude").split(",");
+				for(String poolExclude : poolsExclude) {
+					Pattern pattern = Pattern.compile(poolExclude);
+					for(Iterator<String> pool = monitoredPoolMembers.iterator(); pool.hasNext();){
+						Matcher matcher = pattern.matcher(pool.next());
+						if(matcher.find())
+						{
+							pool.remove();
+						}
+					}
 				}
 			}
-			*/
-
+			
 			// see if there is a custom metric path in monitor.xml
 			if(taskArguments.containsKey("metric-path") && !taskArguments.get("metric-path").equals("")){
 				metricPath = taskArguments.get("metric-path");
@@ -494,7 +505,9 @@ public class F5Monitor extends AManagedMonitor
 		private void reportPoolMemberStats(){
 			try {
 
-				String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+			//	String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+				String [] pool_list = monitoredPoolMembers.toArray(new String[monitoredPoolMembers.size()]);
+				System.out.println("Pool size is "+monitoredPoolMembers.size());
 				List<String> NodeNamesList = new ArrayList<String>();
 				iControl.LocalLBPoolMemberStatistics[] memberStats;
 
@@ -524,6 +537,7 @@ public class F5Monitor extends AManagedMonitor
 					System.out.println(IPAddressesArray[i] + " TO " + NodeNamesArray[i]);
 					poolMemberIPToName.put(IPAddressesArray[i], NodeNamesArray[i]);
 				}
+				System.out.println("------------------------------------");
 
 				// with the recent information obtained about which members to monitor, report their status lights
 				reportPoolMemberStatusLights();
@@ -539,7 +553,8 @@ public class F5Monitor extends AManagedMonitor
 		 */
 		public void reportPoolMemberStatusLights() throws Exception
 		{
-			String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+			//String [] pool_list = m_interfaces.getLocalLBPool().get_list();
+			String [] pool_list = monitoredPoolMembers.toArray(new String[monitoredPoolMembers.size()]);
 
 			iControl.LocalLBPoolMemberMemberObjectStatus [][] objStatusAofA = 
 					m_interfaces.getLocalLBPoolMember().get_object_status(pool_list);

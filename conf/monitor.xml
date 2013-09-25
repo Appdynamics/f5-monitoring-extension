@@ -15,15 +15,18 @@
                 </java-task>
                 <!-- 
                         These are the mandatory parameters: F5 Host name, Username, Password
-			Optional: configure your own metric path. This will limit the metric reporting to one single tier.
-				  Example: default-value="Server|Component:Tier123" where Tier123 is the name of the tier.
-					   You can also provide the tier ID instead of the name.
+						Optional: configure your own metric path. This will limit the metric reporting to one single tier.
+				  		Example: default-value="Server|Component:Tier123" where Tier123 is the name of the tier.
+					   	You can also provide the tier ID instead of the name.
+						pools-exclude: optional
+							default-value = comma separated pool names to be excluded from monitoring basically a regular expression.
+							Example: <argument name="pools-exclude" is-required="false" default-value="abc,def,xyz"/>
                 -->
                 <task-arguments>
                         <argument name="Hostname" is-required="true" default-value="bigip.abc.xyz.com"/>
                         <argument name="Username" is-required="true" default-value="Username"/>
                         <argument name="Password" is-required="true" default-value="Password"/>
-                        
+                        <argument name="pools-exclude" is-required="false" default-value=""/> 
                         <argument name="metric-path" is-required="false" default-value=""/>
                 </task-arguments>
         </monitor-run-task>

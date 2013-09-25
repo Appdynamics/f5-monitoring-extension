@@ -57,7 +57,7 @@ or look for your specified path under Application Infrastructure Performance | \
 | Hostname | Host name of the F5 load balancer  |
 | Username | The username to log into the F5 load balancer |
 | Password | The password to log into the F5 load balancer |
-| monitored-poolmembers | A a comma-separated list of BigIP pool members you want to be monitored |
+| pools-exclude | A comma-separated list of BigIP pool names you want to exclude from monitoring basically a regular expression|
 | metric-path | Configure your own metric path. This will limit the metric reporting to one single tier (see comments in monitor.xml) |
 
 ~~~~
@@ -78,7 +78,7 @@ or look for your specified path under Application Infrastructure Performance | \
                 </java-task>
                 <!-- 
                          These are the mandatory parameters: F5 Host name, Username, Password
-                         Optional: Provide a comma-separated list of BigIP pool members you want to be monitored
+                         Optional: provide a comma-separated list of BigIP pool names you want to exclude from monitoring
                          Optional: configure your own metric path. This will limit the metric reporting to one single tier.
                               Example: default-value="Server|Component:Tier123" where Tier123 is the name of the tier.
                               You can also provide the tier ID instead of the name.
@@ -87,7 +87,7 @@ or look for your specified path under Application Infrastructure Performance | \
                         <argument name="Hostname" is-required="true" default-value="172.16.0.0"/>
                         <argument name="Username" is-required="true" default-value="Username"/>
                         <argument name="Password" is-required="true" default-value="Password"/>
-                        <argument name="monitored-poolmembers" is-required="false" default-value="comma, separated, list, of, pool-members, to, monitor"/>
+                        <argument name="pools-exclude" is-required="false" default-value="comma,separated,list, of, pool names,to,exclude,from,monitoring"/>
                         
                         <argument name="metric-path" is-required="false" default-value=""/>
                 </task-arguments>
@@ -106,4 +106,4 @@ Find out more in the [AppSphere](http://appsphere.appdynamics.com/t5/Extensions/
 
 ##Support
 
-For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
+For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
