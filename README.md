@@ -11,7 +11,9 @@ The F5 load balancer extension collects key performance metrics from an F5 load 
 1. Run 'ant package' from the f5-monitoring-extension directory
 2. Download the file F5Monitor.zip located in the 'dist' directory into \<machineagent install dir\>/monitors/
 3. Unzip the downloaded file
-4. In \<machineagent install dir\>/monitors/F5Monitor/, open monitor.xml and configure the task arguments. Optional but recommended: Configure a custom metric path.
+4. In \<machineagent install dir\>/monitors/F5Monitor/, open monitor.xml and configure the F5 credentials. 
+	* Optional: Specify one or more pools to be excluded from monitoring.
+	* Optional but recommended: Configure a custom metric path.
 5. Restart the Machine Agent. 
  
 In the AppDynamics Metric Browser, look for: Application Infrastructure Performance  | \<Tier\> | Custom Metrics | F5 Monitor
@@ -87,8 +89,7 @@ or look for your specified path under Application Infrastructure Performance | \
                         <argument name="Hostname" is-required="true" default-value="172.16.0.0"/>
                         <argument name="Username" is-required="true" default-value="Username"/>
                         <argument name="Password" is-required="true" default-value="Password"/>
-                        <argument name="pools-exclude" is-required="false" default-value="comma,separated,list, of, pool names,to,exclude,from,monitoring"/>
-                        
+                        <argument name="pools-exclude" is-required="false" default-value="comma,separated,list, of, pool names,to,exclude,from,monitoring"/>                       
                         <argument name="metric-path" is-required="false" default-value=""/>
                 </task-arguments>
         </monitor-run-task>
@@ -106,4 +107,5 @@ Find out more in the [AppSphere](http://appsphere.appdynamics.com/t5/Extensions/
 
 ##Support
 
-For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
+For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
+
