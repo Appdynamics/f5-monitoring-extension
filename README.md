@@ -12,7 +12,7 @@ The F5 load balancer extension collects key performance metrics from an F5 load 
 2. Download the file F5Monitor.zip located in the 'dist' directory into \<machineagent install dir\>/monitors/
 3. Unzip the downloaded file
 4. In \<machineagent install dir\>/monitors/F5Monitor/, open monitor.xml and configure the F5 credentials. 
-	* Optional: Specify one or more pools to be excluded from monitoring. The default-value can be "", a pool's full name, a sub-string or a regex expression. If the default-value is empty, no pools are excluded.
+	* Optional: Specify one or more pools to be excluded from monitoring. The default-value can be an empty string, a pool's full name, a sub-string or a regex expression. If the default-value is empty, no pools are excluded.
 	* Optional but recommended: Configure a custom metric path.
 5. Restart the Machine Agent. 
  
