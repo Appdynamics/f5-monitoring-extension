@@ -1,5 +1,7 @@
 # AppDynamics F5 Load Balancer Monitoring Extension
 
+This extension works only with the Java agent.
+
 ##Use Case
 
 The F5 load balancer from F5 Networks, Inc. directs traffic away from servers that are overloaded or down to other servers that can handle the load. 
