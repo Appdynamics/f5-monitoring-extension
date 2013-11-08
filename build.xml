@@ -9,7 +9,7 @@
     <target name="build">
 	<delete dir="${build.dir}/"/>
         <mkdir dir="${build.dir}/classes"/>
-        <javac destdir="${build.dir}/classes" srcdir="src" classpathref="cp" debug="on"/>
+        <javac destdir="${build.dir}/classes" source="1.5" target="1.5" srcdir="src/main/java" classpathref="cp" debug="on"/>
         <mkdir dir="${build.dir}/F5Monitor"/>
         <mkdir dir="${build.dir}/F5Monitor/lib"/>
         <jar destfile="${build.dir}/F5Monitor/${project.name}.jar">
