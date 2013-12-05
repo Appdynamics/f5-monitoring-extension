@@ -317,7 +317,7 @@ public class F5Monitor extends AManagedMonitor
 
             String version = m_interfaces.getSystemServices().get_version();
             logger.info("BigIP version: " + version);
-            if (version.startsWith("11.")) {
+            if (version.startsWith("BIG-IP_v11.")) {
                 isVersion11 = true;
             }
 
