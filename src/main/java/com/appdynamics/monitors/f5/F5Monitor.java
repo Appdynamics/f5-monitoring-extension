@@ -51,6 +51,7 @@ public class F5Monitor extends AManagedMonitor
 	private List<String> monitoredPoolMembers;
 	private List<String> poolMemberMetrics = new ArrayList<String>();
 	private Map<String, String> poolMemberIPToName;
+    private boolean isVersion11 = false;
 
 	private String metricPath = "Custom Metrics|";
 
@@ -282,7 +283,6 @@ public class F5Monitor extends AManagedMonitor
 	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext taskContext) throws TaskExecutionException
 	{
-
 		logger = Logger.getLogger(F5Monitor.class);
 		poolMemberIPToName = new HashMap<String, String>();
 		monitoredPoolMembers = new ArrayList<String>();
@@ -314,7 +314,13 @@ public class F5Monitor extends AManagedMonitor
 						" Terminating Monitor.");
 				return null;
 			}
-			
+
+            String version = m_interfaces.getSystemServices().get_version();
+            logger.info("BigIP version: " + version);
+            if (version.startsWith("11.")) {
+                isVersion11 = true;
+            }
+
 			printAllPoolMembers();
 			
 			stats = m_interfaces.getSystemStatistics();	
@@ -430,7 +436,7 @@ public class F5Monitor extends AManagedMonitor
 		public void run(){			
 			try {
 
-				//System.out.println("-----GET ALL HOST STATISTICS-----");
+                logger.info("Getting host statistics");
 				for (SystemStatisticsHostStatisticEntry stat : stats.get_all_host_statistics().getStatistics())
 				{
 					for (CommonStatistic st : stat.getStatistics())
@@ -445,7 +451,7 @@ public class F5Monitor extends AManagedMonitor
 					}
 				}
 
-				//System.out.println("-----GET CLIENT SSL STATISTICS-----");
+                logger.info("Getting client SSL statistics");
 				for (CommonStatistic stat : stats.get_client_ssl_statistics().getStatistics())
 				{
 					if(stat.getType().getValue().equals("STATISTIC_SSL_COMMON_CURRENT_CONNECTIONS")){
@@ -456,7 +462,7 @@ public class F5Monitor extends AManagedMonitor
 					}
 				}
 
-				//System.out.println("-----GET TCP STATISTICS-----");
+                logger.info("Getting TCP statistics");
 				for (CommonStatistic stat : stats.get_tcp_statistics().getStatistics())
 				{
 					if(stat.getType().getValue().equals("STATISTIC_TCP_OPEN_CONNECTIONS") ||
@@ -472,6 +478,7 @@ public class F5Monitor extends AManagedMonitor
 				// GET CPU % BUSY
 				int count = 0;
 				int val = 0;
+                logger.info("Getting CPU statistics");
 				for (iControl.SystemCPUUsageExtended usage : m_interfaces.getSystemSystemInfo().get_all_cpu_usage_extended_information().getHosts())
 				{
 					for(CommonStatistic[] stats2 : usage.getStatistics()){
@@ -493,6 +500,8 @@ public class F5Monitor extends AManagedMonitor
 
 				reportPoolMemberStats();
 
+                logger.info("------------------------------------");
+
 			} catch (Exception e) {
 				logger.error("Could not retrieve metrics: " + e.getMessage() +
 						"... Aborted metrics retrieval for this minute.");
@@ -507,28 +516,49 @@ public class F5Monitor extends AManagedMonitor
 
 			//	String [] pool_list = m_interfaces.getLocalLBPool().get_list();
 				String [] pool_list = monitoredPoolMembers.toArray(new String[monitoredPoolMembers.size()]);
-				System.out.println("Pool size is "+monitoredPoolMembers.size());
+				logger.info("Pool size is "+monitoredPoolMembers.size());
 				List<String> NodeNamesList = new ArrayList<String>();
-				iControl.LocalLBPoolMemberStatistics[] memberStats;
 
-				memberStats = m_interfaces.getLocalLBPool().get_all_member_statistics(pool_list);
-				for(iControl.LocalLBPoolMemberStatistics memberStatistics:memberStats){
-					iControl.LocalLBPoolMemberStatisticEntry[] memberStatsEntries = memberStatistics.getStatistics();
-					for(iControl.LocalLBPoolMemberStatisticEntry memberStatsEntry:memberStatsEntries){
-						iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();						
-						//if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
-							NodeNamesList.add(memberStatsEntry.getMember().getAddress());
-							for(iControl.CommonStatistic stat : stats){
-								if(poolMemberMetrics.contains(stat.getType().getValue())){
-									printMetric("Pool Members" + memberStatsEntry.getMember().getAddress().replaceAll("/", "|") +  "|" + stat.getType().getValue(), (new UsefulU64(stat.getValue())).doubleValue(),
-											MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
-											MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
-											MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
-								}
-							}
-						//}
-					}
-				}
+
+                if (isVersion11) {
+                    iControl.LocalLBPoolMemberStatistics[] memberStats;
+                    memberStats = m_interfaces.getLocalLBPool().get_all_member_statistics(pool_list);
+                    for(iControl.LocalLBPoolMemberStatistics memberStatistics:memberStats){
+                        iControl.LocalLBPoolMemberStatisticEntry[] memberStatsEntries = memberStatistics.getStatistics();
+                        for(iControl.LocalLBPoolMemberStatisticEntry memberStatsEntry:memberStatsEntries){
+                            iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();
+                            //if(isSupposedToBeMonitored(memberStatsEntry.getMember().getAddress())){
+                                NodeNamesList.add(memberStatsEntry.getMember().getAddress());
+                                for(iControl.CommonStatistic stat : stats){
+                                    if(poolMemberMetrics.contains(stat.getType().getValue())){
+                                        printMetric("Pool Members" + memberStatsEntry.getMember().getAddress().replaceAll("/", "|") +  "|" + stat.getType().getValue(), (new UsefulU64(stat.getValue())).doubleValue(),
+                                                MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
+                                                MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
+                                                MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
+                                    }
+                                }
+                            //}
+                        }
+                    }
+                } else {
+                    iControl.LocalLBPoolMemberMemberStatistics[] memberStats;
+                    memberStats = m_interfaces.getLocalLBPoolMember().get_all_statistics(pool_list);
+                    for (iControl.LocalLBPoolMemberMemberStatistics memberStat : memberStats) {
+                        iControl.LocalLBPoolMemberMemberStatisticEntry[] memberStatsEntries = memberStat.getStatistics();
+                        for (iControl.LocalLBPoolMemberMemberStatisticEntry memberStatsEntry : memberStatsEntries) {
+                            iControl.CommonStatistic[] stats = memberStatsEntry.getStatistics();
+                            NodeNamesList.add(memberStatsEntry.getMember().getAddress());
+                            for(iControl.CommonStatistic stat : stats){
+                                if(poolMemberMetrics.contains(stat.getType().getValue())){
+                                    printMetric("Pool Members" + memberStatsEntry.getMember().getAddress().replaceAll("/", "|") +  "|" + stat.getType().getValue(), (new UsefulU64(stat.getValue())).doubleValue(),
+                                            MetricWriter.METRIC_AGGREGATION_TYPE_OBSERVATION,
+                                            MetricWriter.METRIC_TIME_ROLLUP_TYPE_CURRENT,
+                                            MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
+                                }
+                            }
+                        }
+                    }
+                }
 
 				String[] NodeNamesArray = new String[1];
 				NodeNamesArray= NodeNamesList.toArray(NodeNamesArray);
@@ -537,12 +567,13 @@ public class F5Monitor extends AManagedMonitor
 					System.out.println(IPAddressesArray[i] + " TO " + NodeNamesArray[i]);
 					poolMemberIPToName.put(IPAddressesArray[i], NodeNamesArray[i]);
 				}
-				System.out.println("------------------------------------");
 
 				// with the recent information obtained about which members to monitor, report their status lights
 				reportPoolMemberStatusLights();
 
-			} catch (Exception e) {
+                logger.info("Done reporting pool member stats");
+
+            } catch (Exception e) {
 				logger.warn("Can't retrieve statistic for a poolMember. Error Message: " + e.getMessage());
 			}
 		}
