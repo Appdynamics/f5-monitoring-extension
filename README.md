@@ -98,7 +98,7 @@ or look for your specified path under Application Infrastructure Performance | \
 </monitor>
 ~~~~
 
-##BIG-IP user account properties
+###BIG-IP user account properties
 To use this extension, the user account should have the property `Partition Access = All` selected.
 ![](https://github.com/Appdynamics/f5-monitoring-extension/raw/master/F5-access-control.png)
 
