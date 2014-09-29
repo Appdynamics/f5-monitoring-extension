@@ -19,6 +19,7 @@
 
 package com.appdynamics.monitors.f5;
 
+import com.appdynamics.extensions.crypto.CryptoUtil;
 import iControl.CommonStatistic;
 import iControl.CommonULong64;
 import iControl.SystemStatisticsBindingStub;
@@ -296,7 +297,9 @@ public class F5Monitor extends AManagedMonitor
 		poolMemberMetrics.add("STATISTIC_SERVER_SIDE_TOTAL_CONNECTIONS");
 		poolMemberMetrics.add("STATISTIC_TOTAL_REQUESTS");
 
-		if(!taskArguments.containsKey("Hostname") || !taskArguments.containsKey("Username") || !taskArguments.containsKey("Password")){
+        String password = CryptoUtil.getPassword(taskArguments);
+
+		if(!taskArguments.containsKey("Hostname") || !taskArguments.containsKey("Username") || password.equalsIgnoreCase("")){
 			logger.error("monitor.xml needs to contain these three arguments: \"Hostname\", \"Username\", and \"Password\". " +
 					"Terminating monitor.");
 			return null;
@@ -304,9 +307,11 @@ public class F5Monitor extends AManagedMonitor
 
 		try{
 			//connecting to F5, initializing statistics retrieval
+            logger.debug("Calling Control Interfaces debug..");
 			m_interfaces = new iControl.Interfaces();
-			m_interfaces.initialize(taskArguments.get("Hostname"), taskArguments.get("Username"), taskArguments.get("Password"));
-
+            logger.debug("Before calling initialize:: hostname= " + taskArguments.get("Hostname") + ",Username=" + taskArguments.get("Username") + ",Password=" + taskArguments.get("Password"));
+            m_interfaces.initialize(taskArguments.get("Hostname"), taskArguments.get("Username"), taskArguments.get("Password"));
+            logger.debug("Initialization complete..checking credentials");
 			// check if the credentials provided are valid by trying to fetch some
 			// arbitrarily chosen statistics.
 			if(!areCredentialsValid()){
@@ -315,10 +320,20 @@ public class F5Monitor extends AManagedMonitor
 				return null;
 			}
 
-            String version = m_interfaces.getSystemServices().get_version();
-            logger.info("BigIP version: " + version);
-            if (version.startsWith("BIG-IP_v11.")) {
-                isVersion11 = true;
+            logger.debug("Credentials are valid...");
+            try {
+                String version = m_interfaces.getSystemServices().get_version();
+                logger.info("BigIP version: " + version);
+                if (version.startsWith("BIG-IP_v11.")) {
+                    isVersion11 = true;
+                }
+            }catch(Exception e){
+                logger.error("Unable to fetch version " +  e);
+                isVersion11 = false;
+            }
+
+            if(!isVersion11) {
+                logger.debug("Continuing with < 11 version");
             }
 
 			printAllPoolMembers();
@@ -355,7 +370,7 @@ public class F5Monitor extends AManagedMonitor
 
 		} catch(Throwable t){
 			logger.error("Unable to connect to the F5 or initialize stats retrieval. Error Message: " +
-					"" + t.getMessage() + "... Terminating monitor.");
+					"" + t.getMessage() + "... Terminating monitor." + t);
 			return null;
 		}
 
@@ -380,6 +395,7 @@ public class F5Monitor extends AManagedMonitor
 		try{
 			m_interfaces.getSystemStatistics().get_ftp_statistics().getStatistics();
 		} catch (Exception e){
+            logger.error("Credentials are not valid " + e);
 			if(e.getMessage().contains("(401)")){
 				return false;
 			}

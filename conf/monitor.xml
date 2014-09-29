@@ -10,7 +10,7 @@
                 <description>F5 Monitor Task</description>
                 <type>java</type>
                 <java-task>
-                        <classpath>F5Monitor.jar;lib/iControl/iControl.jar;lib/activation/activation.jar;lib/axis/axis-ant.jar;lib/axis/axis.jar;lib/commons/commons-discovery-0.2.jar;lib/commons/commons-discovery.jar;lib/commons/commons-logging-1.0.4.jar;lib/commons/commons-logging.jar;lib/jaxrpc/jaxrpc.jar;lib/mail/mail.jar;lib/axis/saaj.jar;lib/wsdl4j/wsdl4j-1.5.1.jar;lib/wsdl4j/wsdl.jar</classpath>
+                        <classpath>F5Monitor.jar;lib/iControl/iControl.jar;lib/activation/activation.jar;lib/axis/axis-ant.jar;lib/axis/axis.jar;lib/commons/commons-discovery-0.2.jar;lib/commons/commons-discovery.jar;lib/commons/commons-logging-1.0.4.jar;lib/commons/commons-logging.jar;lib/commons/appd-exts-commons-1.1.2.jar;lib/jaxrpc/jaxrpc.jar;lib/mail/mail.jar;lib/axis/saaj.jar;lib/wsdl4j/wsdl4j-1.5.1.jar;lib/wsdl4j/wsdl.jar</classpath>
                         <impl-class>com.appdynamics.monitors.f5.F5Monitor</impl-class>
                 </java-task>
                 <!-- 

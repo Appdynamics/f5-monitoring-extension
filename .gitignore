@@ -1,6 +1,11 @@
-*.class
-
-# Package Files #
-*.war
-*.ear
-dist/
+target
+*.iml
+.settings
+.classpath
+.project
+*.log
+*.ipr
+*.iws
+.idea
+.DS_Store
+dist
