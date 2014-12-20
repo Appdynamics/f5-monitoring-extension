@@ -1,0 +1,46 @@
+f5s:
+  - name: ""
+    hostname: ""
+    username: ""
+    password: ""
+    passwordEncrypted: ""
+    encryptionKey: ""
+    poolIncludes: [ ]
+    poolMemberIncludes: [ ]
+    snatPoolIncludes: [ ]
+    snatPoolMemberIncludes: [ ]
+    virtualServerIncludes: [ ]
+    iRuleIncludes: [ ]
+    clientSSLProfileIncludes: [ ]
+    serverSSLProfileIncludes: [ ]
+    networkInterfaceIncludes: [ ]
+
+# Global Metrics Filter - exclude patterns for unwanted metrics
+# This filter will apply to all F5 instances configured above
+metricsFilter:
+    poolMetricExcludes: [ ]
+    snatPoolMetricExcludes: [ ]
+    virtualServerMetricExcludes: [ ]
+    iRuleMetricExcludes: [ ]
+    clientSSLProfileMetricExcludes: [ ]
+    serverSSLProfileMetricExcludes: [ ]
+    networkInterfaceMetricExcludes: [ ]
+    tcpMetricExcludes: [ ]
+    httpMetricExcludes: [ ]
+    httpCompressionMetricExcludes: [ ]
+
+# Number of concurrent threads for 
+# dealing with multiple F5 instances
+# Note: You don't necessarily have to match the no of threads
+# to the no of F5 instances configured above
+# unless you have a lot of CPUs in your machine    
+numberOfF5Threads: 3
+
+# Number concurrent threads per F5 used in fetching metrics
+numberOfThreadsPerF5: 3
+
+# Total no of threads = (numberOfF5Threads * numberOfThreadsPerF5) + 1 (main)
+
+#prefix used to show up metrics in AppDynamics 
+metricPrefix:  "Custom Metrics|F5 Monitor|"
+

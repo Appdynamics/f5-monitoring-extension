@@ -1,0 +1,60 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>bin</id>
+
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<fileSets>
+	    <!-- copy config files to root dir -->
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources/conf</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>monitor.xml</include>
+			</includes>
+		</fileSet>
+		
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources/conf</directory>
+			<outputDirectory>/conf</outputDirectory>
+			<includes>
+				<include>config.yaml</include>
+			</includes>
+		</fileSet>
+		
+		<!-- copy the system lib to lib dir (only applicable to iControl.jar since it's not in maven repo)  -->
+		<fileSet>
+			<directory>${project.basedir}/lib/iControl/${iControl.version}</directory>
+			<outputDirectory>/lib</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+		
+		<!-- copy the extension jar to root dir -->
+		<fileSet>
+			<directory>${project.basedir}/target</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>${project.build.finalName}.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+	
+	<!-- copy the dependencies to lib dir -->
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/lib</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+			<scope>runtime</scope>
+			<excludes>
+				<exclude>*:sources</exclude>
+			</excludes>
+		</dependencySet>
+	</dependencySets>
+	
+</assembly>

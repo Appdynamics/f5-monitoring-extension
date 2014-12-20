@@ -1,0 +1,25 @@
+<monitor>
+    <name>F5Monitor</name>
+    <type>managed</type>
+    <description>F5 monitor</description>
+    <monitor-configuration></monitor-configuration>
+    <monitor-run-task>
+        <execution-style>periodic</execution-style>
+        <execution-frequency-in-seconds>60</execution-frequency-in-seconds>
+        <name>F5 Monitor Run task</name>
+        <display-name>F5 Monitor Run task</display-name>
+        <description>F5 Monitor Run task</description>
+        <type>java</type>
+        <execution-timeout-in-secs>60</execution-timeout-in-secs>
+        
+		<task-arguments>
+			<argument name="config-file" is-required="true" default-value="monitors/F5Monitor/conf/config.yaml" />
+		</task-arguments>
+                
+        <java-task>
+        	<classpath>f5-monitoring-extension.jar;lib/iControl.jar;lib/commons-lang-2.6.jar;lib/activation-1.1.1.jar;lib/appd-exts-commons-1.1.2.jar;lib/axis-1.4.jar;lib/axis-jaxrpc-1.4.jar;lib/commons-codec-1.2.jar;lib/commons-discovery-0.4.jar;lib/commons-httpclient-3.1.jar;lib/commons-logging-1.1.1.jar;lib/guava-r09.jar;lib/jackson-core-asl-1.9.13.jar;lib/jackson-mapper-asl-1.9.13.jar;lib/jsr311-api-1.1.1.jar;lib/log4j-1.2.17.jar;lib/mail-1.4.4.jar;lib/slf4j-api-1.7.5.jar;lib/slf4j-log4j12-1.7.5.jar;lib/snakeyaml-1.13.jar;lib/wsdl4j-1.6.2.jar</classpath>
+            <impl-class>com.appdynamics.extensions.f5.F5Monitor</impl-class>
+        </java-task>
+        
+    </monitor-run-task>
+</monitor>
