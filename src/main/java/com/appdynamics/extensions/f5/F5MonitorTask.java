@@ -95,7 +95,7 @@ public class F5MonitorTask implements Callable<F5Metrics> {
 		return f5Metrics;
 	}
 	
-	public boolean initialise() {
+	private boolean initialise() {
 		iControlInterfaces = new Interfaces();
 		iControlInterfaces.initialize(f5.getHostname(), f5.getUsername(), getPassword());
 		return checkCredentialsAndSetVersion();
