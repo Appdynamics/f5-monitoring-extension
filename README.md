@@ -117,7 +117,7 @@ To generate an encrypted password, follow steps below:
 1. Navigate to <machine_agent_dir>/monitors/F5Monitor/lib
 2. Run command:
    	<pre><code>   
-   	java -cp "appd-exts-commons-1.1.2.jar" com.appdynamics.extensions.crypto.Encryptor <enter_any_key> <enter_plain_text_password>
+   	java -cp "appd-exts-commons-1.1.2.jar" com.appdynamics.extensions.crypto.Encryptor \<enter_any_key\> \<enter_plain_text_password\>
    	
    	For example: 
    	java -cp "appd-exts-commons-1.1.2.jar" com.appdynamics.extensions.crypto.Encryptor testKey adminPassword
