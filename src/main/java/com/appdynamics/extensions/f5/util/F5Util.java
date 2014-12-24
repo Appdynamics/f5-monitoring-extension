@@ -114,11 +114,19 @@ public class F5Util {
 		if (StringUtils.isNotBlank(strToChange)) {
 			String updatedString = strToChange.replaceAll(fromSeperator, toSeperator);
 			
-			if (insertSeparatorAtStartIfNotThere && !updatedString.startsWith(toSeperator)) {
-				updatedString = String.format("%s%s", toSeperator, strToChange);
+			if (insertSeparatorAtStartIfNotThere) {
+				updatedString = insertSeparatorAtStartIfNotThere(updatedString, toSeperator);
 			}
 			
 			return updatedString;
+		}
+		
+		return strToChange;
+	}
+	
+	public static String insertSeparatorAtStartIfNotThere(String strToChange, String separator) {
+		if (strToChange != null && !strToChange.startsWith(separator)) {
+			return String.format("%s%s", separator, strToChange);
 		}
 		
 		return strToChange;

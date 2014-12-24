@@ -6,6 +6,7 @@ import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
 import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
 import static com.appdynamics.extensions.f5.util.F5Util.extractMemberName;
+import static com.appdynamics.extensions.f5.util.F5Util.insertSeparatorAtStartIfNotThere;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 import static com.appdynamics.extensions.f5.util.F5Util.isToMonitor;
 import iControl.CommonStatistic;
@@ -57,19 +58,23 @@ public class SnatPoolMemberMetricsCollector {
 			int index = 0;
 			
 			for (LocalLBSNATPoolSNATPoolMemberStatistics member : poolMembersStats) {
-				String poolName = changePathSeparator(pools[index++], 
-						PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+				String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
 				
 				for (LocalLBSNATPoolSNATPoolMemberStatisticEntry memStat : member.getStatistics()) {
 					String rawMemberName = memStat.getMember();
 					String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
-					
-					if (!isToMonitor(memberName, snatPoolMemberIncludesPattern)) {
+					String fullMemberName = String.format("%s%s%s", poolName, PATH_SEPARATOR, memberName);
+							
+					if (!isToMonitor(fullMemberName, snatPoolMemberIncludesPattern)) {
 						continue;
 					}
 					
-					String poolMemberMetricPrefix = String.format("%s%s%s%s", poolMetricPrefix,
-							poolName, METRIC_PATH_SEPARATOR, memberName);
+					// changing the separator for metric reporting
+					fullMemberName = changePathSeparator(
+							fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+					
+					String poolMemberMetricPrefix = String.format("%s%s", poolMetricPrefix,
+							fullMemberName);
 					
 					for (CommonStatistic stat : memStat.getStatistics()) {
 						if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {

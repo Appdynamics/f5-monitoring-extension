@@ -2,15 +2,8 @@ package com.appdynamics.extensions.f5.collectors;
 
 import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
-import static com.appdynamics.extensions.f5.F5Constants.PORT_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.STATUS;
-import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
-import static com.appdynamics.extensions.f5.util.F5Util.convertToStatus;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
-import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.extractMemberName;
-import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
-import static com.appdynamics.extensions.f5.util.F5Util.isToMonitor;
+import static com.appdynamics.extensions.f5.util.F5Util.*;
 import iControl.CommonStatistic;
 import iControl.Interfaces;
 import iControl.LocalLBPoolMemberMemberObjectStatus;
@@ -68,20 +61,23 @@ public class PoolMemberMetricsCollector {
 			// The outer layer represents the pool which is in the same order as the pools array
 			// Don't know why F5 didn't just include the name in this object
 			for (LocalLBPoolMemberStatistics member : poolMembersStats) {
-				String poolName = changePathSeparator(pools[index++], 
-						PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+				String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
 				
 				for (LocalLBPoolMemberStatisticEntry memStat : member.getStatistics()) {
 					String rawMemberName = memStat.getMember().getAddress();
 					String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
-					memberName = String.format("%s%s%s", memberName, PORT_SEPARATOR,
+					String fullMemberName = getFullMemberName(poolName, memberName, 
 							memStat.getMember().getPort());
 					
-					if (isToMonitor(memberName, poolMemberIncludesPattern)) {
+					if (isToMonitor(fullMemberName, poolMemberIncludesPattern)) {
 						rawMemberNames.add(rawMemberName);
 						
-						String poolMemberMetricPrefix = String.format("%s%s%s%s", poolMetricPrefix,
-								poolName, METRIC_PATH_SEPARATOR, memberName);
+						// changing the separator for metric reporting
+						fullMemberName = changePathSeparator(
+								fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+						
+						String poolMemberMetricPrefix = String.format("%s%s", poolMetricPrefix,
+								fullMemberName);
 						
 						for (CommonStatistic stat : memStat.getStatistics()) {
 							if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
@@ -129,22 +125,24 @@ public class PoolMemberMetricsCollector {
 				int index = 0;
 				
 				for (LocalLBPoolMemberMemberObjectStatus[] poolStat : memberObjectStatuses) {
-					String poolName = changePathSeparator(pools[index++], 
-							PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+					String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
 					
 					for (LocalLBPoolMemberMemberObjectStatus memberStat : poolStat) {
 						String rawMemberName = nameConversionMap.get(memberStat.getMember().getAddress());
 						String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
-						memberName = String.format("%s%s%s", memberName, PORT_SEPARATOR,
+						String fullMemberName = getFullMemberName(poolName, memberName, 
 								memberStat.getMember().getPort());
 						
-						if (!isToMonitor(memberName, poolMemberIncludesPattern)) {
+						if (!isToMonitor(fullMemberName, poolMemberIncludesPattern)) {
 							continue;
 						}
 						
-						String metricName = String.format("%s%s%s%s%s%s", 
-								poolMetricPrefix, poolName, METRIC_PATH_SEPARATOR, 
-								memberName, METRIC_PATH_SEPARATOR, STATUS);
+						fullMemberName = changePathSeparator(
+								fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+						
+						String metricName = String.format("%s%s%s%s", 
+								poolMetricPrefix, fullMemberName, 
+								METRIC_PATH_SEPARATOR, STATUS);
 						
 						BigInteger value = BigInteger.valueOf(convertToStatus(
 								memberStat.getObject_status().getAvailability_status(), 
@@ -160,7 +158,7 @@ public class PoolMemberMetricsCollector {
 		} catch (Exception e) {
 			LOGGER.error("An issue occurred while fetching pool members' status", e);
 		} 
-	}	
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -187,5 +185,10 @@ public class PoolMemberMetricsCollector {
 		}
 		
 		return ipToNameMap;
+	}
+	
+	protected String getFullMemberName(String poolName, String memberName, long port) {
+		return String.format("%s%s%s%s%s", poolName, PATH_SEPARATOR, memberName,
+				PATH_SEPARATOR, port);
 	}
 }

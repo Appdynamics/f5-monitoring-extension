@@ -103,15 +103,15 @@ public class PreVersion11PoolMemberMetricsCollectorTest {
 		classUnderTest.collectMemberMetrics(poolMetricPrefix, pools, result);
 		assertEquals(8, result.getMetrics().size());
 		
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATISTIC_SERVER_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATUS"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATISTIC_SERVER_SIDE_BYTES_IN"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATUS"));
 		
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATISTIC_SERVER_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATUS"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATISTIC_SERVER_SIDE_BYTES_IN"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATUS"));
 	}
 	
 	@Test
@@ -135,15 +135,15 @@ public class PreVersion11PoolMemberMetricsCollectorTest {
 		classUnderTest.collectMemberMetrics(poolMetricPrefix, pools, result);
 		assertEquals(2, result.getMetrics().size());
 		
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATUS"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATUS"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATUS"));
+		assertTrue(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATUS"));
 
-		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1:8080|STATISTIC_SERVER_SIDE_BYTES_IN"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2:8090|STATISTIC_SERVER_SIDE_BYTES_IN"));
+		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
+		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
+		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.1|8080|STATISTIC_SERVER_SIDE_BYTES_IN"));
+		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
+		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
+		assertFalse(result.getMetrics().containsKey("TestF5|Pools|Common|devcontr7|10.10.10.2|8090|STATISTIC_SERVER_SIDE_BYTES_IN"));
 	}
 	
 	private LocalLBPoolMemberMemberStatistics[] getTestStatistics() {

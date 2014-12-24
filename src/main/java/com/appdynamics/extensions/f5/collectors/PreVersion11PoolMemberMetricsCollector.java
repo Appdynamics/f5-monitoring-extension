@@ -2,12 +2,12 @@ package com.appdynamics.extensions.f5.collectors;
 
 import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
-import static com.appdynamics.extensions.f5.F5Constants.PORT_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.STATUS;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
 import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
 import static com.appdynamics.extensions.f5.util.F5Util.extractMemberName;
+import static com.appdynamics.extensions.f5.util.F5Util.insertSeparatorAtStartIfNotThere;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 import static com.appdynamics.extensions.f5.util.F5Util.isToMonitor;
 import iControl.CommonStatistic;
@@ -59,19 +59,23 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 			int index = 0;
 			
 			for (LocalLBPoolMemberMemberStatistics member : poolMembersStats) {
-				String poolName = changePathSeparator(pools[index++], 
-						PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+				String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
 				
 				for (LocalLBPoolMemberMemberStatisticEntry memStat : member.getStatistics()) {
 					String rawMemberName = memStat.getMember().getAddress();
 					String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
+					String fullMemberName = getFullMemberName(poolName, memberName, 
+							memStat.getMember().getPort());
 					
-					if (isToMonitor(memberName, poolMemberIncludesPattern)) {
+					if (isToMonitor(fullMemberName, poolMemberIncludesPattern)) {
 						rawMemberNames.add(rawMemberName);
 						
-						String poolMemberMetricPrefix = String.format("%s%s%s%s%s%s", poolMetricPrefix,
-								poolName, METRIC_PATH_SEPARATOR, memberName, PORT_SEPARATOR, 
-								memStat.getMember().getPort());
+						// changing the separator for metric reporting
+						fullMemberName = changePathSeparator(
+								fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+						
+						String poolMemberMetricPrefix = String.format("%s%s", poolMetricPrefix,
+								fullMemberName);
 						
 						for (CommonStatistic stat : memStat.getStatistics()) {
 							if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
