@@ -65,6 +65,10 @@ public class PoolMemberMetricsCollectorTest {
 		when(mockIcontrolInterfaces.getLocalLBNodeAddressV2()).thenReturn(mockNodeAddressV2Stub);
 		when(mockIcontrolInterfaces.getLocalLBPoolMember()).thenReturn(mockLocalLBPoolMemberStub);
 		
+		Set<String> excludes = new HashSet<String>();
+		excludes.add(".*Total.*");
+		when(mockMetricsFilter.getPoolMetricExcludes()).thenReturn(excludes);
+		
 		LocalLBPoolMemberStatistics[] testMemberStats = getTestStatistics();
 		when(mockLocalLBPoolStub.get_all_member_statistics(any(String[].class))).thenReturn(testMemberStats);
 		
@@ -125,6 +129,7 @@ public class PoolMemberMetricsCollectorTest {
 		
 		Set<String> testMetricExcludes = new HashSet<String>();
 		testMetricExcludes.add(".*STATISTIC.*");
+		testMetricExcludes.add(".*Total.*");
 		when(mockMetricsFilter.getPoolMetricExcludes()).thenReturn(testMetricExcludes);
 		
 		classUnderTest = new PoolMemberMetricsCollector(mockF5.getPoolMemberIncludes(), 

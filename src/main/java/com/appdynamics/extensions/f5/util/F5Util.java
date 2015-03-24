@@ -53,6 +53,24 @@ public class F5Util {
 		}
 	}
 	
+	public static enum PoolStatus {
+		UNKNOWN (0),
+		AVAILABLE_AND_ENABLED (1),
+		OFFLINE_AND_ENABLED (2),
+		AVAILABLE_BUT_DISABLED (3),
+		OFFLINE_AND_DISABLED (4);
+		
+		private int value;
+
+		private PoolStatus(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
+	
 	public static Pattern createPattern(Set<String> rawPatterns) {
 		Pattern pattern = null;
 		
@@ -159,27 +177,27 @@ public class F5Util {
 		return BigInteger.ZERO;
 	}
 	
-	public static int convertToStatus(LocalLBAvailabilityStatus availability, LocalLBEnabledStatus enabled) {
-		int status;
+	public static PoolStatus convertToStatus(LocalLBAvailabilityStatus availability, LocalLBEnabledStatus enabled) {
+		PoolStatus status;
 
 		if(availability.getValue().contains("GREEN") && 
 				enabled.getValue().contains("STATUS_ENABLED")) {
-			status = 1; // Available (Enabled)
+			status = PoolStatus.AVAILABLE_AND_ENABLED;
 			
 		} else if(availability.getValue().contains("RED") && 
 				enabled.getValue().contains("STATUS_ENABLED")) {
-			status = 2; // Offline (Enabled)
+			status = PoolStatus.OFFLINE_AND_ENABLED;
 			
 		} else if(availability.getValue().contains("GREEN") && 
 				enabled.getValue().contains("STATUS_DISABLED")) {
-			status = 3; // Available (Disabled)
+			status = PoolStatus.AVAILABLE_BUT_DISABLED;
 			
 		} else if(availability.getValue().contains("RED") && 
 				enabled.getValue().contains("STATUS_DISABLED")) {
-			status = 4; // Offline (Disabled)
+			status = PoolStatus.OFFLINE_AND_DISABLED;
 			
 		} else {
-			status = 0; // UNKNOWN
+			status = PoolStatus.UNKNOWN;
 		}
 		
 		return status;

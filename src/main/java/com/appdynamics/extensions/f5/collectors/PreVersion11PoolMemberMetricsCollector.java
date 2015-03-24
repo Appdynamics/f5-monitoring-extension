@@ -3,6 +3,7 @@ package com.appdynamics.extensions.f5.collectors;
 import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.STATUS;
+import static com.appdynamics.extensions.f5.F5Constants.TOTAL_NO_OF_MEMBERS;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
 import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
@@ -56,20 +57,24 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 					iControlInterfaces.getLocalLBPoolMember().get_all_statistics(pools);
 			Set<String> rawMemberNames = new HashSet<String>();
 			
+			Map<String, BigInteger> poolMemberCountStats = initialisePoolMemberCountStats(pools);
+			
 			int index = 0;
 			
 			for (LocalLBPoolMemberMemberStatistics member : poolMembersStats) {
 				String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
 				
 				for (LocalLBPoolMemberMemberStatisticEntry memStat : member.getStatistics()) {
+					incrementPoolMemberCountStats(poolName, poolMemberCountStats);
+					
 					String rawMemberName = memStat.getMember().getAddress();
+					rawMemberNames.add(rawMemberName);
+					
 					String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
 					String fullMemberName = getFullMemberName(poolName, memberName, 
 							memStat.getMember().getPort());
 					
 					if (isToMonitor(fullMemberName, poolMemberIncludesPattern)) {
-						rawMemberNames.add(rawMemberName);
-						
 						// changing the separator for metric reporting
 						fullMemberName = changePathSeparator(
 								fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
@@ -88,6 +93,10 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 					}
 				}
 				
+			}
+			
+			if (isMetricToMonitor(TOTAL_NO_OF_MEMBERS, excludePatterns)) {
+				includePoolMemberCountStatsForReporting(poolMetricPrefix, poolMemberCountStats, f5Metrics);
 			}
 			
 			if (isMetricToMonitor(STATUS, excludePatterns)) {

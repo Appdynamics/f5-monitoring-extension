@@ -161,7 +161,7 @@ public class PoolMetricsCollector implements Callable<F5Metrics> {
 							poolName, METRIC_PATH_SEPARATOR, STATUS);
 					
 					BigInteger value = BigInteger.valueOf(convertToStatus(status.getAvailability_status(), 
-							status.getEnabled_status()));
+							status.getEnabled_status()).getValue());
 					f5Metrics.add(metricName, value);
 				}
 			}
@@ -177,7 +177,7 @@ public class PoolMetricsCollector implements Callable<F5Metrics> {
 	private void collectMemberMetrics(String[] pools) {
 		if (poolMemberIncludes == null || poolMemberIncludes.isEmpty()) {
 			LOGGER.info("No pool members were included for monitoring.");
-			return;
+//			return;
 		} 
 		
 		PoolMemberMetricsCollector memberMetricsCollector;

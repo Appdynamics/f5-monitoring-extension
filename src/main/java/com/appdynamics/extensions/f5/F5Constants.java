@@ -54,4 +54,10 @@ public class F5Constants {
 	public static final String STATUS = "STATUS";
 	
 	public static final int DEFAULT_NO_OF_THREADS = 3;
+	
+	public static final String TOTAL_NO_OF_MEMBERS = "Total No of Members";
+	
+	public static final String TOTAL_NO_OF_MEMBERS_AVAILABLE = "Total No of Available Members";
+	
+	public static final String TOTAL_NO_OF_MEMBERS_UNAVAILABLE = "Total No of Unavailable Members";
 }

@@ -286,6 +286,9 @@ Metric path is typically: **Application Infrastructure Performance|\<Tier\>|Cust
 | STATISTIC_TOTAL_PVA_ASSISTED_CONNECTIONS | Total number of connections assisted by PVA. |
 | STATISTIC_TOTAL_REQUESTS | Total number of requests. |
 | STATUS | *Current status. Possible values are:<br/>0 - Unknown <br/>1 - Available and enabled <br/>2 - Offline and enabled <br/>3 - Available but disabled <br/>4 - Offline and disabled |
+| Total No of Members | Total number of pool members. |
+| Total No of Available Members | Total number of available and enabled members. |
+| Total No of Unavailable Members | Total number of non-available members. |
 
 \* **Used to be called STATUS LIGHT in v1.x where values were in reverse order, i.e. 5 - Unknown, 4 - Available/Enable, 3 - Offline/Enable, 2 - Available/Disalbed, 1 - Offline/Disabled. This was changed to align with other STATUS metrics.** 
 
@@ -379,6 +382,13 @@ Metric path is typically: **Application Infrastructure Performance|\<Tier\>|Cust
 | ----- | ----- |
 | Space Available | The no of space available in MB |
 | Space Used | The no of space used in MB |
+
+### System|Memory
+
+| Metric | Description |
+| ----- | ----- |
+| STATISTIC_MEMORY_TOTAL_BYTES | The total memory in bytes |
+| STATISTIC_MEMORY_USED_BYTES | The total used memory in bytes |
 
 ### Virtual Servers
 

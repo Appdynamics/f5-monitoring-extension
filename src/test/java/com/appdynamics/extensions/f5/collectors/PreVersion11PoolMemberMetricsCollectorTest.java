@@ -65,6 +65,10 @@ public class PreVersion11PoolMemberMetricsCollectorTest {
 		when(mockF5.getDisplayName()).thenReturn("TestF5");
 		when(mockIcontrolInterfaces.getLocalLBPoolMember()).thenReturn(mockLocalLBPoolMemberStub);
 		
+		Set<String> excludes = new HashSet<String>();
+		excludes.add(".*Total.*");
+		when(mockMetricsFilter.getPoolMetricExcludes()).thenReturn(excludes);
+		
 		LocalLBPoolMemberMemberStatistics[] testStats = getTestStatistics();
 		when(mockLocalLBPoolMemberStub.get_all_statistics(any(String[].class))).thenReturn(testStats);
 		
@@ -122,6 +126,7 @@ public class PreVersion11PoolMemberMetricsCollectorTest {
 		
 		Set<String> testMetricExcludes = new HashSet<String>();
 		testMetricExcludes.add(".*STATISTIC.*");
+		testMetricExcludes.add(".*Total.*");
 		when(mockMetricsFilter.getPoolMetricExcludes()).thenReturn(testMetricExcludes);
 		
 		classUnderTest = new PreVersion11PoolMemberMetricsCollector(mockF5.getPoolMemberIncludes(), 
