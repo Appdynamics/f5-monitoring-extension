@@ -43,7 +43,7 @@ This extension works only with the standalone machine agent.
 | networkInterfaceIncludes | The list of network interfaces to monitor, separated by comma. Regular expression is supported. By default, value is null for disabled monitoring. | **Specific Network Interfaces:** "1.1", "1.2" <br/><br/> **Regular Expressions:** ".\*" |
 | numberOfF5Threads | The no of threads to process multiple F5s concurrently. **Note: You don't necessarily have to match the no of threads, to the no of F5 instances configured above, unless you have a lot of CPUs in your machine**. Default value is 3. |  |
 | numberOfThreadsPerF5 | The no of threads to process metrics collectors per F5 concurrently. Default value is 3. |  |
-| f5ThreadTimeout | Timeoue for each F5 thread in seconds. Default value is 30. |  |
+| f5ThreadTimeout | Timeout for each F5 thread in seconds. Default value is 30. |  |
 | metricPrefix | The path prefix for viewing metrics in the metric browser. Default value is "Custom Metrics\|F5 Monitor\|" |  |
 | **MetricsFilter** | Filters for excluding unwanted metrics - see below. Useful to limit the no of metrics being reported to the Controller. **Note: this applies to all configured F5s**.  |  |
 | poolMetricExcludes | The list of pool metrics to exclude, separated by comma. Regular expression is supported. By default, value is null for monitoring all metrics. | **Specific Metric:** "STATISTIC_TOTAL_REQUESTS" <br/><br/> **Regular Expressions:** "STATISTIC_TOTAL.\*" |
