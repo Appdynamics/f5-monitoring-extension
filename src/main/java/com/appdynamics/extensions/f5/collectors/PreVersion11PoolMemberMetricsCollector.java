@@ -11,6 +11,8 @@ import static com.appdynamics.extensions.f5.util.F5Util.extractMemberName;
 import static com.appdynamics.extensions.f5.util.F5Util.insertSeparatorAtStartIfNotThere;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 import static com.appdynamics.extensions.f5.util.F5Util.isToMonitor;
+
+import com.google.common.collect.Maps;
 import iControl.CommonStatistic;
 import iControl.Interfaces;
 import iControl.LocalLBPoolMemberMemberStatisticEntry;
@@ -18,13 +20,11 @@ import iControl.LocalLBPoolMemberMemberStatistics;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import com.appdynamics.extensions.f5.F5Metrics;
-import com.google.common.collect.Maps;
 
 /**
  * @author Florencio Sarmiento
@@ -50,8 +50,8 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 	 * Compatible with F5 v9.0
 	 * @see https://devcentral.f5.com/wiki/iControl.LocalLB__PoolMember__get_all_statistics.ashx
 	 */
-	@Override
-	public void collectMemberMetrics(String poolMetricPrefix, String[] pools, F5Metrics f5Metrics) {
+	public Map<String, BigInteger> collectMemberMetrics(String poolMetricPrefix, String[] pools) {
+		Map<String, BigInteger> poolMemberMetrics = new HashMap<String, BigInteger>();
 		try {
 			LocalLBPoolMemberMemberStatistics[] poolMembersStats = 
 					iControlInterfaces.getLocalLBPoolMember().get_all_statistics(pools);
@@ -87,7 +87,7 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 								String metricName = String.format("%s%s%s", poolMemberMetricPrefix, 
 										METRIC_PATH_SEPARATOR, stat.getType().getValue());
 								BigInteger value = convertValue(stat.getValue());
-								f5Metrics.add(metricName, value);
+								poolMemberMetrics.put(metricName, value);
 							}
 						}
 					}
@@ -96,12 +96,12 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 			}
 			
 			if (isMetricToMonitor(TOTAL_NO_OF_MEMBERS, excludePatterns)) {
-				includePoolMemberCountStatsForReporting(poolMetricPrefix, poolMemberCountStats, f5Metrics);
+				includePoolMemberCountStatsForReporting(poolMetricPrefix, poolMemberCountStats, poolMemberMetrics);
 			}
 			
 			if (isMetricToMonitor(STATUS, excludePatterns)) {
 				collectMemberStatus(poolMetricPrefix, pools, 
-						rawMemberNames.toArray(new String[rawMemberNames.size()]), f5Metrics);
+						rawMemberNames.toArray(new String[rawMemberNames.size()]), poolMemberMetrics);
 			}
 			
 		} catch (RemoteException e) {
@@ -109,7 +109,8 @@ public class PreVersion11PoolMemberMetricsCollector extends PoolMemberMetricsCol
 			
 		} catch (Exception e) {
 			LOGGER.error("An issue occurred while fetching pool members' statistics", e);
-		} 		
+		}
+		return poolMemberMetrics;
 	}
 
 	/*

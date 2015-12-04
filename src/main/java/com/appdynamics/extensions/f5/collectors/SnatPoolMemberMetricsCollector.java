@@ -9,19 +9,19 @@ import static com.appdynamics.extensions.f5.util.F5Util.extractMemberName;
 import static com.appdynamics.extensions.f5.util.F5Util.insertSeparatorAtStartIfNotThere;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 import static com.appdynamics.extensions.f5.util.F5Util.isToMonitor;
+
 import iControl.CommonStatistic;
 import iControl.Interfaces;
 import iControl.LocalLBSNATPoolSNATPoolMemberStatisticEntry;
 import iControl.LocalLBSNATPoolSNATPoolMemberStatistics;
+import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
-import com.appdynamics.extensions.f5.F5Metrics;
 
 /**
  * @author Florencio Sarmiento
@@ -29,15 +29,15 @@ import com.appdynamics.extensions.f5.F5Metrics;
  */
 public class SnatPoolMemberMetricsCollector {
 	
-	public static final Logger LOGGER = 
-			Logger.getLogger("com.singularity.extensions.f5.collectors.SnatPoolMemberMetricsCollector");
+	protected static final Logger LOGGER =
+			Logger.getLogger(SnatPoolMemberMetricsCollector.class);
 	
 	private Pattern excludePatterns;
 	private Pattern snatPoolMemberIncludesPattern;
 	private Interfaces iControlInterfaces;
 	
 	public SnatPoolMemberMetricsCollector(Set<String> snatPoolMemberIncludes,
-			Set<String> metricExcludes, Interfaces iControlInterfaces) {
+										  Set<String> metricExcludes, Interfaces iControlInterfaces) {
 		
 		this.excludePatterns = createPattern(metricExcludes);
 		this.snatPoolMemberIncludesPattern = createPattern(snatPoolMemberIncludes);
@@ -50,7 +50,8 @@ public class SnatPoolMemberMetricsCollector {
 	 * @see https://devcentral.f5.com/wiki/iControl.LocalLB__SNATPool__get_all_member_statistics.ashx
 	 *
 	 */
-	public void collectMemberMetrics(String poolMetricPrefix, String[] pools, F5Metrics f5Metrics) {
+	public Map<String, BigInteger> collectMemberMetrics(String poolMetricPrefix, String[] pools) {
+		Map<String, BigInteger> poolMemberMetrics = new HashMap<String, BigInteger>();
 		try {
 			LocalLBSNATPoolSNATPoolMemberStatistics[] poolMembersStats = 
 					iControlInterfaces.getLocalLBSNATPool().get_all_member_statistics(pools);
@@ -81,7 +82,7 @@ public class SnatPoolMemberMetricsCollector {
 							String metricName = String.format("%s%s%s", poolMemberMetricPrefix, 
 									METRIC_PATH_SEPARATOR, stat.getType().getValue());
 							BigInteger value = convertValue(stat.getValue());
-							f5Metrics.add(metricName, value);
+							poolMemberMetrics.put(metricName, value);
 						}
 					}
 				}
@@ -92,6 +93,7 @@ public class SnatPoolMemberMetricsCollector {
 			
 		} catch (Exception e) {
 			LOGGER.error("An issue occurred while fetching snat pool members' statistics", e);
-		} 
+		}
+		return poolMemberMetrics;
 	}
 }

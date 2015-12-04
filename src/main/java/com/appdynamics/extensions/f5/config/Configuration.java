@@ -21,7 +21,9 @@ public class Configuration {
 	private int numberOfF5Threads;
 	
 	private int numberOfThreadsPerF5;
-	
+
+	private int f5ThreadTimeout;
+
 	public String getMetricPrefix() {
 		return metricPrefix;
 	}
@@ -65,6 +67,14 @@ public class Configuration {
 
 	public void setMetricsFilter(MetricsFilter metricsFilter) {
 		this.metricsFilter = metricsFilter;
+	}
+
+	public int getF5ThreadTimeout() {
+		return f5ThreadTimeout;
+	}
+
+	public void setF5ThreadTimeout(int f5ThreadTimeout) {
+		this.f5ThreadTimeout = f5ThreadTimeout;
 	}
 
 	@Override

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appdynamics.extensions</groupId>
 	<artifactId>f5-monitoring-extension</artifactId>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
 	<name>F5 Monitor</name>
 	
    <properties>
@@ -103,65 +103,20 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-    
+
     <build>
         <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                        	<Main-Class>com.appdynamics.extensions.f5.F5Monitor</Main-Class>
-                        	<Implementation-Title>F5 Monitor v${project.version} Date ${maven.build.timestamp}</Implementation-Title>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>            
+
+		<plugins>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>install</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<finalName>${target.name}</finalName>
-					<descriptors>
-						<descriptor>src/main/assembly/assembly.xml</descriptor>
-					</descriptors>
+					<source>1.5</source>
+					<target>1.5</target>
 				</configuration>
 			</plugin>
-			
-			<!-- renames F5Monitor.zip with F5Monitor-<version>.zip -->
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-						<id>install</id>
-						<phase>install</phase>
-						<configuration>
-							<target>
-                            	<copy file="${project.build.directory}/${target.name}.zip" tofile="${project.build.directory}/${target.name}-${project.version}.zip"/>
-								<delete file="${project.build.directory}/${target.name}.zip"/>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-                </executions>
-            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -172,14 +127,86 @@
 					</excludes>
 				</configuration>
 			</plugin>
-            <plugin>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.8.1</version>
-                <configuration>
-                    <tag>${project.artifactId}-${project.version}</tag>
-                </configuration>
-            </plugin>
-        </plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Implementation-Title>F5 Monitor v${project.version} Build Date ${maven.build.timestamp}</Implementation-Title>
+									</manifestEntries>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<mkdir dir="${target.dir}" />
+								<copy todir="${target.dir}">
+									<fileset dir="src/main/resources/conf" includes="monitor.xml" />
+									<fileset dir="src/main/resources/conf" includes="config.yaml" />
+									<fileset dir="${project.basedir}/lib/iControl/${iControl.version}" includes="iControl.jar" />
+								</copy>
+								<copy todir="${target.dir}">
+									<fileset dir="${project.build.directory}" includes="${project.artifactId}.${project.packaging}" />
+								</copy>
+								<zip destfile="${target.dir}-${project.version}.zip">
+									<zipfileset dir="${target.dir}" filemode="755" prefix="${target.name}/" />
+								</zip>
+								<delete dir="${target.dir}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.8.1</version>
+				<configuration>
+					<tag>${project.artifactId}-${project.version}</tag>
+				</configuration>
+			</plugin>
+		</plugins>
     </build>
 
     <repositories>

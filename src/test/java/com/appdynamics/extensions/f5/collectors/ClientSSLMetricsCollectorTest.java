@@ -1,23 +1,17 @@
 package com.appdynamics.extensions.f5.collectors;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import com.appdynamics.extensions.f5.F5Metrics;
+import com.appdynamics.extensions.f5.F5Constants;
+import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-
+import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import iControl.CommonStatistic;
 import iControl.CommonStatisticType;
 import iControl.CommonULong64;
@@ -25,6 +19,17 @@ import iControl.Interfaces;
 import iControl.LocalLBProfileClientSSLBindingStub;
 import iControl.LocalLBProfileClientSSLProfileClientSSLStatisticEntry;
 import iControl.LocalLBProfileClientSSLProfileClientSSLStatistics;
+import iControl.ManagementPartitionAuthZPartition;
+import iControl.ManagementPartitionBindingStub;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientSSLMetricsCollectorTest {
@@ -42,20 +47,41 @@ public class ClientSSLMetricsCollectorTest {
 	
 	@Mock
 	private MetricsFilter mockMetricsFilter;
+
+	@Mock
+	private ManagementPartitionBindingStub mockManagementPartitionBindingStub;
+
+	@Mock
+	private ManagementPartitionAuthZPartition mockManagementPartitionAuthZPartition;
+
+	@Mock
+	private F5Monitor monitor;
+
+	@Mock
+	private MetricWriter metricWriter;
+
+	private String metricPrefix = F5Constants.DEFAULT_METRIC_PATH;
+
 	
 	@Before
 	public void setUp() throws Exception {
 		when(mockF5.getDisplayName()).thenReturn("TestF5");
 		when(mockIcontrolInterfaces.getLocalLBProfileClientSSL()).thenReturn(mockClientSSLSub);
+		when(mockIcontrolInterfaces.getManagementPartition()).thenReturn(mockManagementPartitionBindingStub);
+		when(mockManagementPartitionBindingStub.get_partition_list()).thenReturn(new ManagementPartitionAuthZPartition[]{mockManagementPartitionAuthZPartition});
+		when(mockManagementPartitionAuthZPartition.getPartition_name()).thenReturn("TestPartion");
+		when(monitor.getMetricWriter(anyString(), anyString(), anyString(), anyString())).thenReturn(metricWriter);
 	}
 	
 	@Test
 	public void testNoClientSSLProfileIncluded() throws Exception {
 		classUnderTest = new ClientSSLMetricsCollector(mockIcontrolInterfaces, 
-				mockF5, mockMetricsFilter);
+				mockF5, mockMetricsFilter, monitor, metricPrefix);
 		
-		F5Metrics result = classUnderTest.call();
-		assertEquals(0, result.getMetrics().size());
+		classUnderTest.call();
+		verify(metricWriter, never()).printMetric(anyString());
+
+		//assertEquals(0, result.getMetrics().size());
 	}
 	
 	@Test
@@ -71,9 +97,10 @@ public class ClientSSLMetricsCollectorTest {
 		when(mockClientSSLSub.get_statistics(any(String[].class))).thenReturn(testStats);
 		
 		classUnderTest = new ClientSSLMetricsCollector(mockIcontrolInterfaces, 
-				mockF5, mockMetricsFilter);
-		F5Metrics result = classUnderTest.call();
-		assertEquals(9, result.getMetrics().size());
+				mockF5, mockMetricsFilter, monitor, metricPrefix);
+		classUnderTest.call();
+		verify(metricWriter, times(9)).printMetric(anyString());
+		/*assertEquals(9, result.getMetrics().size());
 		
 		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|clientssl|STATISTIC_SSL_CIPHER_DES_BULK"));
 		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|clientssl|STATISTIC_SSL_CIPHER_AES_BULK"));
@@ -85,7 +112,7 @@ public class ClientSSLMetricsCollectorTest {
 		
 		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_CIPHER_DES_BULK"));
 		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_CIPHER_AES_BULK"));
-		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_COMMON_BAD_RECORDS"));
+		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_COMMON_BAD_RECORDS"));*/
 	}
 	
 	@Test
@@ -106,9 +133,10 @@ public class ClientSSLMetricsCollectorTest {
 		when(mockClientSSLSub.get_statistics(any(String[].class))).thenReturn(testStats);
 		
 		classUnderTest = new ClientSSLMetricsCollector(mockIcontrolInterfaces, 
-				mockF5, mockMetricsFilter);
-		F5Metrics result = classUnderTest.call();
-		assertEquals(3, result.getMetrics().size());
+				mockF5, mockMetricsFilter, monitor, metricPrefix);
+		classUnderTest.call();
+		verify(metricWriter, times(3)).printMetric(anyString());
+		/*assertEquals(3, result.getMetrics().size());
 		
 		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|clientssl|STATISTIC_SSL_CIPHER_DES_BULK"));
 		assertTrue(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|SSL_SaaS_Digi|STATISTIC_SSL_CIPHER_DES_BULK"));
@@ -120,7 +148,7 @@ public class ClientSSLMetricsCollectorTest {
 		assertFalse(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|SSL_SaaS_Digi|STATISTIC_SSL_CIPHER_AES_BULK"));
 		assertFalse(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|SSL_SaaS_Digi|STATISTIC_SSL_COMMON_BAD_RECORDS"));
 		assertFalse(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_CIPHER_AES_BULK"));
-		assertFalse(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_COMMON_BAD_RECORDS"));
+		assertFalse(result.getMetrics().containsKey("TestF5|SSL|Clients|Common|wom-default-clientssl|STATISTIC_SSL_COMMON_BAD_RECORDS"));*/
 	}
 	
 	private LocalLBProfileClientSSLProfileClientSSLStatistics getTestStatistics() {

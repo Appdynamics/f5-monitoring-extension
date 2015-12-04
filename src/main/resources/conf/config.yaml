@@ -5,15 +5,15 @@ f5s:
     password: ""
     passwordEncrypted: ""
     encryptionKey: ""
-    poolIncludes: [ ]
+    poolIncludes: [ ".*devcontr4" ]
     poolMemberIncludes: [ ]
-    snatPoolIncludes: [ ]
-    snatPoolMemberIncludes: [ ]
+    snatPoolIncludes: [  ]
+    snatPoolMemberIncludes: [  ]
     virtualServerIncludes: [ ]
     iRuleIncludes: [ ]
     clientSSLProfileIncludes: [ ]
     serverSSLProfileIncludes: [ ]
-    networkInterfaceIncludes: [ ]
+    networkInterfaceIncludes: [ ".*HTTP" ]
 
 # Global Metrics Filter - exclude patterns for unwanted metrics
 # This filter will apply to all F5 instances configured above
@@ -38,6 +38,9 @@ numberOfF5Threads: 3
 
 # Number concurrent threads per F5 used in fetching metrics
 numberOfThreadsPerF5: 3
+
+#F5 thread timeout in seconds
+f5ThreadTimeout: 30
 
 # Total no of threads = (numberOfF5Threads * numberOfThreadsPerF5) + 1 (main)
 
