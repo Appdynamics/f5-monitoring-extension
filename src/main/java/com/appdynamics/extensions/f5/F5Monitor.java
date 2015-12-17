@@ -87,7 +87,8 @@ public class F5Monitor extends AManagedMonitor {
             try {
                 Configuration config = readFromFile(configFilename, Configuration.class);
 
-                //As multiple threads are trying to load the classes, CPU is spiking up. As a workaround executing only 1 thread with 1 F5 as initialization process.
+                //As multiple threads are trying to load the classes,
+                // CPU is spiking up. As a workaround executing only 1 thread with 1 F5 as initialization process.
                 if (state == STATE.NOT_INITIALIZED) {
 
                     init(config);
@@ -121,35 +122,28 @@ public class F5Monitor extends AManagedMonitor {
     }
 
     private void init(Configuration config) {
-        ExecutorService executorService = null;
         state = STATE.INITIALIZING;
         try {
             List<F5> f5s = config.getF5s();
 
             if (f5s != null && f5s.size() > 0) {
                 F5 f5 = f5s.get(0);
-                F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), iControlInterfaces, f5, config.getMetricsFilter(), config.getNumberOfThreadsPerF5(), config.getF5ThreadTimeout());
 
-                final ThreadFactory threadFactory = new ThreadFactoryBuilder()
-                        .setNameFormat("F5Monitor-Task-Initializer-Thread-%d")
-                        .build();
-                executorService = Executors.newSingleThreadExecutor(threadFactory);
-                executorService.submit(task);
+                F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), iControlInterfaces, f5,
+                        config.getMetricsFilter(), config.getNumberOfThreadsPerF5(), config.getF5ThreadTimeout());
 
+                task.callSequential();
+
+                state = STATE.INITIALIZED;
             } else {
                 LOGGER.error("No F5's configured in config.yaml");
                 throw new TaskExecutionException("No F5's configured in config.yaml");
             }
-            state = STATE.INITIALIZED;
+
         } catch (Exception e) {
             LOGGER.error("Error while initializing the task", e);
             state = STATE.NOT_INITIALIZED;
-        } finally {
-            if (executorService != null && !executorService.isShutdown()) {
-                executorService.shutdown();
-            }
         }
-
     }
 
     private ExecutorService createThreadPool(int numOfThreads) {
@@ -162,7 +156,8 @@ public class F5Monitor extends AManagedMonitor {
 
     private void runConcurrentTasks(Configuration config) {
         for (F5 f5 : config.getF5s()) {
-            F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), iControlInterfaces, f5, config.getMetricsFilter(), config.getNumberOfThreadsPerF5(), config.getF5ThreadTimeout());
+            F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), iControlInterfaces, f5,
+                    config.getMetricsFilter(), config.getNumberOfThreadsPerF5(), config.getF5ThreadTimeout());
             threadPool.submit(task);
         }
     }

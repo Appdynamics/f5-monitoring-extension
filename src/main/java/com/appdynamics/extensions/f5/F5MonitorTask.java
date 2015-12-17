@@ -40,11 +40,12 @@ import java.util.concurrent.TimeoutException;
  * @author Florencio Sarmiento
  * @author Satish M
  */
-public class F5MonitorTask implements Callable<Void> {
+public class F5MonitorTask implements Callable<Boolean> {
 
     public static final Logger LOGGER = Logger.getLogger(F5MonitorTask.class);
 
     private F5 f5;
+
 
     private MetricsFilter metricsFilter;
 
@@ -69,7 +70,8 @@ public class F5MonitorTask implements Callable<Void> {
         this.f5ThreadTimeout = f5ThreadTimeout;
     }
 
-    public Void call() {
+    public Boolean call() {
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(String.format("F5 monitoring task for [%s] has started...",
                     f5.getDisplayName()));
@@ -80,20 +82,47 @@ public class F5MonitorTask implements Callable<Void> {
                     "Unable to initialise F5 [%s]. Check your connection and credentials.",
                     f5.getDisplayName()));
 
-            return null;
+            return Boolean.FALSE;
         }
+
 
         try {
             threadPool = Executors.newFixedThreadPool(noOfThreads);
             List<Callable<Void>> metricCollectors = createMetricCollectors();
             runConcurrentTasks(metricCollectors);
+
         } finally {
             if (threadPool != null && !threadPool.isShutdown()) {
                 threadPool.shutdown();
             }
         }
 
-        return null;
+        return Boolean.TRUE;
+    }
+
+    public Boolean callSequential() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("F5 monitoring task has started initialization...");
+        }
+
+        if (!initialise()) {
+            LOGGER.error(String.format(
+                    "Unable to initialise F5 [%s]. Check your connection and credentials.",
+                    f5.getDisplayName()));
+
+            return Boolean.FALSE;
+        }
+
+        List<Callable<Void>> metricCollectors = createMetricCollectors();
+
+        for (Callable<Void> metricCollector : metricCollectors) {
+            try {
+                metricCollector.call();
+            } catch (Exception e) {
+                LOGGER.error("Error in initializing F5 monitor", e);
+            }
+        }
+        return Boolean.TRUE;
     }
 
     private boolean initialise() {
@@ -211,7 +240,7 @@ public class F5MonitorTask implements Callable<Void> {
             futures.add(threadPool.submit(metricCollector));
         }
 
-        for(Future<Void> future : futures) {
+        for (Future<Void> future : futures) {
             try {
                 future.get(f5ThreadTimeout, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
