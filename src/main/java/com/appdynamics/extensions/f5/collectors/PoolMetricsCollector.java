@@ -6,27 +6,27 @@ import static com.appdynamics.extensions.f5.F5Constants.POOLS;
 import static com.appdynamics.extensions.f5.F5Constants.STATUS;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
 import static com.appdynamics.extensions.f5.util.F5Util.convertToStatus;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.filterIncludes;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.LocalLBObjectStatus;
-import iControl.LocalLBPoolPoolStatisticEntry;
-import iControl.LocalLBPoolPoolStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,30 +39,26 @@ public class PoolMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(PoolMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
     private Set<String> poolIncludes;
     private Set<String> poolMemberIncludes;
     private Set<String> metricExcludes;
-    private boolean preVersion11;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public PoolMetricsCollector(Interfaces iControlInterfaces, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
+    public PoolMetricsCollector(CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
         this.poolIncludes = f5.getPoolIncludes();
         this.poolMemberIncludes = f5.getPoolMemberIncludes();
         this.metricExcludes = metricsFilter.getPoolMetricExcludes();
-        this.preVersion11 = f5.isPreVersion11();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__Pool__get_list.ashx
-     *
-     */
     public Void call() {
         LOGGER.info("Pool metrics collector started...");
 
@@ -71,74 +67,73 @@ public class PoolMetricsCollector extends AbstractMetricsCollector {
             return null;
         }
 
-        try {
-            ManagementPartitionAuthZPartition[] partition_list = iControlInterfaces.getManagementPartition().get_partition_list();
-
-            List<String> poolList = new ArrayList<String>();
-            for (ManagementPartitionAuthZPartition partition : partition_list) {
-                iControlInterfaces.getManagementPartition().set_active_partition(partition.getPartition_name());
-                String[] pools = iControlInterfaces.getLocalLBPool().get_list();
-                poolList.addAll(Arrays.asList(pools));
-            }
-
-            String[] pools = poolList.toArray(new String[]{});
-
-            if (ArrayUtils.isNotEmpty(pools)) {
-                Pattern poolIncludesPattern = createPattern(poolIncludes);
-                pools = filterIncludes(pools, poolIncludesPattern);
-
-                if (ArrayUtils.isNotEmpty(pools)) {
-                    collectPoolMetrics(pools);
-                    collectMemberMetrics(pools);
-
-                } else {
-                    LOGGER.info("No Pool matched.");
-                }
-            } else {
-                LOGGER.info("No Pool found.");
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching pool list", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching pool list", e);
-        }
+        collectPoolMetrics(httpContext);
 
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__Pool__get_statistics.ashx
-     *
-     */
-    private void collectPoolMetrics(String[] pools) {
+    private void collectPoolMetrics(HttpClientContext context) {
         try {
-            LocalLBPoolPoolStatistics stats = iControlInterfaces.getLocalLBPool().get_statistics(pools);
+
+            Pattern poolIncludesPattern = createPattern(poolIncludes);
+
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/pool/stats");
+
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, context);
+
+            if(response == null) {
+                LOGGER.info("Unable to get any response for pool metrics");
+                return;
+            }
+
+            String poolStatsResponse = EntityUtils.toString(response.getEntity());
+
+
+            Field field = new Field();
+            field.setFieldName("tmName");
+
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(field);
+
+
+            Stats stats = PoolResponseProcessor.processPoolStatsResponse(poolStatsResponse, poolIncludesPattern, keyField);
 
             if (stats != null) {
                 String poolMetricPrefix = getPoolMetricPrefix();
                 Pattern excludePatterns = createPattern(metricExcludes);
 
-                for (LocalLBPoolPoolStatisticEntry pool : stats.getStatistics()) {
-                    String poolName = changePathSeparator(pool.getPool_name(),
+                Map<String, List<StatEntry>> poolStatValues = stats.getPoolStats();
+                for (String pool : poolStatValues.keySet()) {
+                    String poolName = changePathSeparator(pool,
                             PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
 
-                    for (CommonStatistic stat : pool.getStatistics()) {
-                        if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
-                            String metricName = String.format("%s%s%s%s", poolMetricPrefix,
-                                    poolName, METRIC_PATH_SEPARATOR, stat.getType().getValue());
+                    List<StatEntry> statEntries = poolStatValues.get(pool);
+                    String availabilityStatus = null;
+                    String enabledStatus = null;
+                    for (StatEntry stat : statEntries) {
 
-                            BigInteger value = convertValue(stat.getValue());
-                            printCollectiveObservedCurrent(metricName, value);
+                        if (isMetricToMonitor(stat.getName(), excludePatterns)) {
+                            if (stat.getType() == StatEntry.Type.NUMERIC) {
+                                String metricName = String.format("%s%s%s%s", poolMetricPrefix,
+                                        poolName, METRIC_PATH_SEPARATOR, stat.getName());
+
+                                BigInteger value = BigInteger.valueOf(Long.valueOf(stat.getValue()));
+                                printCollectiveObservedCurrent(metricName, value);
+                            } else {
+                                if ("status.availabilityState".equalsIgnoreCase(stat.getName())) {
+                                    availabilityStatus = stat.getValue();
+                                } else if ("status.enabledState".equalsIgnoreCase(stat.getName())) {
+                                    enabledStatus = stat.getValue();
+                                }
+
+                            }
                         }
                     }
-                }
 
-                if (isMetricToMonitor(STATUS, excludePatterns)) {
-                    collectPoolStatus(pools);
+                    if (isMetricToMonitor(STATUS, excludePatterns)) {
+                        collectPoolStatus(poolName, availabilityStatus, enabledStatus);
+                    }
+                    collectMemberMetrics(pool, context);
                 }
             }
 
@@ -150,59 +145,36 @@ public class PoolMetricsCollector extends AbstractMetricsCollector {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__Pool__get_object_status.ashx
-     *
-     */
-    private void collectPoolStatus(String[] pools) {
-        try {
-            LocalLBObjectStatus[] statuses = iControlInterfaces.getLocalLBPool().get_object_status(pools);
 
-            if (ArrayUtils.isNotEmpty(statuses)) {
-                String poolMetricPrefix = getPoolMetricPrefix();
-                int index = 0;
+    private void collectPoolStatus(String poolName, String availabilityStatus, String enabledStatus) {
 
-                for (LocalLBObjectStatus status : statuses) {
-                    String poolName = changePathSeparator(pools[index++],
-                            PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
 
-                    String metricName = String.format("%s%s%s%s", poolMetricPrefix,
-                            poolName, METRIC_PATH_SEPARATOR, STATUS);
+        String poolMetricName = changePathSeparator(poolName,
+                PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
 
-                    BigInteger value = BigInteger.valueOf(convertToStatus(status.getAvailability_status(),
-                            status.getEnabled_status()).getValue());
-                    printCollectiveObservedCurrent(metricName, value);
-                }
-            }
+        String metricName = String.format("%s%s%s%s", getPoolMetricPrefix(),
+                poolMetricName, METRIC_PATH_SEPARATOR, STATUS);
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching pool status", e);
+        BigInteger value = BigInteger.valueOf(convertToStatus(availabilityStatus,
+                enabledStatus).getValue());
+        printCollectiveObservedCurrent(metricName, value);
 
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching pool status", e);
-        }
     }
 
-    private void collectMemberMetrics(String[] pools) {
+    private void collectMemberMetrics(String poolName, HttpClientContext context) {
         if (poolMemberIncludes == null || poolMemberIncludes.isEmpty()) {
             LOGGER.info("No pool members were included for monitoring.");
-//			return;
+            return;
         }
 
-        PoolMemberMetricsCollector memberMetricsCollector;
+        PoolMemberMetricsCollector memberMetricsCollector = new PoolMemberMetricsCollector(
+                poolMemberIncludes, metricExcludes, f5, httpClient, context);
 
-        if (preVersion11) {
-            memberMetricsCollector = new PreVersion11PoolMemberMetricsCollector(
-                    poolMemberIncludes, metricExcludes, iControlInterfaces);
-        } else {
-            memberMetricsCollector = new PoolMemberMetricsCollector(
-                    poolMemberIncludes, metricExcludes, iControlInterfaces);
+
+        Map<String, BigInteger> poolMemberMetrics = memberMetricsCollector.collectMemberMetrics(getPoolMetricPrefix(), poolName);
+        if (poolMemberMetrics != null) {
+            printMetrics(poolMemberMetrics);
         }
-
-        Map<String, BigInteger> poolMemberMetrics = memberMetricsCollector.collectMemberMetrics(getPoolMetricPrefix(), pools);
-        printMetrics(poolMemberMetrics);
     }
 
     private String getPoolMetricPrefix() {

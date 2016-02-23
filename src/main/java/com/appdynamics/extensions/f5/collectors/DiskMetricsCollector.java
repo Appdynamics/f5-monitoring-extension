@@ -6,13 +6,18 @@ import static com.appdynamics.extensions.f5.F5Constants.SYSTEM;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
-import iControl.Interfaces;
-import iControl.SystemDiskLogicalDisk;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.DiskStats;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.math.BigInteger;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * @author Florencio Sarmiento
@@ -21,39 +26,58 @@ public class DiskMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(DiskMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
-    private boolean preVersion11;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public DiskMetricsCollector(Interfaces iControlInterfaces, F5 f5, F5Monitor monitor, String metricPrefix) {
+    public DiskMetricsCollector(CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, F5Monitor monitor, String metricPrefix) {
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
-        this.preVersion11 = f5.isPreVersion11();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v10.1
-     * @see https://devcentral.f5.com/wiki/iControl.System__Disk__get_list_of_logical_disks.ashx
-     */
     public Void call() {
-        if (preVersion11) {
-            LOGGER.info("Disk metrics collector not supported in this version.");
-            return null;
-        }
 
         LOGGER.info("Disk metrics collector started...");
 
         try {
-            SystemDiskLogicalDisk[] disks = iControlInterfaces.getSystemDisk().get_list_of_logical_disks();
 
-            if (ArrayUtils.isNotEmpty(disks)) {
-                collectSpaceAvailableMetrics(disks);
-                collectSpaceUsedMetrics(disks);
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/sys/disk/logical-disk");
 
-            } else {
-                LOGGER.info("No disks info available");
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+
+            if(response == null) {
+                LOGGER.info("Unable to get any response for disk metrics");
+                return null;
+            }
+
+            String logicalDisksResponse = EntityUtils.toString(response.getEntity());
+
+
+            List<DiskStats> diskStatses = PoolResponseProcessor.parseDisksResponse(logicalDisksResponse);
+            String diskMetricPrefix = getDiskMetricPrefix();
+
+            for (DiskStats diskStats : diskStatses) {
+
+                String spaceFreeMetric = String.format("%s%s%s%s", diskMetricPrefix, diskStats.getName(),
+                        METRIC_PATH_SEPARATOR, "Space Available");
+                printCollectiveObservedCurrent(spaceFreeMetric, diskStats.getFree());
+
+
+                String spaceUsedMetric = String.format("%s%s%s%s", diskMetricPrefix, diskStats.getName(),
+                        METRIC_PATH_SEPARATOR, "Space Used");
+                printCollectiveObservedCurrent(spaceUsedMetric, diskStats.getInUse());
+
+                String spaceTotalMetric = String.format("%s%s%s%s", diskMetricPrefix, diskStats.getName(),
+                        METRIC_PATH_SEPARATOR, "Total Space");
+                printCollectiveObservedCurrent(spaceTotalMetric, diskStats.getSize());
+
+                String spaceReservedMetric = String.format("%s%s%s%s", diskMetricPrefix, diskStats.getName(),
+                        METRIC_PATH_SEPARATOR, "Space Reserved");
+                printCollectiveObservedCurrent(spaceReservedMetric, diskStats.getReserved());
             }
 
         } catch (RemoteException e) {
@@ -64,70 +88,6 @@ public class DiskMetricsCollector extends AbstractMetricsCollector {
         }
 
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v11.0
-     * @see https://devcentral.f5.com/wiki/iControl.System__Disk__get_logical_disk_space_free.ashx
-     */
-    private void collectSpaceAvailableMetrics(SystemDiskLogicalDisk[] disks) {
-        try {
-            long[] diskSpaceAvailable = iControlInterfaces.getSystemDisk().get_logical_disk_space_free(disks);
-
-            if (ArrayUtils.isNotEmpty(diskSpaceAvailable)) {
-                String diskMetricPrefix = getDiskMetricPrefix();
-                int diskIndex = 0;
-
-                for (SystemDiskLogicalDisk disk : disks) {
-                    String metricName = String.format("%s%s%s%s", diskMetricPrefix, disk.getName(),
-                            METRIC_PATH_SEPARATOR, "Space Available");
-                    BigInteger value = BigInteger.valueOf(diskSpaceAvailable[diskIndex++]);
-                    printCollectiveObservedCurrent(metricName, value);
-                }
-
-            } else {
-                LOGGER.info("No disk space available stat found");
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching disk space available statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching disk space available statistics", e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v11.0
-     * @see https://devcentral.f5.com/wiki/iControl.System__Disk__get_logical_disk_space_in_use.ashx
-     */
-    private void collectSpaceUsedMetrics(SystemDiskLogicalDisk[] disks) {
-        try {
-            long[] diskSpaceUsed = iControlInterfaces.getSystemDisk().get_logical_disk_space_in_use(disks);
-
-            if (ArrayUtils.isNotEmpty(diskSpaceUsed)) {
-                String diskMetricPrefix = getDiskMetricPrefix();
-                int diskIndex = 0;
-
-                for (SystemDiskLogicalDisk disk : disks) {
-                    String metricName = String.format("%s%s%s%s", diskMetricPrefix, disk.getName(),
-                            METRIC_PATH_SEPARATOR, "Space Used");
-                    BigInteger value = BigInteger.valueOf(diskSpaceUsed[diskIndex++]);
-                    printCollectiveObservedCurrent(metricName, value);
-                }
-
-            } else {
-                LOGGER.info("No disk space used stat found");
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching disk space used statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching disk space used statistics", e);
-        }
     }
 
     private String getDiskMetricPrefix() {

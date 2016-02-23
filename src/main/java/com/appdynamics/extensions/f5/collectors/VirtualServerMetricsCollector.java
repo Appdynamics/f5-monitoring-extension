@@ -4,27 +4,29 @@ import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.VIRTUAL_SERVERS;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.filterIncludes;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.LocalLBVirtualServerVirtualServerStatisticEntry;
-import iControl.LocalLBVirtualServerVirtualServerStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -35,27 +37,25 @@ public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(VirtualServerMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
     private Set<String> virtualServerIncludes;
     private Set<String> metricExcludes;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public VirtualServerMetricsCollector(Interfaces iControlInterfaces,
-                                         F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
+    public VirtualServerMetricsCollector(
+            CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
         this.virtualServerIncludes = f5.getVirtualServerIncludes();
         this.metricExcludes = metricsFilter.getVirtualServerMetricExcludes();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__VirtualServer__get_list.ashx
-     *
-     */
     public Void call() {
         LOGGER.info("Virtual Server metrics collector started...");
 
@@ -65,29 +65,53 @@ public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
         }
 
         try {
-            ManagementPartitionAuthZPartition[] partition_list = iControlInterfaces.getManagementPartition().get_partition_list();
 
-            List<String> serverList = new ArrayList<String>();
-            for (ManagementPartitionAuthZPartition partition : partition_list) {
-                iControlInterfaces.getManagementPartition().set_active_partition(partition.getPartition_name());
-                String[] list = iControlInterfaces.getLocalLBVirtualServer().get_list();
-                serverList.addAll(Arrays.asList(list));
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/virtual/stats");
+
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+
+            if(response == null) {
+                LOGGER.info("Unable to get any response for virtual server metrics");
+                return null;
             }
 
-            String[] virtualServers = serverList.toArray(new String[]{});
+            String virtualServerStatsResponse = EntityUtils.toString(response.getEntity());
 
-            if (ArrayUtils.isNotEmpty(virtualServers)) {
-                Pattern virtualServerIncludesPattern = createPattern(virtualServerIncludes);
-                virtualServers = filterIncludes(virtualServers, virtualServerIncludesPattern);
+            Field nodeName = new Field();
+            nodeName.setFieldName("tmName");
 
-                if (ArrayUtils.isNotEmpty(virtualServers)) {
-                    collectVirtualServerMetrics(virtualServers);
 
-                } else {
-                    LOGGER.info("No Virtual Server matched.");
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(nodeName);
+
+            Pattern virtualServerIncludesPattern = createPattern(virtualServerIncludes);
+
+            Stats poolMemberStats = PoolResponseProcessor.processPoolStatsResponse(virtualServerStatsResponse, virtualServerIncludesPattern, keyField);
+
+
+            String virtualServerMetricPrefix = getVirtualServerMetricPrefix();
+            Pattern excludePatterns = createPattern(metricExcludes);
+
+            Map<String, List<StatEntry>> poolStats = poolMemberStats.getPoolStats();
+
+            for (String vs : poolStats.keySet()) {
+                String vsName = changePathSeparator(vs, PATH_SEPARATOR,
+                        METRIC_PATH_SEPARATOR, true);
+                List<StatEntry> statEntries = poolStats.get(vs);
+
+                for (StatEntry stat : statEntries) {
+
+                    if (isMetricToMonitor(stat.getName(), excludePatterns)) {
+                        if (stat.getType() == StatEntry.Type.NUMERIC) {
+                            String metricName = String.format("%s%s%s%s", virtualServerMetricPrefix,
+                                    vsName, METRIC_PATH_SEPARATOR, stat.getName());
+
+                            BigInteger value = BigInteger.valueOf(Long.valueOf(stat.getValue()));
+                            printCollectiveObservedCurrent(metricName, value);
+                        }
+                    }
+
                 }
-            } else {
-                LOGGER.info("No Virtual Server found.");
             }
 
         } catch (RemoteException e) {
@@ -98,45 +122,6 @@ public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
         }
 
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__VirtualServer__get_statistics.ashx
-     *
-     */
-    private void collectVirtualServerMetrics(String[] virtualServers) {
-        try {
-            LocalLBVirtualServerVirtualServerStatistics vsStats = iControlInterfaces.getLocalLBVirtualServer()
-                    .get_statistics(virtualServers);
-
-            if (vsStats != null) {
-                String virtualServerMetricPrefix = getVirtualServerMetricPrefix();
-                Pattern excludePatterns = createPattern(metricExcludes);
-
-                for (LocalLBVirtualServerVirtualServerStatisticEntry vsStat : vsStats.getStatistics()) {
-                    String vsName = changePathSeparator(vsStat.getVirtual_server().getName(), PATH_SEPARATOR,
-                            METRIC_PATH_SEPARATOR, true);
-
-                    for (CommonStatistic stat : vsStat.getStatistics()) {
-                        if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
-                            String metricName = String.format("%s%s%s%s", virtualServerMetricPrefix,
-                                    vsName, METRIC_PATH_SEPARATOR, stat.getType().getValue());
-
-                            BigInteger value = convertValue(stat.getValue());
-                            printCollectiveObservedCurrent(metricName, value);
-                        }
-                    }
-                }
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching virtual server statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching virtual server statistics", e);
-        }
     }
 
     private String getVirtualServerMetricPrefix() {

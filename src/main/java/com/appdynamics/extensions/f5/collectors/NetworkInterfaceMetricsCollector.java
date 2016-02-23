@@ -4,25 +4,30 @@ import static com.appdynamics.extensions.f5.F5Constants.INTERFACES;
 import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.NETWORK;
 import static com.appdynamics.extensions.f5.F5Constants.STATUS;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.filterIncludes;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
 import com.appdynamics.extensions.f5.util.F5Util.NetworkInterfaceStatus;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.NetworkingInterfacesInterfaceStatisticEntry;
-import iControl.NetworkingInterfacesInterfaceStatistics;
-import iControl.NetworkingMediaStatus;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -33,27 +38,25 @@ public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(NetworkInterfaceMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
     private Set<String> networkInterfaceIncludes;
     private Set<String> metricExcludes;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public NetworkInterfaceMetricsCollector(Interfaces iControlInterfaces,
-                                            F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
+    public NetworkInterfaceMetricsCollector(
+            CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
         this.networkInterfaceIncludes = f5.getNetworkInterfaceIncludes();
         this.metricExcludes = metricsFilter.getNetworkInterfaceMetricExcludes();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.Networking__Interfaces__get_list.ashx
-     *
-     */
     public Void call() {
         LOGGER.info("Network interface metrics collector started...");
 
@@ -63,22 +66,63 @@ public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
         }
 
         try {
-            String[] networkInterfaces = iControlInterfaces.getNetworkingInterfaces().get_list();
 
-            if (ArrayUtils.isNotEmpty(networkInterfaces)) {
-                Pattern networkInterfaceIncludesPattern = createPattern(networkInterfaceIncludes);
-                networkInterfaces = filterIncludes(networkInterfaces, networkInterfaceIncludesPattern);
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/net/interface/stats");
 
-                if (ArrayUtils.isNotEmpty(networkInterfaces)) {
-                    collectNetworkInterfaceMetrics(networkInterfaces);
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-                } else {
-                    LOGGER.info("No network interface matched.");
-                }
-            } else {
-                LOGGER.info("No network interface found.");
+            if(response == null) {
+                LOGGER.info("Unable to get any response for network interface metrics");
+                return null;
             }
 
+            String networkInterfaceStatsResponse = EntityUtils.toString(response.getEntity());
+
+
+            Field nodeName = new Field();
+            nodeName.setFieldName("tmName");
+
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(nodeName);
+
+            Pattern networkInterfaceIncludesPattern = createPattern(networkInterfaceIncludes);
+
+            Stats networkInterfaceStats = PoolResponseProcessor.processPoolStatsResponse(networkInterfaceStatsResponse, networkInterfaceIncludesPattern, keyField);
+
+
+            Map<String, List<StatEntry>> stats = networkInterfaceStats.getPoolStats();
+
+            String networkInterfaceMetricPrefix = getNetworkInterfaceMetricPrefix();
+            Pattern excludePatterns = createPattern(metricExcludes);
+
+            for (String networkInterface : stats.keySet()) {
+
+                List<StatEntry> statEntries = stats.get(networkInterface);
+
+                for (StatEntry stat : statEntries) {
+
+                    String metricName = stat.getName();
+
+                    if (isMetricToMonitor(metricName, excludePatterns)) {
+                        if (stat.getType() == StatEntry.Type.NUMERIC) {
+                            String fullMetricName = String.format("%s%s%s%s", networkInterfaceMetricPrefix,
+                                    networkInterface, METRIC_PATH_SEPARATOR, metricName);
+
+                            BigInteger value = new BigInteger(stat.getValue());
+
+                            printCollectiveObservedCurrent(fullMetricName, value);
+                        } else {
+                            if ("status".equalsIgnoreCase(stat.getName())) {
+                                String fullMetricName = String.format("%s%s%s%s", networkInterfaceMetricPrefix,
+                                        networkInterface,
+                                        METRIC_PATH_SEPARATOR, STATUS);
+                                BigInteger value = BigInteger.valueOf(NetworkInterfaceStatus.getStatus(stat.getValue()));
+                                printCollectiveObservedCurrent(fullMetricName, value);
+                            }
+                        }
+                    }
+                }
+            }
         } catch (RemoteException e) {
             LOGGER.error("A connection issue occurred while fetching network interface list", e);
 
@@ -87,73 +131,6 @@ public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
         }
 
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.Networking__Interfaces__get_statistics.ashx
-     *
-     */
-    private void collectNetworkInterfaceMetrics(String[] networkInterfaces) {
-        try {
-            NetworkingInterfacesInterfaceStatistics netStats =
-                    iControlInterfaces.getNetworkingInterfaces().get_statistics(networkInterfaces);
-
-            if (netStats != null) {
-                String networkInterfaceMetricPrefix = getNetworkInterfaceMetricPrefix();
-                Pattern excludePatterns = createPattern(metricExcludes);
-
-                for (NetworkingInterfacesInterfaceStatisticEntry netStatEntry : netStats.getStatistics()) {
-                    for (CommonStatistic stat : netStatEntry.getStatistics()) {
-                        if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
-                            String metricName = String.format("%s%s%s%s", networkInterfaceMetricPrefix,
-                                    netStatEntry.getInterface_name(), METRIC_PATH_SEPARATOR, stat.getType().getValue());
-                            BigInteger value = convertValue(stat.getValue());
-                            printCollectiveObservedCurrent(metricName, value);
-                        }
-                    }
-                }
-
-                if (isMetricToMonitor(STATUS, excludePatterns)) {
-                    collectNetworkInterfaceStatus(networkInterfaces);
-                }
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching network interface statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching network interface statistics", e);
-        }
-    }
-
-    /*
-     * Status is in the same order as the network interface in the array
-     *
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.Networking__Interfaces__get_media_status.ashx
-     */
-    private void collectNetworkInterfaceStatus(String[] networkInterfaces) {
-        try {
-            int networkInterfaceIndex = 0;
-
-            String networkInterfaceMetricPrefix = getNetworkInterfaceMetricPrefix();
-
-            for (NetworkingMediaStatus status : iControlInterfaces.getNetworkingInterfaces().get_media_status(networkInterfaces)) {
-                String metricName = String.format("%s%s%s%s", networkInterfaceMetricPrefix,
-                        networkInterfaces[networkInterfaceIndex++],
-                        METRIC_PATH_SEPARATOR, STATUS);
-                BigInteger value = BigInteger.valueOf(NetworkInterfaceStatus.getValue(status.getValue()));
-                printCollectiveObservedCurrent(metricName, value);
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching network interface status", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching network interface status", e);
-        }
     }
 
     private String getNetworkInterfaceMetricPrefix() {

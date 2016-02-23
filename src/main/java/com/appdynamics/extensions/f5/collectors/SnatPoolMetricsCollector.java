@@ -4,27 +4,29 @@ import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.SNAT_POOLS;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.filterIncludes;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.LocalLBSNATPoolSNATPoolStatisticEntry;
-import iControl.LocalLBSNATPoolSNATPoolStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -35,31 +37,25 @@ public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(SnatPoolMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
     private Set<String> snatPoolIncludes;
-    private Set<String> snatPoolMemberIncludes;
     private Set<String> metricExcludes;
-    private boolean preVersion11;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public SnatPoolMetricsCollector(Interfaces iControlInterfaces,
-                                    F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
+    public SnatPoolMetricsCollector(
+            CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
         this.snatPoolIncludes = f5.getSnatPoolIncludes();
-        this.snatPoolMemberIncludes = f5.getSnatPoolMemberIncludes();
         this.metricExcludes = metricsFilter.getSnatPoolMetricExcludes();
-        this.preVersion11 = f5.isPreVersion11();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__SNATPool__get_list.ashx
-     *
-     */
     public Void call() {
         LOGGER.info("SNAT Pool metrics collector started...");
 
@@ -69,29 +65,54 @@ public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
         }
 
         try {
-            ManagementPartitionAuthZPartition[] partition_list = iControlInterfaces.getManagementPartition().get_partition_list();
 
-            List<String> poolsList = new ArrayList<String>();
-            for (ManagementPartitionAuthZPartition partition : partition_list) {
-                iControlInterfaces.getManagementPartition().set_active_partition(partition.getPartition_name());
-                String[] pools = iControlInterfaces.getLocalLBProfileServerSSL().get_list();
-                poolsList.addAll(Arrays.asList(pools));
+            Pattern poolIncludesPattern = createPattern(snatPoolIncludes);
+
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/snatpool/stats");
+
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+
+            if(response == null) {
+                LOGGER.info("Unable to get any response for snat pool metrics");
+                return null;
             }
-            String[] pools = poolsList.toArray(new String[]{});
 
-            if (ArrayUtils.isNotEmpty(pools)) {
-                Pattern poolIncludesPattern = createPattern(snatPoolIncludes);
-                pools = filterIncludes(pools, poolIncludesPattern);
+            String poolStatsResponse = EntityUtils.toString(response.getEntity());
 
-                if (ArrayUtils.isNotEmpty(pools)) {
-                    collectSnatPoolMetrics(pools);
-                    collectMemberMetrics(pools);
 
-                } else {
-                    LOGGER.info("No SNAT Pool matched.");
+            Field field = new Field();
+            field.setFieldName("tmName");
+
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(field);
+
+
+            Stats stats = PoolResponseProcessor.processPoolStatsResponse(poolStatsResponse, poolIncludesPattern, keyField);
+
+
+            if (stats != null) {
+                String poolMetricPrefix = getPoolMetricPrefix();
+                Pattern excludePatterns = createPattern(metricExcludes);
+
+                Map<String, List<StatEntry>> poolStatValues = stats.getPoolStats();
+                for (String pool : poolStatValues.keySet()) {
+                    String poolName = changePathSeparator(pool,
+                            PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+
+                    List<StatEntry> statEntries = poolStatValues.get(pool);
+                    for (StatEntry stat : statEntries) {
+
+                        if (isMetricToMonitor(stat.getName(), excludePatterns)) {
+                            if (stat.getType() == StatEntry.Type.NUMERIC) {
+                                String metricName = String.format("%s%s%s%s", poolMetricPrefix,
+                                        poolName, METRIC_PATH_SEPARATOR, stat.getName());
+
+                                BigInteger value = BigInteger.valueOf(Long.valueOf(stat.getValue()));
+                                printCollectiveObservedCurrent(metricName, value);
+                            }
+                        }
+                    }
                 }
-            } else {
-                LOGGER.info("No SNAT Pool found.");
             }
 
         } catch (RemoteException e) {
@@ -102,69 +123,6 @@ public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
         }
 
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__SNATPool__get_statistics.ashx
-     *
-     */
-    private void collectSnatPoolMetrics(String[] pools) {
-        try {
-            LocalLBSNATPoolSNATPoolStatistics stats = iControlInterfaces.getLocalLBSNATPool().get_statistics(pools);
-
-            if (stats != null) {
-                String poolMetricPrefix = getPoolMetricPrefix();
-                Pattern excludePatterns = createPattern(metricExcludes);
-
-                for (LocalLBSNATPoolSNATPoolStatisticEntry pool : stats.getStatistics()) {
-                    String poolName = changePathSeparator(pool.getSnat_pool(),
-                            PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
-
-                    for (CommonStatistic stat : pool.getStatistics()) {
-                        if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
-                            String metricName = String.format("%s%s%s%s", poolMetricPrefix,
-                                    poolName, METRIC_PATH_SEPARATOR, stat.getType().getValue());
-
-                            BigInteger value = convertValue(stat.getValue());
-                            printCollectiveObservedCurrent(metricName, value);
-                        }
-                    }
-                }
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching snat pool statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching snat pool statistics", e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v11.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__SNATPool__get_all_member_statistics.ashx
-     *
-     */
-    private void collectMemberMetrics(String[] pools) {
-        if (snatPoolMemberIncludes == null || snatPoolMemberIncludes.isEmpty()) {
-            LOGGER.info("No SNAT pool members were included for monitoring.");
-            return;
-        }
-
-        SnatPoolMemberMetricsCollector memberMetricsCollector;
-
-        if (preVersion11) {
-            memberMetricsCollector = new PreVersion11SnatPoolMemberMetricsCollector(
-                    snatPoolMemberIncludes, metricExcludes, iControlInterfaces);
-        } else {
-            memberMetricsCollector = new SnatPoolMemberMetricsCollector(
-                    snatPoolMemberIncludes, metricExcludes, iControlInterfaces);
-        }
-
-        memberMetricsCollector.collectMemberMetrics(getPoolMetricPrefix(), pools);
     }
 
     private String getPoolMetricPrefix() {

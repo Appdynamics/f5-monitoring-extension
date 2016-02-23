@@ -2,6 +2,8 @@ package com.appdynamics.extensions.f5.collectors;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,49 +13,48 @@ import com.appdynamics.extensions.f5.F5Constants;
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
-import iControl.CommonStatistic;
-import iControl.CommonStatisticType;
-import iControl.CommonULong64;
-import iControl.CommonVirtualServerDefinition;
-import iControl.Interfaces;
-import iControl.LocalLBVirtualServerBindingStub;
-import iControl.LocalLBVirtualServerVirtualServerStatisticEntry;
-import iControl.LocalLBVirtualServerVirtualServerStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import iControl.ManagementPartitionBindingStub;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class})
 public class VirtualServerMetricsCollectorTest {
 
     private VirtualServerMetricsCollector classUnderTest;
 
     @Mock
-    private Interfaces mockIcontrolInterfaces;
+    private CloseableHttpClient httpClient;
 
     @Mock
-    private LocalLBVirtualServerBindingStub mockVirtualServerSub;
+    private HttpClientContext httpContext;
 
     @Mock
     private F5 mockF5;
 
     @Mock
     private MetricsFilter mockMetricsFilter;
-
-    @Mock
-    private ManagementPartitionBindingStub mockManagementPartitionBindingStub;
-
-    @Mock
-    private ManagementPartitionAuthZPartition mockManagementPartitionAuthZPartition;
 
     @Mock
     private F5Monitor monitor;
@@ -66,21 +67,27 @@ public class VirtualServerMetricsCollectorTest {
     @Before
     public void setUp() throws Exception {
         when(mockF5.getDisplayName()).thenReturn("TestF5");
-        when(mockIcontrolInterfaces.getLocalLBVirtualServer()).thenReturn(mockVirtualServerSub);
-        when(mockIcontrolInterfaces.getManagementPartition()).thenReturn(mockManagementPartitionBindingStub);
-        when(mockManagementPartitionBindingStub.get_partition_list()).thenReturn(new ManagementPartitionAuthZPartition[]{mockManagementPartitionAuthZPartition});
-        when(mockManagementPartitionAuthZPartition.getPartition_name()).thenReturn("TestPartion");
+
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn(response);
+        BDDMockito.given(EntityUtils.toString(any(HttpEntity.class))).willReturn("hello");
+
+        Stats stats = getTestStatistics();
+
+        BDDMockito.given(PoolResponseProcessor.processPoolStatsResponse(eq("hello"), any(Pattern.class), any(KeyField.class))).willReturn(stats);
+
         when(monitor.getMetricWriter(anyString(), anyString(), anyString(), anyString())).thenReturn(metricWriter);
 
     }
 
     @Test
     public void testNoVirtualServersIncluded() throws Exception {
-        classUnderTest = new VirtualServerMetricsCollector(mockIcontrolInterfaces,
-                mockF5, mockMetricsFilter, monitor, metricPrefix);
+        classUnderTest = new VirtualServerMetricsCollector(httpClient,
+                httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
 
         classUnderTest.call();
-        //assertEquals(0, result.getMetrics().size());
         verify(metricWriter, never()).printMetric(anyString());
     }
 
@@ -90,31 +97,19 @@ public class VirtualServerMetricsCollectorTest {
         testIncludes.add(".*");
         when(mockF5.getVirtualServerIncludes()).thenReturn(testIncludes);
 
-        String[] testProfiles = getTestVirtualServers();
-        when(mockVirtualServerSub.get_list()).thenReturn(testProfiles);
 
-        LocalLBVirtualServerVirtualServerStatistics testStats = getTestStatistics();
-        when(mockVirtualServerSub.get_statistics(any(String[].class))).thenReturn(testStats);
-
-        classUnderTest = new VirtualServerMetricsCollector(mockIcontrolInterfaces,
-                mockF5, mockMetricsFilter, monitor, metricPrefix);
+        classUnderTest = new VirtualServerMetricsCollector(httpClient, httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
         classUnderTest.call();
 
-        verify(metricWriter, times(9)).printMetric(anyString());
+        verify(metricWriter, times(6)).printMetric(anyString());
 
-		/*assertEquals(9, result.getMetrics().size());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP|clientside.bitsIn"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP|clientside.bitsOut"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP|clientside.maxConns"), anyString(), anyString(), anyString());
 
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP|STATISTIC_ACL_NO_MATCH"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP|STATISTIC_CLIENT_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP|STATISTIC_CLIENT_SIDE_BYTES_OUT"));
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|STATISTIC_ACL_NO_MATCH"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|STATISTIC_CLIENT_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|STATISTIC_CLIENT_SIDE_BYTES_OUT"));
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|Outbound_Forwarding|STATISTIC_ACL_NO_MATCH"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|Outbound_Forwarding|STATISTIC_CLIENT_SIDE_BYTES_IN"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|Outbound_Forwarding|STATISTIC_CLIENT_SIDE_BYTES_OUT"));*/
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|clientside.bitsIn"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|clientside.bitsOut"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|clientside.maxConns"), anyString(), anyString(), anyString());
     }
 
     @Test
@@ -124,90 +119,49 @@ public class VirtualServerMetricsCollectorTest {
         when(mockF5.getVirtualServerIncludes()).thenReturn(testIncludes);
 
         Set<String> testMetricExcludes = new HashSet<String>();
-        testMetricExcludes.add(".*CLIENT.*");
+        testMetricExcludes.add(".*bitsOut.*");
         when(mockMetricsFilter.getVirtualServerMetricExcludes()).thenReturn(testMetricExcludes);
 
-        String[] testProfiles = getTestVirtualServers();
-        when(mockVirtualServerSub.get_list()).thenReturn(testProfiles);
 
-        LocalLBVirtualServerVirtualServerStatistics testStats = getTestStatistics();
-        when(mockVirtualServerSub.get_statistics(any(String[].class))).thenReturn(testStats);
-
-        classUnderTest = new VirtualServerMetricsCollector(mockIcontrolInterfaces,
-                mockF5, mockMetricsFilter, monitor, metricPrefix);
+        classUnderTest = new VirtualServerMetricsCollector(httpClient, httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
         classUnderTest.call();
 
-        verify(metricWriter, times(3)).printMetric(anyString());
+        verify(metricWriter, times(4)).printMetric(anyString());
 
-		/*assertEquals(3, result.getMetrics().size());
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP|STATISTIC_ACL_NO_MATCH"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|STATISTIC_ACL_NO_MATCH"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|Outbound_Forwarding|STATISTIC_ACL_NO_MATCH"));
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP|clientside.bitsIn"), anyString(), anyString(), anyString());
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP|clientside.bitsOut"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP|clientside.maxConns"), anyString(), anyString(), anyString());
 
-		// excluded
-		assertFalse(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP|STATISTIC_CLIENT_SIDE_BYTES_IN"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP|STATISTIC_CLIENT_SIDE_BYTES_OUT"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|STATISTIC_CLIENT_SIDE_BYTES_IN"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|STATISTIC_CLIENT_SIDE_BYTES_OUT"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|Outbound_Forwarding|STATISTIC_CLIENT_SIDE_BYTES_IN"));
-		assertFalse(result.getMetrics().containsKey("TestF5|Virtual Servers|Common|Outbound_Forwarding|STATISTIC_CLIENT_SIDE_BYTES_OUT"));*/
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|clientside.bitsIn"), anyString(), anyString(), anyString());
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|clientside.bitsOut"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Virtual Servers|Common|devcontr7_VIP_SSL|clientside.maxConns"), anyString(), anyString(), anyString());
     }
 
-    private LocalLBVirtualServerVirtualServerStatistics getTestStatistics() {
-        String[] testVirtualServers = getTestVirtualServers();
-        LocalLBVirtualServerVirtualServerStatistics stats =
-                new LocalLBVirtualServerVirtualServerStatistics();
+    private Stats getTestStatistics() {
+        Stats stats = new Stats();
 
-        LocalLBVirtualServerVirtualServerStatisticEntry[] entries =
-                new LocalLBVirtualServerVirtualServerStatisticEntry[testVirtualServers.length];
-        stats.setStatistics(entries);
+        StatEntry statEntry = new StatEntry();
+        statEntry.setName("clientside.bitsIn");
+        statEntry.setValue("5000");
+        statEntry.setType(StatEntry.Type.NUMERIC);
+        stats.addStat("/Common/devcontr7_VIP", statEntry);
+        stats.addStat("/Common/devcontr7_VIP_SSL", statEntry);
 
-        CommonStatisticType[] statisticTypes = getTestStatisticTypes();
+        StatEntry statEntry1 = new StatEntry();
+        statEntry1.setName("clientside.bitsOut");
+        statEntry1.setValue("5000");
+        statEntry1.setType(StatEntry.Type.NUMERIC);
+        stats.addStat("/Common/devcontr7_VIP", statEntry1);
+        stats.addStat("/Common/devcontr7_VIP_SSL", statEntry1);
 
-        for (int vsIndex = 0; vsIndex < testVirtualServers.length; vsIndex++) {
-            LocalLBVirtualServerVirtualServerStatisticEntry entry =
-                    new LocalLBVirtualServerVirtualServerStatisticEntry();
+        StatEntry statEntry2 = new StatEntry();
+        statEntry2.setName("clientside.maxConns");
+        statEntry2.setValue("5000");
+        statEntry2.setType(StatEntry.Type.NUMERIC);
+        stats.addStat("/Common/devcontr7_VIP", statEntry2);
+        stats.addStat("/Common/devcontr7_VIP_SSL", statEntry2);
 
-            CommonVirtualServerDefinition virtualServer = new CommonVirtualServerDefinition();
-            virtualServer.setName(testVirtualServers[vsIndex]);
-            entry.setVirtual_server(virtualServer);
-            entries[vsIndex] = entry;
-
-            CommonStatistic[] commonStats = new CommonStatistic[statisticTypes.length];
-
-            for (int index = 0; index < statisticTypes.length; index++) {
-                CommonStatistic commonStat = new CommonStatistic();
-                commonStat.setType(statisticTypes[index]);
-                commonStat.setValue(getTestValue());
-                commonStats[index] = commonStat;
-            }
-
-            entry.setStatistics(commonStats);
-        }
 
         return stats;
-    }
-
-    private String[] getTestVirtualServers() {
-        String[] testInterfaces = {"/Common/devcontr7_VIP",
-                "/Common/devcontr7_VIP_SSL", "/Common/Outbound_Forwarding"};
-        return testInterfaces;
-    }
-
-    private CommonStatisticType[] getTestStatisticTypes() {
-        CommonStatisticType[] testMetricTypes = {
-                CommonStatisticType.STATISTIC_ACL_NO_MATCH,
-                CommonStatisticType.STATISTIC_CLIENT_SIDE_BYTES_IN,
-                CommonStatisticType.STATISTIC_CLIENT_SIDE_BYTES_OUT};
-
-        return testMetricTypes;
-    }
-
-    private CommonULong64 getTestValue() {
-        CommonULong64 testValue = new CommonULong64();
-        testValue.setHigh(new Random(100).nextLong());
-        testValue.setHigh(new Random(10).nextLong());
-        return testValue;
     }
 }

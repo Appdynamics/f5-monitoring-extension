@@ -1,56 +1,52 @@
 package com.appdynamics.extensions.f5.collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-import iControl.CommonAddressPort;
-import iControl.CommonIPPortDefinition;
-import iControl.CommonStatistic;
-import iControl.CommonStatisticType;
-import iControl.CommonULong64;
-import iControl.Interfaces;
-import iControl.LocalLBAvailabilityStatus;
-import iControl.LocalLBEnabledStatus;
-import iControl.LocalLBNodeAddressV2BindingStub;
-import iControl.LocalLBObjectStatus;
-import iControl.LocalLBPoolBindingStub;
-import iControl.LocalLBPoolMemberBindingStub;
-import iControl.LocalLBPoolMemberMemberObjectStatus;
-import iControl.LocalLBPoolMemberStatisticEntry;
-import iControl.LocalLBPoolMemberStatistics;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class})
 public class PoolMemberMetricsCollectorTest {
 
     private PoolMemberMetricsCollector classUnderTest;
 
     @Mock
-    private Interfaces mockIcontrolInterfaces;
+    private CloseableHttpClient httpClient;
 
     @Mock
-    private LocalLBPoolBindingStub mockLocalLBPoolStub;
-
-    @Mock
-    private LocalLBNodeAddressV2BindingStub mockNodeAddressV2Stub;
-
-    @Mock
-    private LocalLBPoolMemberBindingStub mockLocalLBPoolMemberStub;
+    private HttpClientContext httpContext;
 
     @Mock
     private F5 mockF5;
@@ -62,34 +58,28 @@ public class PoolMemberMetricsCollectorTest {
     @Before
     public void setUp() throws Exception {
         when(mockF5.getDisplayName()).thenReturn("TestF5");
-        when(mockIcontrolInterfaces.getLocalLBPool()).thenReturn(mockLocalLBPoolStub);
-        when(mockIcontrolInterfaces.getLocalLBNodeAddressV2()).thenReturn(mockNodeAddressV2Stub);
-        when(mockIcontrolInterfaces.getLocalLBPoolMember()).thenReturn(mockLocalLBPoolMemberStub);
 
-        Set<String> excludes = new HashSet<String>();
-        excludes.add(".*Total.*");
-        when(mockMetricsFilter.getPoolMetricExcludes()).thenReturn(excludes);
 
-        LocalLBPoolMemberStatistics[] testMemberStats = getTestStatistics();
-        when(mockLocalLBPoolStub.get_all_member_statistics(any(String[].class))).thenReturn(testMemberStats);
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn(response);
+        BDDMockito.given(EntityUtils.toString(any(HttpEntity.class))).willReturn("hello");
 
-        String[] testIpAddresses = getTestIpAddresses();
-        when(mockNodeAddressV2Stub.get_address(any(String[].class))).thenReturn(testIpAddresses);
+        Stats stats = getTestStatistics();
 
-        LocalLBPoolMemberMemberObjectStatus[][] testStatuses = getTestStatuses();
-        when(mockLocalLBPoolMemberStub.get_object_status(any(String[].class))).thenReturn(testStatuses);
+        BDDMockito.given(PoolResponseProcessor.processPoolStatsResponse(eq("hello"), any(Pattern.class), any(KeyField.class))).willReturn(stats);
     }
 
     @Test
     public void testNoPoolMembersIncluded() throws Exception {
         classUnderTest = new PoolMemberMetricsCollector(mockF5.getPoolMemberIncludes(),
-                mockMetricsFilter.getPoolMetricExcludes(), mockIcontrolInterfaces);
+                mockMetricsFilter.getPoolMetricExcludes(), mockF5, httpClient, httpContext);
 
         String poolMetricPrefix = "TestF5|Pools";
-        String[] pools = getTestPools();
 
-        Map<String, BigInteger> statsMap = classUnderTest.collectMemberMetrics(poolMetricPrefix, pools);
-        assertEquals(0, statsMap.size());
+        Map<String, BigInteger> statsMap = classUnderTest.collectMemberMetrics(poolMetricPrefix, "Common/devcontr7");
+        assertEquals(null, statsMap);
     }
 
     @Test
@@ -99,23 +89,22 @@ public class PoolMemberMetricsCollectorTest {
         when(mockF5.getPoolMemberIncludes()).thenReturn(testIncludes);
 
         classUnderTest = new PoolMemberMetricsCollector(mockF5.getPoolMemberIncludes(),
-                mockMetricsFilter.getPoolMetricExcludes(), mockIcontrolInterfaces);
+                mockMetricsFilter.getPoolMetricExcludes(), mockF5, httpClient, httpContext);
 
         String poolMetricPrefix = "TestF5|Pools";
-        String[] pools = getTestPools();
 
-        Map<String, BigInteger> result = classUnderTest.collectMemberMetrics(poolMetricPrefix, pools);
-        assertEquals(8, result.size());
+        Map<String, BigInteger> result = classUnderTest.collectMemberMetrics(poolMetricPrefix, "Common/devcontr7");
+        assertEquals(6, result.size());
 
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATISTIC_SERVER_SIDE_BYTES_IN"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATUS"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member1|8080|serverside.bitsIn"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member1|8080|serverside.bitsOut"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member1|8080|STATUS"));
 
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATISTIC_SERVER_SIDE_BYTES_IN"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATUS"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member2|8090|serverside.bitsIn"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member2|8090|serverside.bitsOut"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member2|8090|STATUS"));
+
+
     }
 
     @Test
@@ -125,140 +114,49 @@ public class PoolMemberMetricsCollectorTest {
         when(mockF5.getPoolMemberIncludes()).thenReturn(testIncludes);
 
         Set<String> testMetricExcludes = new HashSet<String>();
-        testMetricExcludes.add(".*STATISTIC.*");
-        testMetricExcludes.add(".*Total.*");
+        testMetricExcludes.add(".*bitsOut.*");
         when(mockMetricsFilter.getPoolMetricExcludes()).thenReturn(testMetricExcludes);
 
         classUnderTest = new PoolMemberMetricsCollector(mockF5.getPoolMemberIncludes(),
-                mockMetricsFilter.getPoolMetricExcludes(), mockIcontrolInterfaces);
+                mockMetricsFilter.getPoolMetricExcludes(), mockF5, httpClient, httpContext);
 
         String poolMetricPrefix = "TestF5|Pools";
-        String[] pools = getTestPools();
 
-        Map<String, BigInteger> result = classUnderTest.collectMemberMetrics(poolMetricPrefix, pools);
-        assertEquals(2, result.size());
+        Map<String, BigInteger> result = classUnderTest.collectMemberMetrics(poolMetricPrefix, "Common/devcontr7");
+        assertEquals(4, result.size());
 
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATUS"));
-        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATUS"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member1|8080|serverside.bitsIn"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member2|8090|serverside.bitsIn"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member1|8080|STATUS"));
+        assertTrue(result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member2|8090|STATUS"));
 
-        assertFalse(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-        assertFalse(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-        assertFalse(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member1|8080|STATISTIC_SERVER_SIDE_BYTES_IN"));
-        assertFalse(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATISTIC_PVA_CLIENT_SIDE_BYTES_IN"));
-        assertFalse(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATISTIC_CONNQUEUE_AGE_MOVING_AVG"));
-        assertFalse(result.containsKey("TestF5|Pools|Common|devcontr7|devcontr7_member2|8090|STATISTIC_SERVER_SIDE_BYTES_IN"));
+
+        assertTrue(!result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member2|8090|serverside.bitsOut"));
+        assertTrue(!result.containsKey("TestF5|Pools|Common|devcontr7|Members|devcontr7_member1|8080|serverside.bitsOut"));
     }
 
-    private LocalLBPoolMemberStatistics[] getTestStatistics() {
-        String[] testPools = getTestPools();
+    private Stats getTestStatistics() {
 
-        LocalLBPoolMemberStatistics[] statsArray =
-                new LocalLBPoolMemberStatistics[testPools.length];
+        Stats poolMemberStats = new Stats();
 
-        CommonStatisticType[] statisticTypes = getTestStatisticTypes();
+        StatEntry statEntry = new StatEntry();
+        statEntry.setName("serverside.bitsIn");
+        statEntry.setValue("2000");
+        statEntry.setType(StatEntry.Type.NUMERIC);
+        poolMemberStats.addStat("devcontr7_member1|8080", statEntry);
+        poolMemberStats.addStat("devcontr7_member2|8090", statEntry);
 
-        for (int poolIndex = 0; poolIndex < testPools.length; poolIndex++) {
-            LocalLBPoolMemberStatistics stats = new LocalLBPoolMemberStatistics();
-            statsArray[poolIndex] = stats;
 
-            CommonAddressPort[] testMembers = getTestMembers();
-            LocalLBPoolMemberStatisticEntry[] memberEntries =
-                    new LocalLBPoolMemberStatisticEntry[testMembers.length];
-            stats.setStatistics(memberEntries);
+        StatEntry statEntry1 = new StatEntry();
+        statEntry1.setName("serverside.bitsOut");
+        statEntry1.setValue("5300");
+        statEntry1.setType(StatEntry.Type.NUMERIC);
+        poolMemberStats.addStat("devcontr7_member1|8080", statEntry1);
+        poolMemberStats.addStat("devcontr7_member2|8090", statEntry1);
 
-            for (int memberIndex = 0; memberIndex < testMembers.length; memberIndex++) {
-                LocalLBPoolMemberStatisticEntry memberEntry = new LocalLBPoolMemberStatisticEntry();
-                memberEntry.setMember(testMembers[memberIndex]);
 
-                CommonStatistic[] commonStats = new CommonStatistic[statisticTypes.length];
-
-                for (int index = 0; index < statisticTypes.length; index++) {
-                    CommonStatistic commonStat = new CommonStatistic();
-                    commonStat.setType(statisticTypes[index]);
-                    commonStat.setValue(getTestValue());
-                    commonStats[index] = commonStat;
-                }
-
-                memberEntry.setStatistics(commonStats);
-                memberEntries[memberIndex] = memberEntry;
-            }
-
-        }
-
-        return statsArray;
+        return poolMemberStats;
     }
 
-    private LocalLBPoolMemberMemberObjectStatus[][] getTestStatuses() {
-        String[] testPools = getTestPools();
 
-        LocalLBPoolMemberMemberObjectStatus[][] testStatuses =
-                new LocalLBPoolMemberMemberObjectStatus[testPools.length][];
-
-        for (int poolIndex = 0; poolIndex < testPools.length; poolIndex++) {
-            CommonAddressPort[] testMembers = getTestMembers();
-            String[] testIpAddresses = getTestIpAddresses();
-
-            LocalLBPoolMemberMemberObjectStatus[] memberStatuses =
-                    new LocalLBPoolMemberMemberObjectStatus[testMembers.length];
-            testStatuses[poolIndex] = memberStatuses;
-
-            for (int memberIndex = 0; memberIndex < testMembers.length; memberIndex++) {
-                CommonIPPortDefinition member = new CommonIPPortDefinition();
-                member.setAddress(testIpAddresses[memberIndex]);
-                member.setPort(testMembers[memberIndex].getPort());
-
-                LocalLBPoolMemberMemberObjectStatus memberStatus = new LocalLBPoolMemberMemberObjectStatus();
-                memberStatus.setMember(member);
-
-                LocalLBObjectStatus status = new LocalLBObjectStatus();
-                status.setAvailability_status(LocalLBAvailabilityStatus.AVAILABILITY_STATUS_GREEN);
-                status.setEnabled_status(LocalLBEnabledStatus.ENABLED_STATUS_ENABLED);
-                memberStatus.setObject_status(status);
-
-                memberStatuses[memberIndex] = memberStatus;
-            }
-        }
-
-        return testStatuses;
-    }
-
-    private String[] getTestPools() {
-        return new String[]{"/Common/devcontr7"};
-    }
-
-    private CommonAddressPort[] getTestMembers() {
-        CommonAddressPort[] members = new CommonAddressPort[2];
-
-        CommonAddressPort member1 = new CommonAddressPort();
-        member1.setAddress("/Common/devcontr7_member1");
-        member1.setPort(8080);
-        members[0] = member1;
-
-        CommonAddressPort member2 = new CommonAddressPort();
-        member2.setAddress("/Common/devcontr7_member2");
-        member2.setPort(8090);
-        members[1] = member2;
-
-        return members;
-    }
-
-    private String[] getTestIpAddresses() {
-        return new String[]{"10.10.10.1", "10.10.10.2"};
-    }
-
-    private CommonStatisticType[] getTestStatisticTypes() {
-        CommonStatisticType[] testMetricTypes = {
-                CommonStatisticType.STATISTIC_PVA_CLIENT_SIDE_BYTES_IN,
-                CommonStatisticType.STATISTIC_CONNQUEUE_AGE_MOVING_AVG,
-                CommonStatisticType.STATISTIC_SERVER_SIDE_BYTES_IN};
-
-        return testMetricTypes;
-    }
-
-    private CommonULong64 getTestValue() {
-        CommonULong64 testValue = new CommonULong64();
-        testValue.setHigh(new Random(100).nextLong());
-        testValue.setHigh(new Random(10).nextLong());
-        return testValue;
-    }
 }

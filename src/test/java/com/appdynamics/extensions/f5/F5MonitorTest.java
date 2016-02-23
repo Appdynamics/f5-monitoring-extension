@@ -14,7 +14,6 @@ import com.google.common.collect.Maps;
 import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import iControl.Interfaces;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,8 +93,7 @@ public class F5MonitorTest {
         testMetrics.add("MyTestF5|TEST|METRIC3", BigInteger.valueOf(3));
         testMetrics.add("MyTestF5|TEST|METRIC4", BigInteger.valueOf(4));
         testMetrics.add("MyTestF5|TEST|METRIC5", BigInteger.valueOf(5));
-        whenNew(F5MonitorTask.class).withArguments(any(F5Monitor.class), any(String.class), any(F5.class),
-                any(Interfaces.class), any(MetricsFilter.class), anyInt(), anyInt()).thenReturn(mockF5MonitorTask);
+        whenNew(F5MonitorTask.class).withArguments(any(F5Monitor.class), any(String.class), any(F5.class), any(MetricsFilter.class), anyInt(), anyInt()).thenReturn(mockF5MonitorTask);
     }
 
 }

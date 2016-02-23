@@ -1,19 +1,19 @@
 f5s:
-  - name: ""
+  - name: "AppD F5 - 13"
     hostname: ""
     username: ""
     password: ""
     passwordEncrypted: ""
     encryptionKey: ""
-    poolIncludes: [ ".*devcontr4" ]
-    poolMemberIncludes: [ ]
-    snatPoolIncludes: [  ]
-    snatPoolMemberIncludes: [  ]
-    virtualServerIncludes: [ ]
-    iRuleIncludes: [ ]
-    clientSSLProfileIncludes: [ ]
-    serverSSLProfileIncludes: [ ]
-    networkInterfaceIncludes: [ ".*HTTP" ]
+    poolIncludes: [ ".*" ]
+    poolMemberIncludes: [ ".*" ]
+    snatPoolIncludes: [ ".*" ]
+    virtualServerIncludes: [ ".*" ]
+    iRuleIncludes: [ ".*" ]
+    clientSSLProfileIncludes: [ ".*" ]
+    serverSSLProfileIncludes: [ ".*" ]
+    networkInterfaceIncludes: [ ".*" ]
+
 
 # Global Metrics Filter - exclude patterns for unwanted metrics
 # This filter will apply to all F5 instances configured above
@@ -37,7 +37,7 @@ metricsFilter:
 numberOfF5Threads: 3
 
 # Number concurrent threads per F5 used in fetching metrics
-numberOfThreadsPerF5: 3
+numberOfThreadsPerF5: 5
 
 #F5 thread timeout in seconds
 f5ThreadTimeout: 30

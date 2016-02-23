@@ -1,6 +1,10 @@
 package com.appdynamics.extensions.f5.collectors;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,39 +13,47 @@ import com.appdynamics.extensions.f5.F5Constants;
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
-import iControl.CommonStatistic;
-import iControl.CommonStatisticType;
-import iControl.CommonULong64;
-import iControl.Interfaces;
-import iControl.SystemStatisticsBindingStub;
-import iControl.SystemStatisticsSystemStatistics;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
+import java.util.Map;
 import java.util.Set;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class})
 public class HttpMetricsCollectorTest {
 
     private HttpMetricsCollector classUnderTest;
 
     @Mock
-    private Interfaces mockIcontrolInterfaces;
+    private CloseableHttpClient httpClient;
+
+    @Mock
+    private HttpClientContext httpContext;
 
     @Mock
     private F5 mockF5;
 
     @Mock
     private MetricsFilter mockMetricsFilter;
-
-    @Mock
-    private SystemStatisticsBindingStub mockSystemStatsStub;
 
     @Mock
     private F5Monitor monitor;
@@ -54,9 +66,17 @@ public class HttpMetricsCollectorTest {
     @Before
     public void setUp() throws Exception {
         when(mockF5.getDisplayName()).thenReturn("TestF5");
-        SystemStatisticsSystemStatistics testStats = getTestStatistics();
-        when(mockSystemStatsStub.get_http_statistics()).thenReturn(testStats);
-        when(mockIcontrolInterfaces.getSystemStatistics()).thenReturn(mockSystemStatsStub);
+
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn(response);
+        BDDMockito.given(EntityUtils.toString(any(HttpEntity.class))).willReturn("hello");
+
+        Map<String, BigInteger> poolStats = getTestStatistics();
+
+        BDDMockito.given(PoolResponseProcessor.aggregateStatsResponse(eq("hello"))).willReturn(poolStats);
+
         when(monitor.getMetricWriter(anyString(), anyString(), anyString(), anyString())).thenReturn(metricWriter);
 
     }
@@ -64,72 +84,44 @@ public class HttpMetricsCollectorTest {
     @Test
     public void testAllMetricsIncluded() throws Exception {
         classUnderTest = new HttpMetricsCollector(
-                mockIcontrolInterfaces, mockF5, mockMetricsFilter, monitor, metricPrefix);
+                httpClient, httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
 
         classUnderTest.call();
 
         verify(metricWriter, times(3)).printMetric(anyString());
 
-		/*assertEquals(3, result.getMetrics().size());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Network|HTTP|resp_2xxCnt"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Network|HTTP|resp_3xxCnt"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Network|HTTP|resp_4xxCnt"), anyString(), anyString(), anyString());
 
-		assertTrue(result.getMetrics().containsKey("TestF5|Network|HTTP|STATISTIC_HTTP_2XX_RESPONSES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Network|HTTP|STATISTIC_HTTP_3XX_RESPONSES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Network|HTTP|STATISTIC_HTTP_4XX_RESPONSES"));*/
     }
 
     @Test
     public void testExcludeMetrics() throws Exception {
         Set<String> testMetricExcludes = new HashSet<String>();
-        testMetricExcludes.add(".*2XX.*");
+        testMetricExcludes.add(".*2xx.*");
         when(mockMetricsFilter.getHttpMetricExcludes()).thenReturn(testMetricExcludes);
 
         classUnderTest = new HttpMetricsCollector(
-                mockIcontrolInterfaces, mockF5, mockMetricsFilter, monitor, metricPrefix);
+                httpClient, httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
 
         classUnderTest.call();
 
         verify(metricWriter, times(2)).printMetric(anyString());
 
-		/*assertEquals(2, result.getMetrics().size());
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|Network|HTTP|STATISTIC_HTTP_3XX_RESPONSES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|Network|HTTP|STATISTIC_HTTP_4XX_RESPONSES"));
-		
-		//excluded
-		assertFalse(result.getMetrics().containsKey("TestF5|Network|HTTP|STATISTIC_HTTP_2XX_RESPONSES"));*/
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Network|HTTP|resp_2xxCnt"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Network|HTTP|resp_3xxCnt"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|Network|HTTP|resp_4xxCnt"), anyString(), anyString(), anyString());
     }
 
-    private SystemStatisticsSystemStatistics getTestStatistics() {
-        SystemStatisticsSystemStatistics stats = new SystemStatisticsSystemStatistics();
+    private Map<String, BigInteger> getTestStatistics() {
 
-        CommonStatisticType[] statisticTypes = getTestStatisticTypes();
-        CommonStatistic[] commonStats = new CommonStatistic[statisticTypes.length];
+        Map<String, BigInteger> stats = new HashMap<String, BigInteger>();
+        stats.put("resp_2xxCnt", BigInteger.valueOf(1234));
+        stats.put("resp_3xxCnt", BigInteger.valueOf(500));
+        stats.put("resp_4xxCnt", BigInteger.valueOf(100));
 
-        for (int index = 0; index < statisticTypes.length; index++) {
-            CommonStatistic commonStat = new CommonStatistic();
-            commonStat.setType(statisticTypes[index]);
-            commonStat.setValue(getTestValue());
-            commonStats[index] = commonStat;
-        }
-
-        stats.setStatistics(commonStats);
         return stats;
-    }
-
-    private CommonStatisticType[] getTestStatisticTypes() {
-        CommonStatisticType[] testMetricTypes = {
-                CommonStatisticType.STATISTIC_HTTP_2XX_RESPONSES,
-                CommonStatisticType.STATISTIC_HTTP_3XX_RESPONSES,
-                CommonStatisticType.STATISTIC_HTTP_4XX_RESPONSES};
-
-        return testMetricTypes;
-    }
-
-    private CommonULong64 getTestValue() {
-        CommonULong64 testValue = new CommonULong64();
-        testValue.setHigh(new Random(100).nextLong());
-        testValue.setHigh(new Random(10).nextLong());
-        return testValue;
     }
 
 }

@@ -1,34 +1,32 @@
 package com.appdynamics.extensions.f5.collectors;
 
+import static com.appdynamics.extensions.f5.F5Constants.MEMBERS;
 import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.STATUS;
-import static com.appdynamics.extensions.f5.F5Constants.TOTAL_NO_OF_MEMBERS;
-import static com.appdynamics.extensions.f5.F5Constants.TOTAL_NO_OF_MEMBERS_AVAILABLE;
-import static com.appdynamics.extensions.f5.F5Constants.TOTAL_NO_OF_MEMBERS_UNAVAILABLE;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
 import static com.appdynamics.extensions.f5.util.F5Util.convertToStatus;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.extractMemberName;
-import static com.appdynamics.extensions.f5.util.F5Util.insertSeparatorAtStartIfNotThere;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
-import static com.appdynamics.extensions.f5.util.F5Util.isToMonitor;
 
-import com.appdynamics.extensions.f5.util.F5Util.PoolStatus;
-import com.google.common.collect.Maps;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.LocalLBPoolMemberMemberObjectStatus;
-import iControl.LocalLBPoolMemberStatisticEntry;
-import iControl.LocalLBPoolMemberStatistics;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.config.F5;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -43,76 +41,91 @@ public class PoolMemberMetricsCollector {
 
     private Pattern excludePatterns;
     private Pattern poolMemberIncludesPattern;
-    private Interfaces iControlInterfaces;
+    private F5 f5;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
 
     public PoolMemberMetricsCollector(Set<String> poolMemberIncludes,
-                                      Set<String> metricExcludes, Interfaces iControlInterfaces) {
+                                      Set<String> metricExcludes, F5 f5, CloseableHttpClient httpClient, HttpClientContext httpContext) {
 
         this.excludePatterns = createPattern(metricExcludes);
         this.poolMemberIncludesPattern = createPattern(poolMemberIncludes);
-        this.iControlInterfaces = iControlInterfaces;
+        this.f5 = f5;
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v11.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__Pool__get_all_member_statistics.ashx
-     *
-     */
-    public Map<String, BigInteger> collectMemberMetrics(String poolMetricPrefix, String[] pools) {
+    public Map<String, BigInteger> collectMemberMetrics(String poolMetricPrefix, String poolName) {
         Map<String, BigInteger> poolMemberMetrics = new HashMap<String, BigInteger>();
         try {
-            LocalLBPoolMemberStatistics[] poolMembersStats =
-                    iControlInterfaces.getLocalLBPool().get_all_member_statistics(pools);
-            Set<String> rawMemberNames = new HashSet<String>();
 
-            Map<String, BigInteger> poolMemberCountStats = initialisePoolMemberCountStats(pools);
+            if (poolMemberIncludesPattern == null) {
+                LOGGER.info("No pool members were included for monitoring.");
+                return null;
+            }
 
-            int index = 0;
+            String poolNameToQuery = changePathSeparator(poolName,
+                    PATH_SEPARATOR, "~", false);
 
-            // The outer layer represents the pool which is in the same order as the pools array
-            // Don't know why F5 didn't just include the name in this object
-            for (LocalLBPoolMemberStatistics member : poolMembersStats) {
-                String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/pool/" + poolNameToQuery + "/members/stats");
 
-                for (LocalLBPoolMemberStatisticEntry memStat : member.getStatistics()) {
-                    incrementPoolMemberCountStats(poolName, poolMemberCountStats);
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-                    String rawMemberName = memStat.getMember().getAddress();
-                    rawMemberNames.add(rawMemberName);
+            if(response == null) {
+                LOGGER.info("Unable to get any response for pool member metrics");
+                return null;
+            }
 
-                    String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
-                    String fullMemberName = getFullMemberName(poolName, memberName,
-                            memStat.getMember().getPort());
+            String poolStatsResponse = EntityUtils.toString(response.getEntity());
 
-                    if (isToMonitor(fullMemberName, poolMemberIncludesPattern)) {
-                        // changing the separator for metric reporting
-                        fullMemberName = changePathSeparator(
-                                fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
+            Field nodeName = new Field();
+            nodeName.setFieldName("nodeName");
 
-                        String poolMemberMetricPrefix = String.format("%s%s", poolMetricPrefix,
-                                fullMemberName);
+            Field port = new Field();
+            port.setFieldName("port");
 
-                        for (CommonStatistic stat : memStat.getStatistics()) {
-                            if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(nodeName, port);
+            keyField.setFieldSeparator("|");
+
+            Stats poolMemberStats = PoolResponseProcessor.processPoolStatsResponse(poolStatsResponse, poolMemberIncludesPattern, keyField);
+
+            if (poolMemberStats != null) {
+
+                Map<String, List<StatEntry>> poolMemberStatValues = poolMemberStats.getPoolStats();
+                for (String poolMember : poolMemberStatValues.keySet()) {
+
+                    String poolMemberMetricPrefix = getPoolMemberMetricPrefix(poolMetricPrefix, poolName, poolMember);
+
+                    List<StatEntry> statEntries = poolMemberStatValues.get(poolMember);
+                    String availabilityStatus = null;
+                    String enabledStatus = null;
+                    for (StatEntry stat : statEntries) {
+
+                        if (isMetricToMonitor(stat.getName(), excludePatterns)) {
+                            if (stat.getType() == StatEntry.Type.NUMERIC) {
                                 String metricName = String.format("%s%s%s", poolMemberMetricPrefix,
-                                        METRIC_PATH_SEPARATOR, stat.getType().getValue());
-                                BigInteger value = convertValue(stat.getValue());
+                                        METRIC_PATH_SEPARATOR, stat.getName());
+
+                                BigInteger value = BigInteger.valueOf(Long.valueOf(stat.getValue()));
                                 poolMemberMetrics.put(metricName, value);
+                            } else {
+                                if ("status.availabilityState".equalsIgnoreCase(stat.getName())) {
+                                    availabilityStatus = stat.getValue();
+                                } else if ("status.enabledState".equalsIgnoreCase(stat.getName())) {
+                                    enabledStatus = stat.getValue();
+                                }
+
                             }
                         }
                     }
+                    if (isMetricToMonitor(STATUS, excludePatterns)) {
+                        BigInteger value = BigInteger.valueOf(convertToStatus(availabilityStatus,
+                                enabledStatus).getValue());
+                        poolMemberMetrics.put(poolMemberMetricPrefix + METRIC_PATH_SEPARATOR + STATUS, value);
+                    }
+
                 }
-
-            }
-
-            if (isMetricToMonitor(TOTAL_NO_OF_MEMBERS, excludePatterns)) {
-                includePoolMemberCountStatsForReporting(poolMetricPrefix, poolMemberCountStats, poolMemberMetrics);
-            }
-
-            if (isMetricToMonitor(STATUS, excludePatterns)) {
-                collectMemberStatus(poolMetricPrefix, pools,
-                        rawMemberNames.toArray(new String[rawMemberNames.size()]), poolMemberMetrics);
             }
 
         } catch (RemoteException e) {
@@ -124,185 +137,14 @@ public class PoolMemberMetricsCollector {
         return poolMemberMetrics;
     }
 
-    protected Map<String, BigInteger> initialisePoolMemberCountStats(String[] pools) {
-        Map<String, BigInteger> poolMemberCountStats = new HashMap<String, BigInteger>();
+    private String getPoolMemberMetricPrefix(String poolMetricPrefix, String poolName, String poolMemberName) {
 
-        for (String poolName : pools) {
-            poolMemberCountStats.put(insertSeparatorAtStartIfNotThere(poolName, PATH_SEPARATOR),
-                    BigInteger.ZERO);
-        }
+        String poolNameToPrint = changePathSeparator(poolName,
+                PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
 
-        return poolMemberCountStats;
-    }
+        String poolMemberFullName = changePathSeparator(poolMemberName,
+                PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
 
-    protected void incrementPoolMemberCountStats(String poolName,
-                                                 Map<String, BigInteger> poolMemberCountStats) {
-
-        BigInteger curValue = poolMemberCountStats.get(poolName);
-        poolMemberCountStats.put(poolName, curValue.add(BigInteger.ONE));
-    }
-
-    protected void includePoolMemberCountStatsForReporting(String poolMetricPrefix,
-                                                           Map<String, BigInteger> poolMemberCountStats, Map<String, BigInteger> poolMemberMetrics) {
-
-        for (Map.Entry<String, BigInteger> poolMemberCountStat : poolMemberCountStats.entrySet()) {
-            String poolNameForMetric = changePathSeparator(
-                    poolMemberCountStat.getKey(), PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
-
-            String metricName = String.format("%s%s%s%s", poolMetricPrefix,
-                    poolNameForMetric, METRIC_PATH_SEPARATOR, TOTAL_NO_OF_MEMBERS);
-
-            poolMemberMetrics.put(metricName, poolMemberCountStat.getValue());
-        }
-    }
-
-    /*
-     * This method uses an old interface that returns the pool member's IP address,
-     * i.e. getMember().getAddress(), rather than the node name (as per newer interface).
-     * Therefore IP to name conversion is required.
-     *
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__PoolMember__get_object_status.ashx
-     */
-    protected void collectMemberStatus(String poolMetricPrefix, String[] pools,
-                                       String[] memberNames, Map<String, BigInteger> poolMemberMetrics) {
-        try {
-            if (ArrayUtils.isNotEmpty(memberNames)) {
-                Map<String, String> nameConversionMap = createNameConversionMap(memberNames);
-
-                LocalLBPoolMemberMemberObjectStatus[][] memberObjectStatuses =
-                        iControlInterfaces.getLocalLBPoolMember().get_object_status(pools);
-
-                Map<String, Map<String, BigInteger>> totalMemberAvailabilityStats =
-                        initialiseTotalMemberAvailabilityStats(pools);
-
-                int index = 0;
-
-                for (LocalLBPoolMemberMemberObjectStatus[] poolStat : memberObjectStatuses) {
-                    String poolName = insertSeparatorAtStartIfNotThere(pools[index++], PATH_SEPARATOR);
-
-                    for (LocalLBPoolMemberMemberObjectStatus memberStat : poolStat) {
-                        String rawMemberName = nameConversionMap.get(memberStat.getMember().getAddress());
-                        String memberName = extractMemberName(rawMemberName, PATH_SEPARATOR);
-                        String fullMemberName = getFullMemberName(poolName, memberName,
-                                memberStat.getMember().getPort());
-
-                        fullMemberName = changePathSeparator(
-                                fullMemberName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
-
-                        PoolStatus status = convertToStatus(
-                                memberStat.getObject_status().getAvailability_status(),
-                                memberStat.getObject_status().getEnabled_status());
-
-                        incrementTotalMemberAvailabilityStats(poolName, status, totalMemberAvailabilityStats);
-
-                        if (isToMonitor(fullMemberName, poolMemberIncludesPattern)) {
-                            String metricName = String.format("%s%s%s%s",
-                                    poolMetricPrefix, fullMemberName,
-                                    METRIC_PATH_SEPARATOR, STATUS);
-
-                            BigInteger availabilityValue = BigInteger.valueOf(status.getValue());
-                            poolMemberMetrics.put(metricName, availabilityValue);
-                        }
-                    }
-                }
-
-                includeTotalMemberAvailabilityStatsForReportingIfApplicable(poolMetricPrefix,
-                        totalMemberAvailabilityStats, poolMemberMetrics);
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching pool members' status", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching pool members' status", e);
-        }
-    }
-
-    private Map<String, Map<String, BigInteger>> initialiseTotalMemberAvailabilityStats(String[] pools) {
-        Map<String, Map<String, BigInteger>> totalMemberAvailabilityStats = new HashMap<String, Map<String, BigInteger>>();
-
-        for (String poolName : pools) {
-            Map<String, BigInteger> stats = new HashMap<String, BigInteger>();
-            stats.put(TOTAL_NO_OF_MEMBERS_AVAILABLE, BigInteger.ZERO);
-            stats.put(TOTAL_NO_OF_MEMBERS_UNAVAILABLE, BigInteger.ZERO);
-            totalMemberAvailabilityStats.put(insertSeparatorAtStartIfNotThere(poolName, PATH_SEPARATOR),
-                    stats);
-        }
-
-        return totalMemberAvailabilityStats;
-    }
-
-    private void incrementTotalMemberAvailabilityStats(String poolName, PoolStatus status,
-                                                       Map<String, Map<String, BigInteger>> totalMemberAvailabilityStats) {
-
-        Map<String, BigInteger> stats = totalMemberAvailabilityStats.get(poolName);
-
-        if (status == PoolStatus.AVAILABLE_AND_ENABLED) {
-            BigInteger curValue = stats.get(TOTAL_NO_OF_MEMBERS_AVAILABLE);
-            stats.put(TOTAL_NO_OF_MEMBERS_AVAILABLE, curValue.add(BigInteger.ONE));
-        } else {
-            BigInteger curValue = stats.get(TOTAL_NO_OF_MEMBERS_UNAVAILABLE);
-            stats.put(TOTAL_NO_OF_MEMBERS_UNAVAILABLE, curValue.add(BigInteger.ONE));
-        }
-
-        totalMemberAvailabilityStats.put(poolName, stats);
-    }
-
-    private void includeTotalMemberAvailabilityStatsForReportingIfApplicable(String poolMetricPrefix,
-                                                                             Map<String, Map<String, BigInteger>> totalMemberAvailabilityStats,
-                                                                             Map<String, BigInteger> poolMemberMetrics) {
-
-        Set<String> poolNames = totalMemberAvailabilityStats.keySet();
-
-        for (String poolName : poolNames) {
-            String poolNameForMetric = changePathSeparator(poolName, PATH_SEPARATOR, METRIC_PATH_SEPARATOR, true);
-
-            if (isMetricToMonitor(TOTAL_NO_OF_MEMBERS_AVAILABLE, excludePatterns)) {
-                String metricName = String.format("%s%s%s%s",
-                        poolMetricPrefix, poolNameForMetric,
-                        METRIC_PATH_SEPARATOR, TOTAL_NO_OF_MEMBERS_AVAILABLE);
-                poolMemberMetrics.put(metricName, totalMemberAvailabilityStats.get(poolName).get(TOTAL_NO_OF_MEMBERS_AVAILABLE));
-            }
-
-            if (isMetricToMonitor(TOTAL_NO_OF_MEMBERS_UNAVAILABLE, excludePatterns)) {
-                String metricName = String.format("%s%s%s%s",
-                        poolMetricPrefix, poolNameForMetric,
-                        METRIC_PATH_SEPARATOR, TOTAL_NO_OF_MEMBERS_UNAVAILABLE);
-                poolMemberMetrics.put(metricName, totalMemberAvailabilityStats.get(poolName).get(TOTAL_NO_OF_MEMBERS_UNAVAILABLE));
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v11.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__NodeAddressV2__get_address.ashx
-     *
-     */
-    protected Map<String, String> createNameConversionMap(String[] memberNames) throws Exception {
-        String[] ipAddresses = iControlInterfaces.getLocalLBNodeAddressV2().get_address(memberNames);
-
-        Map<String, String> ipToNameMap = Maps.newHashMap();
-
-        if (ArrayUtils.isNotEmpty(ipAddresses)) {
-            int index = 0;
-
-            for (String ipAddress : ipAddresses) {
-                String memberName = memberNames[index++];
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(String.format("Mapping IP [%s] to Name [%s]", ipAddress, memberName));
-                }
-
-                ipToNameMap.put(ipAddress, memberName);
-            }
-        }
-
-        return ipToNameMap;
-    }
-
-    protected String getFullMemberName(String poolName, String memberName, long port) {
-        return String.format("%s%s%s%s%s", poolName, PATH_SEPARATOR, memberName,
-                PATH_SEPARATOR, port);
+        return String.format("%s%s%s%s%s", poolMetricPrefix, poolNameToPrint, METRIC_PATH_SEPARATOR, MEMBERS, poolMemberFullName);
     }
 }

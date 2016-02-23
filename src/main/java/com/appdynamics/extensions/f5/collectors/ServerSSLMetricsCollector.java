@@ -5,27 +5,29 @@ import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.SERVERS;
 import static com.appdynamics.extensions.f5.F5Constants.SSL;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.filterIncludes;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.LocalLBProfileServerSSLProfileServerSSLStatisticEntry;
-import iControl.LocalLBProfileServerSSLProfileServerSSLStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -36,27 +38,25 @@ public class ServerSSLMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(ServerSSLMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
     private Set<String> serverSSLIncludes;
     private Set<String> metricExcludes;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public ServerSSLMetricsCollector(Interfaces iControlInterfaces,
-                                     F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
+    public ServerSSLMetricsCollector(
+            CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
         this.serverSSLIncludes = f5.getServerSSLProfileIncludes();
         this.metricExcludes = metricsFilter.getServerSSLProfileMetricExcludes();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__ProfileServerSSL__get_list.ashx
-     *
-     */
     public Void call() {
         LOGGER.info("Profile Server SSL metrics collector started...");
 
@@ -66,31 +66,53 @@ public class ServerSSLMetricsCollector extends AbstractMetricsCollector {
         }
 
         try {
-            ManagementPartitionAuthZPartition[] partition_list = iControlInterfaces.getManagementPartition().get_partition_list();
 
-            List<String> serverSSLList = new ArrayList<String>();
-            for (ManagementPartitionAuthZPartition partition : partition_list) {
-                iControlInterfaces.getManagementPartition().set_active_partition(partition.getPartition_name());
-                String[] serverSSLs = iControlInterfaces.getLocalLBProfileServerSSL().get_list();
-                serverSSLList.addAll(Arrays.asList(serverSSLs));
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/profile/server-ssl/stats");
+
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+
+            if(response == null) {
+                LOGGER.info("Unable to get any response for server ssl metrics");
+                return null;
             }
 
-            String[] serverSSLs = serverSSLList.toArray(new String[]{});
+            String serverSSLStatsResponse = EntityUtils.toString(response.getEntity());
 
-            if (ArrayUtils.isNotEmpty(serverSSLs)) {
-                Pattern serverSSLIncludesPattern = createPattern(serverSSLIncludes);
-                serverSSLs = filterIncludes(serverSSLs, serverSSLIncludesPattern);
 
-                if (ArrayUtils.isNotEmpty(serverSSLs)) {
-                    collectServerSSLMetrics(serverSSLs);
+            Field nodeName = new Field();
+            nodeName.setFieldName("tmName");
 
-                } else {
-                    LOGGER.info("No Profile Server SSL matched.");
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(nodeName);
+
+            Pattern serverSSLIncludesPattern = createPattern(serverSSLIncludes);
+
+            Stats serverSSLStats = PoolResponseProcessor.processPoolStatsResponse(serverSSLStatsResponse, serverSSLIncludesPattern, keyField);
+
+            Map<String, List<StatEntry>> stats = serverSSLStats.getPoolStats();
+
+            String serverSSLMetricPrefix = getServerSSLMetricPrefix();
+            Pattern excludePatterns = createPattern(metricExcludes);
+
+            for (String serverSSL : stats.keySet()) {
+                String serverSSLName = changePathSeparator(serverSSL, PATH_SEPARATOR,
+                        METRIC_PATH_SEPARATOR, true);
+                List<StatEntry> statEntries = stats.get(serverSSL);
+
+                for (StatEntry stat : statEntries) {
+
+                    if (isMetricToMonitor(stat.getName(), excludePatterns)) {
+                        if (stat.getType() == StatEntry.Type.NUMERIC) {
+                            String metricName = String.format("%s%s%s%s", serverSSLMetricPrefix,
+                                    serverSSLName, METRIC_PATH_SEPARATOR, stat.getName());
+
+                            BigInteger value = BigInteger.valueOf(Long.valueOf(stat.getValue()));
+                            printCollectiveObservedCurrent(metricName, value);
+                        }
+                    }
+
                 }
-            } else {
-                LOGGER.info("No Profile Server SSL found.");
             }
-
 
         } catch (RemoteException e) {
             LOGGER.error("A connection issue occurred while fetching server ssl profile list", e);
@@ -100,45 +122,6 @@ public class ServerSSLMetricsCollector extends AbstractMetricsCollector {
         }
 
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__ProfileServerSSL__get_statistics.ashx
-     *
-     */
-    private void collectServerSSLMetrics(String[] serverSSLs) {
-        try {
-            LocalLBProfileServerSSLProfileServerSSLStatistics sslStats =
-                    iControlInterfaces.getLocalLBProfileServerSSL().get_statistics(serverSSLs);
-
-            if (sslStats != null) {
-                String serverSSLMetricPrefix = getServerSSLMetricPrefix();
-                Pattern excludePatterns = createPattern(metricExcludes);
-
-                for (LocalLBProfileServerSSLProfileServerSSLStatisticEntry entry : sslStats.getStatistics()) {
-                    String profileName = changePathSeparator(entry.getProfile_name(), PATH_SEPARATOR,
-                            METRIC_PATH_SEPARATOR, true);
-
-                    for (CommonStatistic stat : entry.getStatistics()) {
-                        if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
-                            String metricName = String.format("%s%s%s%s", serverSSLMetricPrefix,
-                                    profileName, METRIC_PATH_SEPARATOR, stat.getType().getValue());
-
-                            BigInteger value = convertValue(stat.getValue());
-                            printCollectiveObservedCurrent(metricName, value);
-                        }
-                    }
-                }
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while server ssl statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching server ssl statistics", e);
-        }
     }
 
     private String getServerSSLMetricPrefix() {

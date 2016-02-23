@@ -19,7 +19,7 @@ public class F5MonitorITest {
 		args.put("config-file","src/test/resources/conf/itest-config.yaml");
 		
 		TaskOutput result = classUnderTest.execute(args, null);
-		assertTrue(result.getStatusMessage().contains("successfully completed"));
+		assertTrue(result.getStatusMessage().contains("Initializing F5 Monitoring"));
 	}
 
 }

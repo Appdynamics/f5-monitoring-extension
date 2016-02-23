@@ -2,6 +2,8 @@ package com.appdynamics.extensions.f5.collectors;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,48 +13,48 @@ import com.appdynamics.extensions.f5.F5Constants;
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
-import iControl.CommonStatistic;
-import iControl.CommonStatisticType;
-import iControl.CommonULong64;
-import iControl.Interfaces;
-import iControl.LocalLBRuleBindingStub;
-import iControl.LocalLBRuleRuleStatisticEntry;
-import iControl.LocalLBRuleRuleStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import iControl.ManagementPartitionBindingStub;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class})
 public class IRuleMetricsCollectorTest {
 
     private IRuleMetricsCollector classUnderTest;
 
     @Mock
-    private Interfaces mockIcontrolInterfaces;
+    private CloseableHttpClient httpClient;
 
     @Mock
-    private LocalLBRuleBindingStub mockLocalLBRuleSub;
+    private HttpClientContext httpContext;
 
     @Mock
     private F5 mockF5;
 
     @Mock
     private MetricsFilter mockMetricsFilter;
-
-    @Mock
-    private ManagementPartitionBindingStub mockManagementPartitionBindingStub;
-
-    @Mock
-    private ManagementPartitionAuthZPartition mockManagementPartitionAuthZPartition;
 
     @Mock
     private F5Monitor monitor;
@@ -65,21 +67,27 @@ public class IRuleMetricsCollectorTest {
     @Before
     public void setUp() throws Exception {
         when(mockF5.getDisplayName()).thenReturn("TestF5");
-        when(mockIcontrolInterfaces.getLocalLBRule()).thenReturn(mockLocalLBRuleSub);
-        when(mockIcontrolInterfaces.getManagementPartition()).thenReturn(mockManagementPartitionBindingStub);
-        when(mockManagementPartitionBindingStub.get_partition_list()).thenReturn(new ManagementPartitionAuthZPartition[]{mockManagementPartitionAuthZPartition});
-        when(mockManagementPartitionAuthZPartition.getPartition_name()).thenReturn("TestPartion");
+
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class);
+        when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
+        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn(response);
+        BDDMockito.given(EntityUtils.toString(any(HttpEntity.class))).willReturn("hello");
+
+        Stats stats = getTestStatistics();
+
+        BDDMockito.given(PoolResponseProcessor.processPoolStatsResponse(eq("hello"), any(Pattern.class), any(KeyField.class))).willReturn(stats);
+
         when(monitor.getMetricWriter(anyString(), anyString(), anyString(), anyString())).thenReturn(metricWriter);
 
     }
 
     @Test
     public void testNoIrulesIncluded() throws Exception {
-        classUnderTest = new IRuleMetricsCollector(mockIcontrolInterfaces,
+        classUnderTest = new IRuleMetricsCollector(httpClient, httpContext,
                 mockF5, mockMetricsFilter, monitor, metricPrefix);
 
         classUnderTest.call();
-        //assertEquals(0, result.getMetrics().size());
         verify(metricWriter, never()).printMetric(anyString());
     }
 
@@ -89,31 +97,21 @@ public class IRuleMetricsCollectorTest {
         testIncludes.add(".*");
         when(mockF5.getiRuleIncludes()).thenReturn(testIncludes);
 
-        String[] testProfiles = getTestIruleNames();
-        when(mockLocalLBRuleSub.get_list()).thenReturn(testProfiles);
 
-        LocalLBRuleRuleStatistics testStats = getTestStatistics();
-        when(mockLocalLBRuleSub.get_statistics(any(String[].class))).thenReturn(testStats);
-
-        classUnderTest = new IRuleMetricsCollector(mockIcontrolInterfaces,
-                mockF5, mockMetricsFilter, monitor, metricPrefix);
+        classUnderTest = new IRuleMetricsCollector(httpClient, httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
         classUnderTest.call();
 
-        verify(metricWriter, times(9)).printMetric(anyString());
+        verify(metricWriter, times(6)).printMetric(anyString());
 
-		/*assertEquals(9, result.getMetrics().size());
 
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_APM_activesync|HTTP REQUEST|STATISTIC_RULE_ABORTS"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_APM_activesync|HTTP REQUEST|STATISTIC_RULE_AVERAGE_CYCLES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_APM_activesync|HTTP REQUEST|STATISTIC_RULE_MAXIMUM_CYCLES"));
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_ldap|HTTP REQUEST|STATISTIC_RULE_ABORTS"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_ldap|HTTP REQUEST|STATISTIC_RULE_AVERAGE_CYCLES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_ldap|HTTP REQUEST|STATISTIC_RULE_MAXIMUM_CYCLES"));
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_radius|HTTP REQUEST|STATISTIC_RULE_ABORTS"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_radius|HTTP REQUEST|STATISTIC_RULE_AVERAGE_CYCLES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_radius|HTTP REQUEST|STATISTIC_RULE_MAXIMUM_CYCLES"));*/
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule1|HTTP REQUEST|aborts"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule1|HTTP REQUEST|avgCycles"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule1|HTTP REQUEST|maxCycles"), anyString(), anyString(), anyString());
+
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule2|HTTP REQUEST|aborts"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule2|HTTP REQUEST|avgCycles"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule2|HTTP REQUEST|maxCycles"), anyString(), anyString(), anyString());
+
     }
 
     @Test
@@ -123,89 +121,50 @@ public class IRuleMetricsCollectorTest {
         when(mockF5.getiRuleIncludes()).thenReturn(testIncludes);
 
         Set<String> testMetricExcludes = new HashSet<String>();
-        testMetricExcludes.add("STATISTIC_RULE_ABORTS");
-        testMetricExcludes.add("STATISTIC_RULE_MAXIMUM_CYCLES");
+        testMetricExcludes.add("aborts");
+        testMetricExcludes.add("maxCycles");
         when(mockMetricsFilter.getiRuleMetricExcludes()).thenReturn(testMetricExcludes);
 
-        String[] testProfiles = getTestIruleNames();
-        when(mockLocalLBRuleSub.get_list()).thenReturn(testProfiles);
 
-        LocalLBRuleRuleStatistics testStats = getTestStatistics();
-        when(mockLocalLBRuleSub.get_statistics(any(String[].class))).thenReturn(testStats);
-
-        classUnderTest = new IRuleMetricsCollector(mockIcontrolInterfaces,
-                mockF5, mockMetricsFilter, monitor, metricPrefix);
+        classUnderTest = new IRuleMetricsCollector(httpClient, httpContext, mockF5, mockMetricsFilter, monitor, metricPrefix);
         classUnderTest.call();
 
-        verify(metricWriter, times(3)).printMetric(anyString());
+        verify(metricWriter, times(2)).printMetric(anyString());
 
-		/*assertEquals(3, result.getMetrics().size());
-		
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_APM_activesync|HTTP REQUEST|STATISTIC_RULE_AVERAGE_CYCLES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_ldap|HTTP REQUEST|STATISTIC_RULE_AVERAGE_CYCLES"));
-		assertTrue(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_radius|HTTP REQUEST|STATISTIC_RULE_AVERAGE_CYCLES"));
-		
-		//excluded
-		assertFalse(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_APM_activesync|HTTP REQUEST|STATISTIC_RULE_ABORTS"));
-		assertFalse(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_APM_activesync|HTTP REQUEST|STATISTIC_RULE_MAXIMUM_CYCLES"));
-		assertFalse(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_ldap|HTTP REQUEST|STATISTIC_RULE_ABORTS"));
-		assertFalse(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_ldap|HTTP REQUEST|STATISTIC_RULE_MAXIMUM_CYCLES"));
-		assertFalse(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_radius|HTTP REQUEST|STATISTIC_RULE_ABORTS"));
-		assertFalse(result.getMetrics().containsKey("TestF5|iRules|Common|_sys_auth_radius|HTTP REQUEST|STATISTIC_RULE_MAXIMUM_CYCLES"));*/
+
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule1|HTTP REQUEST|aborts"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule1|HTTP REQUEST|avgCycles"), anyString(), anyString(), anyString());
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule1|HTTP REQUEST|maxCycles"), anyString(), anyString(), anyString());
+
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule2|HTTP REQUEST|aborts"), anyString(), anyString(), anyString());
+        verify(monitor, times(1)).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule2|HTTP REQUEST|avgCycles"), anyString(), anyString(), anyString());
+        verify(monitor, never()).getMetricWriter(eq("Custom Metrics|F5 Monitor|TestF5|iRules|Common|iRule2|HTTP REQUEST|maxCycles"), anyString(), anyString(), anyString());
+
     }
 
-    private LocalLBRuleRuleStatistics getTestStatistics() {
-        String[] testIrules = getTestIruleNames();
-        LocalLBRuleRuleStatistics stats =
-                new LocalLBRuleRuleStatistics();
+    private Stats getTestStatistics() {
+        Stats stats = new Stats();
+        StatEntry statEntry = new StatEntry();
+        statEntry.setName("aborts");
+        statEntry.setValue("20");
+        statEntry.setType(StatEntry.Type.NUMERIC);
+        stats.addStat("Common/iRule1/HTTP REQUEST", statEntry);
+        stats.addStat("Common/iRule2/HTTP REQUEST", statEntry);
 
-        LocalLBRuleRuleStatisticEntry[] entries =
-                new LocalLBRuleRuleStatisticEntry[testIrules.length];
-        stats.setStatistics(entries);
+        StatEntry statEntry1 = new StatEntry();
+        statEntry1.setName("avgCycles");
+        statEntry1.setValue("30");
+        statEntry1.setType(StatEntry.Type.NUMERIC);
+        stats.addStat("Common/iRule1/HTTP REQUEST", statEntry1);
+        stats.addStat("Common/iRule2/HTTP REQUEST", statEntry1);
 
-        CommonStatisticType[] statisticTypes = getTestStatisticTypes();
-
-        for (int iRuleIndex = 0; iRuleIndex < testIrules.length; iRuleIndex++) {
-            LocalLBRuleRuleStatisticEntry entry =
-                    new LocalLBRuleRuleStatisticEntry();
-            entry.setRule_name(testIrules[iRuleIndex]);
-            entry.setEvent_name("HTTP REQUEST");
-            entries[iRuleIndex] = entry;
-
-            CommonStatistic[] commonStats = new CommonStatistic[statisticTypes.length];
-
-            for (int index = 0; index < statisticTypes.length; index++) {
-                CommonStatistic commonStat = new CommonStatistic();
-                commonStat.setType(statisticTypes[index]);
-                commonStat.setValue(getTestValue());
-                commonStats[index] = commonStat;
-            }
-
-            entry.setStatistics(commonStats);
-        }
+        StatEntry statEntry2 = new StatEntry();
+        statEntry2.setName("maxCycles");
+        statEntry2.setValue("30");
+        statEntry2.setType(StatEntry.Type.NUMERIC);
+        stats.addStat("Common/iRule1/HTTP REQUEST", statEntry2);
+        stats.addStat("Common/iRule2/HTTP REQUEST", statEntry2);
 
         return stats;
-    }
-
-    private String[] getTestIruleNames() {
-        String[] testIRuleNames = {"/Common/_sys_APM_activesync",
-                "/Common/_sys_auth_ldap", "/Common/_sys_auth_radius"};
-        return testIRuleNames;
-    }
-
-    private CommonStatisticType[] getTestStatisticTypes() {
-        CommonStatisticType[] testMetricTypes = {
-                CommonStatisticType.STATISTIC_RULE_ABORTS,
-                CommonStatisticType.STATISTIC_RULE_AVERAGE_CYCLES,
-                CommonStatisticType.STATISTIC_RULE_MAXIMUM_CYCLES};
-
-        return testMetricTypes;
-    }
-
-    private CommonULong64 getTestValue() {
-        CommonULong64 testValue = new CommonULong64();
-        testValue.setHigh(new Random(100).nextLong());
-        testValue.setHigh(new Random(10).nextLong());
-        return testValue;
     }
 }

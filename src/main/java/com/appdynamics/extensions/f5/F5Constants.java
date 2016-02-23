@@ -44,6 +44,8 @@ public class F5Constants {
 	public static final String INTERFACES = "Interfaces";
 	
 	public static final String POOLS = "Pools";
+
+	public static final String MEMBERS = "Members";
 	
 	public static final String SNAT_POOLS = "SNAT Pools";
 	

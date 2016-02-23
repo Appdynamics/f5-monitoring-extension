@@ -4,27 +4,29 @@ import static com.appdynamics.extensions.f5.F5Constants.IRULES;
 import static com.appdynamics.extensions.f5.F5Constants.METRIC_PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.F5Constants.PATH_SEPARATOR;
 import static com.appdynamics.extensions.f5.util.F5Util.changePathSeparator;
-import static com.appdynamics.extensions.f5.util.F5Util.convertValue;
 import static com.appdynamics.extensions.f5.util.F5Util.createPattern;
-import static com.appdynamics.extensions.f5.util.F5Util.filterIncludes;
 import static com.appdynamics.extensions.f5.util.F5Util.isMetricToMonitor;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
-import iControl.CommonStatistic;
-import iControl.Interfaces;
-import iControl.LocalLBRuleRuleStatisticEntry;
-import iControl.LocalLBRuleRuleStatistics;
-import iControl.ManagementPartitionAuthZPartition;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.f5.http.HttpExecutor;
+import com.appdynamics.extensions.f5.models.Stats;
+import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.responseProcessor.Field;
+import com.appdynamics.extensions.f5.responseProcessor.KeyField;
+import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -32,27 +34,25 @@ public class IRuleMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(IRuleMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
     private Set<String> iRuleIncludes;
     private Set<String> metricExcludes;
+    private CloseableHttpClient httpClient;
+    private HttpClientContext httpContext;
+    private F5 f5;
 
-    public IRuleMetricsCollector(Interfaces iControlInterfaces,
-                                 F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
+    public IRuleMetricsCollector(
+            CloseableHttpClient httpClient, HttpClientContext httpContext, F5 f5, MetricsFilter metricsFilter, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
         this.iRuleIncludes = f5.getiRuleIncludes();
         this.metricExcludes = metricsFilter.getiRuleMetricExcludes();
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.f5 = f5;
     }
 
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__Rule__get_list.ashx
-     *
-     */
     public Void call() {
         LOGGER.info("iRule metrics collector started...");
 
@@ -63,29 +63,58 @@ public class IRuleMetricsCollector extends AbstractMetricsCollector {
 
         try {
 
-            ManagementPartitionAuthZPartition[] partition_list = iControlInterfaces.getManagementPartition().get_partition_list();
+            HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/rule/stats");
 
-            List<String> iRulesList = new ArrayList<String>();
-            for (ManagementPartitionAuthZPartition partition : partition_list) {
-                iControlInterfaces.getManagementPartition().set_active_partition(partition.getPartition_name());
-                String[] iRules = iControlInterfaces.getLocalLBRule().get_list();
-                iRulesList.addAll(Arrays.asList(iRules));
+            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+
+            if(response == null) {
+                LOGGER.info("Unable to get any response for iRules metrics");
+                return null;
             }
 
-            String[] iRules = iRulesList.toArray(new String[]{});
+            String vertualServerStatsResponse = EntityUtils.toString(response.getEntity());
 
-            if (ArrayUtils.isNotEmpty(iRules)) {
-                Pattern iRuleIncludesPattern = createPattern(iRuleIncludes);
-                iRules = filterIncludes(iRules, iRuleIncludesPattern);
+            Field nodeName = new Field();
+            nodeName.setFieldName("tmName");
 
-                if (ArrayUtils.isNotEmpty(iRules)) {
-                    collectIRuleMetrics(iRules);
+            Field eventType = new Field();
+            eventType.setFieldName("eventType");
 
-                } else {
-                    LOGGER.info("No rule name matched.");
+
+            KeyField keyField = new KeyField();
+            keyField.setFieldNames(nodeName, eventType);
+            keyField.setFieldSeparator("|");
+
+            Pattern virtualServerIncludesPattern = createPattern(iRuleIncludes);
+
+            Stats iRuleStats = PoolResponseProcessor.processPoolStatsResponse(vertualServerStatsResponse, virtualServerIncludesPattern, keyField);
+
+
+            Map<String, List<StatEntry>> stats = iRuleStats.getPoolStats();
+
+            String iRuleMetricPrefix = getIRuleMetricPrefix();
+            Pattern excludePatterns = createPattern(metricExcludes);
+
+            for (String iRule : stats.keySet()) {
+                String iRuleName = changePathSeparator(iRule, PATH_SEPARATOR,
+                        METRIC_PATH_SEPARATOR, true);
+                List<StatEntry> statEntries = stats.get(iRule);
+
+                for (StatEntry stat : statEntries) {
+                    String metricName = stat.getName();
+
+                    if (isMetricToMonitor(metricName, excludePatterns)) {
+                        if (stat.getType() == StatEntry.Type.NUMERIC) {
+                            String fullMetricName = String.format("%s%s%s%s", iRuleMetricPrefix,
+                                    iRuleName,
+                                    METRIC_PATH_SEPARATOR, metricName);
+
+                            BigInteger value = BigInteger.valueOf(Long.valueOf(stat.getValue()));
+                            printCollectiveObservedCurrent(fullMetricName, value);
+                        }
+                    }
+
                 }
-            } else {
-                LOGGER.info("No rule name found.");
             }
 
         } catch (RemoteException e) {
@@ -96,45 +125,6 @@ public class IRuleMetricsCollector extends AbstractMetricsCollector {
         }
 
         return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * Compatible with F5 v9.0
-     * @see https://devcentral.f5.com/wiki/iControl.LocalLB__Rule__get_statistics.ashx
-     *
-     */
-    private void collectIRuleMetrics(String[] iRules) {
-        try {
-            LocalLBRuleRuleStatistics ruleStats = iControlInterfaces.getLocalLBRule().get_statistics(iRules);
-
-            if (ruleStats != null) {
-                String iRuleMetricPrefix = getIRuleMetricPrefix();
-                Pattern excludePatterns = createPattern(metricExcludes);
-
-                for (LocalLBRuleRuleStatisticEntry entry : ruleStats.getStatistics()) {
-                    String ruleName = changePathSeparator(entry.getRule_name(), PATH_SEPARATOR,
-                            METRIC_PATH_SEPARATOR, true);
-
-                    for (CommonStatistic stat : entry.getStatistics()) {
-                        if (isMetricToMonitor(stat.getType().getValue(), excludePatterns)) {
-                            String metricName = String.format("%s%s%s%s%s%s", iRuleMetricPrefix,
-                                    ruleName, METRIC_PATH_SEPARATOR, entry.getEvent_name(),
-                                    METRIC_PATH_SEPARATOR, stat.getType().getValue());
-
-                            BigInteger value = convertValue(stat.getValue());
-                            printCollectiveObservedCurrent(metricName, value);
-                        }
-                    }
-                }
-            }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching rule statistics", e);
-
-        } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching virtual rule statistics", e);
-        }
     }
 
     private String getIRuleMetricPrefix() {

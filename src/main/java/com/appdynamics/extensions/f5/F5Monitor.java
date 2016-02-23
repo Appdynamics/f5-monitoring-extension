@@ -28,7 +28,6 @@ import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
 import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import iControl.Interfaces;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -44,14 +43,11 @@ public class F5Monitor extends AManagedMonitor {
 
     private ExecutorService threadPool;
 
-    final private Interfaces iControlInterfaces;
-
     private STATE state = STATE.NOT_INITIALIZED;
 
     public F5Monitor() {
         LOGGER.info(String.format("Using F5 Monitor Version [%s]",
                 getImplementationVersion()));
-        iControlInterfaces = new Interfaces();
     }
 
     private enum STATE {
@@ -70,6 +66,7 @@ public class F5Monitor extends AManagedMonitor {
 
     public TaskOutput execute(Map<String, String> args,
                               TaskExecutionContext arg1) throws TaskExecutionException {
+
 
         LOGGER.info("Starting F5 Monitoring task");
 
@@ -129,7 +126,7 @@ public class F5Monitor extends AManagedMonitor {
             if (f5s != null && f5s.size() > 0) {
                 F5 f5 = f5s.get(0);
 
-                F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), iControlInterfaces, f5,
+                F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), f5,
                         config.getMetricsFilter(), config.getNumberOfThreadsPerF5(), config.getF5ThreadTimeout());
 
                 task.callSequential();
@@ -154,9 +151,9 @@ public class F5Monitor extends AManagedMonitor {
                 threadFactory);
     }
 
-    private void runConcurrentTasks(Configuration config) {
+    private void runConcurrentTasks(Configuration config) throws TaskExecutionException {
         for (F5 f5 : config.getF5s()) {
-            F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), iControlInterfaces, f5,
+            F5MonitorTask task = new F5MonitorTask(this, getMetricPrefix(config), f5,
                     config.getMetricsFilter(), config.getNumberOfThreadsPerF5(), config.getF5ThreadTimeout());
             threadPool.submit(task);
         }

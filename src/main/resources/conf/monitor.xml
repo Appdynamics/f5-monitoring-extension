@@ -17,7 +17,7 @@
 		</task-arguments>
                 
         <java-task>
-        	<classpath>f5-monitoring-extension.jar;iControl.jar</classpath>
+        	<classpath>f5-monitoring-extension.jar</classpath>
             <impl-class>com.appdynamics.extensions.f5.F5Monitor</impl-class>
         </java-task>
         

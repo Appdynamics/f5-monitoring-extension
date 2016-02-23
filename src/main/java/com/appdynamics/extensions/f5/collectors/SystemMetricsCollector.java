@@ -5,11 +5,7 @@ import static com.appdynamics.extensions.f5.F5Constants.SYSTEM;
 
 import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
-import iControl.Interfaces;
 import org.apache.log4j.Logger;
-
-import java.math.BigInteger;
-import java.rmi.RemoteException;
 
 /**
  * @author Florencio Sarmiento
@@ -18,13 +14,11 @@ public class SystemMetricsCollector extends AbstractMetricsCollector {
 
     public static final Logger LOGGER = Logger.getLogger(SystemMetricsCollector.class);
 
-    private Interfaces iControlInterfaces;
     private String f5DisplayName;
 
-    public SystemMetricsCollector(Interfaces iControlInterfaces, F5 f5, F5Monitor monitor, String metricPrefix) {
+    public SystemMetricsCollector(F5 f5, F5Monitor monitor, String metricPrefix) {
 
         super(monitor, metricPrefix);
-        this.iControlInterfaces = iControlInterfaces;
         this.f5DisplayName = f5.getDisplayName();
     }
 
@@ -37,7 +31,7 @@ public class SystemMetricsCollector extends AbstractMetricsCollector {
     public Void call() {
         LOGGER.info("System uptime metrics collector started...");
 
-        try {
+        /*try {
             BigInteger value = BigInteger.valueOf(iControlInterfaces.getSystemSystemInfo().get_uptime());
             printCollectiveObservedCurrent(getSystemMetricPrefix() + "Uptime (sec)", value);
 
@@ -46,7 +40,7 @@ public class SystemMetricsCollector extends AbstractMetricsCollector {
 
         } catch (Exception e) {
             LOGGER.error("An issue occurred while fetching system uptime", e);
-        }
+        }*/
 
         return null;
     }
