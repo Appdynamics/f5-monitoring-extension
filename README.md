@@ -445,9 +445,9 @@ Always feel free to fork and contribute any changes directly via [GitHub](https:
 
 ##Community
 
-Find out more in the [AppSphere](http://appsphere.appdynamics.com/t5/eXchange/F5-Monitoring-Extension/idi-p/2063) community.
+Find out more in the [AppSphere](https://www.appdynamics.com/community/exchange/extension/f5-monitoring-extension/) community.
 
 ##Support
 
-For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
+For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:help@appdynamics.com).
 
