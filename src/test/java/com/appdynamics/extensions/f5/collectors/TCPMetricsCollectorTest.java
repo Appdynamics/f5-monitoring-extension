@@ -14,7 +14,7 @@ import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
 import com.appdynamics.extensions.f5.http.HttpExecutor;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class})
+@PrepareForTest({HttpExecutor.class, EntityUtils.class, ResponseProcessor.class})
 public class TCPMetricsCollectorTest {
 
     private TCPMetricsCollector classUnderTest;
@@ -68,14 +68,14 @@ public class TCPMetricsCollectorTest {
         when(mockF5.getDisplayName()).thenReturn("TestF5");
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class);
+        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, ResponseProcessor.class);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
-        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn(response);
         BDDMockito.given(EntityUtils.toString(any(HttpEntity.class))).willReturn("hello");
+        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn("hello");
 
         Map<String, BigInteger> poolStats = getTestStatistics();
 
-        BDDMockito.given(PoolResponseProcessor.aggregateStatsResponse(eq("hello"))).willReturn(poolStats);
+        BDDMockito.given(ResponseProcessor.aggregateStatsResponse(eq("hello"))).willReturn(poolStats);
 
         when(monitor.getMetricWriter(anyString(), anyString(), anyString(), anyString())).thenReturn(metricWriter);
 

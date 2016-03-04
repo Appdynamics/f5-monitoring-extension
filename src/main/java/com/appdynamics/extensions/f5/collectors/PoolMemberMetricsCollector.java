@@ -15,16 +15,13 @@ import com.appdynamics.extensions.f5.models.StatEntry;
 import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.Field;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class PoolMemberMetricsCollector {
 
@@ -69,14 +67,16 @@ public class PoolMemberMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/pool/" + poolNameToQuery + "/members/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String poolMemberStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (poolMemberStatsResponse == null) {
                 LOGGER.info("Unable to get any response for pool member metrics");
                 return null;
             }
 
-            String poolStatsResponse = EntityUtils.toString(response.getEntity());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Pool member response for pool [ "+poolNameToQuery+" ] : "+ poolMemberStatsResponse);
+            }
 
             Field nodeName = new Field();
             nodeName.setFieldName("nodeName");
@@ -88,7 +88,7 @@ public class PoolMemberMetricsCollector {
             keyField.setFieldNames(nodeName, port);
             keyField.setFieldSeparator("|");
 
-            Stats poolMemberStats = PoolResponseProcessor.processPoolStatsResponse(poolStatsResponse, poolMemberIncludesPattern, keyField);
+            Stats poolMemberStats = ResponseProcessor.processStatsResponse(poolMemberStatsResponse, poolMemberIncludesPattern, keyField);
 
             if (poolMemberStats != null) {
 
@@ -128,11 +128,8 @@ public class PoolMemberMetricsCollector {
                 }
             }
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching pool members' statistics", e);
-
         } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching pool members' statistics", e);
+            LOGGER.error("An issue occurred while fetching pool members metrics", e);
         }
         return poolMemberMetrics;
     }

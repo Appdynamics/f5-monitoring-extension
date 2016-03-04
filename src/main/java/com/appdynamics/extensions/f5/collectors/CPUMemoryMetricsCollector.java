@@ -10,20 +10,18 @@ import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.http.HttpExecutor;
 import com.appdynamics.extensions.f5.models.HostCPUMemoryStats;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class CPUMemoryMetricsCollector extends AbstractMetricsCollector {
 
@@ -51,17 +49,18 @@ public class CPUMemoryMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/sys/hostInfo");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String hostInfoResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (hostInfoResponse == null) {
                 LOGGER.info("Unable to get any response for CPU and Memory metrics");
                 return null;
             }
 
-            String hostInfoResponse = EntityUtils.toString(response.getEntity());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Host Info for CPU and Memory response : "+ hostInfoResponse);
+            }
 
-
-            List<HostCPUMemoryStats> cpuStatsList = PoolResponseProcessor.parseHostInfoResponse(hostInfoResponse);
+            List<HostCPUMemoryStats> cpuStatsList = ResponseProcessor.parseHostInfoResponse(hostInfoResponse);
             String cpuMetricPrefix = getCPUMetricPrefix();
             String memoryMetricPrefix = getMemoryMetricPrefix();
 
@@ -84,11 +83,8 @@ public class CPUMemoryMetricsCollector extends AbstractMetricsCollector {
 
             }
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching cpu lists", e);
-
         } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching cpu lists", e);
+            LOGGER.error("An issue occurred while fetching cpu metrics", e);
         }
 
         return null;
@@ -103,5 +99,4 @@ public class CPUMemoryMetricsCollector extends AbstractMetricsCollector {
         return String.format("%s%s%s%s%s%s", f5DisplayName, METRIC_PATH_SEPARATOR,
                 "System", METRIC_PATH_SEPARATOR, "Memory", METRIC_PATH_SEPARATOR);
     }
-
 }

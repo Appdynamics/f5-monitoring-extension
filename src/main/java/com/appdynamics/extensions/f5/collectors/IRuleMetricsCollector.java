@@ -11,24 +11,25 @@ import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
 import com.appdynamics.extensions.f5.http.HttpExecutor;
-import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.models.StatEntry;
+import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.Field;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+/**
+ * @author Satish Reddy M
+ */
 
 public class IRuleMetricsCollector extends AbstractMetricsCollector {
 
@@ -65,14 +66,16 @@ public class IRuleMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/rule/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String iRuleStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (iRuleStatsResponse == null) {
                 LOGGER.info("Unable to get any response for iRules metrics");
                 return null;
             }
 
-            String vertualServerStatsResponse = EntityUtils.toString(response.getEntity());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("iRules response : "+ iRuleStatsResponse);
+            }
 
             Field nodeName = new Field();
             nodeName.setFieldName("tmName");
@@ -87,7 +90,7 @@ public class IRuleMetricsCollector extends AbstractMetricsCollector {
 
             Pattern virtualServerIncludesPattern = createPattern(iRuleIncludes);
 
-            Stats iRuleStats = PoolResponseProcessor.processPoolStatsResponse(vertualServerStatsResponse, virtualServerIncludesPattern, keyField);
+            Stats iRuleStats = ResponseProcessor.processStatsResponse(iRuleStatsResponse, virtualServerIncludesPattern, keyField);
 
 
             Map<String, List<StatEntry>> stats = iRuleStats.getPoolStats();
@@ -117,11 +120,8 @@ public class IRuleMetricsCollector extends AbstractMetricsCollector {
                 }
             }
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching rule name list", e);
-
         } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching rule name list", e);
+            LOGGER.error("An issue occurred while fetching iRule metrics", e);
         }
 
         return null;

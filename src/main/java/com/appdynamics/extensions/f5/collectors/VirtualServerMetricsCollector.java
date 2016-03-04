@@ -15,16 +15,13 @@ import com.appdynamics.extensions.f5.models.StatEntry;
 import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.Field;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +29,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
 
@@ -68,14 +66,16 @@ public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/virtual/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String virtualServerStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (virtualServerStatsResponse == null) {
                 LOGGER.info("Unable to get any response for virtual server metrics");
                 return null;
             }
 
-            String virtualServerStatsResponse = EntityUtils.toString(response.getEntity());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Virtual server response : "+ virtualServerStatsResponse);
+            }
 
             Field nodeName = new Field();
             nodeName.setFieldName("tmName");
@@ -86,7 +86,7 @@ public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
 
             Pattern virtualServerIncludesPattern = createPattern(virtualServerIncludes);
 
-            Stats poolMemberStats = PoolResponseProcessor.processPoolStatsResponse(virtualServerStatsResponse, virtualServerIncludesPattern, keyField);
+            Stats poolMemberStats = ResponseProcessor.processStatsResponse(virtualServerStatsResponse, virtualServerIncludesPattern, keyField);
 
 
             String virtualServerMetricPrefix = getVirtualServerMetricPrefix();
@@ -113,9 +113,6 @@ public class VirtualServerMetricsCollector extends AbstractMetricsCollector {
 
                 }
             }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching virtual server list", e);
 
         } catch (Exception e) {
             LOGGER.error("An issue occurred while fetching virtual server list", e);

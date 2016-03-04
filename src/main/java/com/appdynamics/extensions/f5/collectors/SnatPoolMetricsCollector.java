@@ -15,16 +15,13 @@ import com.appdynamics.extensions.f5.models.StatEntry;
 import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.Field;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +29,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
 
@@ -70,15 +68,16 @@ public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/snatpool/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String snatPoolStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (snatPoolStatsResponse == null) {
                 LOGGER.info("Unable to get any response for snat pool metrics");
                 return null;
             }
 
-            String poolStatsResponse = EntityUtils.toString(response.getEntity());
-
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Snat Pool response : "+ snatPoolStatsResponse);
+            }
 
             Field field = new Field();
             field.setFieldName("tmName");
@@ -87,7 +86,7 @@ public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
             keyField.setFieldNames(field);
 
 
-            Stats stats = PoolResponseProcessor.processPoolStatsResponse(poolStatsResponse, poolIncludesPattern, keyField);
+            Stats stats = ResponseProcessor.processStatsResponse(snatPoolStatsResponse, poolIncludesPattern, keyField);
 
 
             if (stats != null) {
@@ -114,9 +113,6 @@ public class SnatPoolMetricsCollector extends AbstractMetricsCollector {
                     }
                 }
             }
-
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching snat pool list", e);
 
         } catch (Exception e) {
             LOGGER.error("An issue occurred while fetching snat pool list", e);

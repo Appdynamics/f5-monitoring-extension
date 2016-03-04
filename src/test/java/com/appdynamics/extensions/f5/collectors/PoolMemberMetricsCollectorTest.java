@@ -13,9 +13,8 @@ import com.appdynamics.extensions.f5.http.HttpExecutor;
 import com.appdynamics.extensions.f5.models.StatEntry;
 import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -37,7 +36,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class})
+@PrepareForTest({HttpExecutor.class, EntityUtils.class, ResponseProcessor.class})
 public class PoolMemberMetricsCollectorTest {
 
     private PoolMemberMetricsCollector classUnderTest;
@@ -61,14 +60,14 @@ public class PoolMemberMetricsCollectorTest {
 
 
         CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, PoolResponseProcessor.class);
+        PowerMockito.mockStatic(HttpExecutor.class, EntityUtils.class, ResponseProcessor.class);
         when(httpClient.execute(any(HttpUriRequest.class))).thenReturn(response);
-        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn(response);
         BDDMockito.given(EntityUtils.toString(any(HttpEntity.class))).willReturn("hello");
+        BDDMockito.given(HttpExecutor.execute(eq(httpClient), any(HttpUriRequest.class), eq(httpContext))).willReturn("hello");
 
         Stats stats = getTestStatistics();
 
-        BDDMockito.given(PoolResponseProcessor.processPoolStatsResponse(eq("hello"), any(Pattern.class), any(KeyField.class))).willReturn(stats);
+        BDDMockito.given(ResponseProcessor.processStatsResponse(eq("hello"), any(Pattern.class), any(KeyField.class))).willReturn(stats);
     }
 
     @Test

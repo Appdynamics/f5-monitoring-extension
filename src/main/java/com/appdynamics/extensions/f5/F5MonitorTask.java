@@ -22,12 +22,10 @@ import com.appdynamics.extensions.f5.http.HttpExecutor;
 import com.appdynamics.extensions.http.Http4ClientBuilder;
 import com.google.common.collect.Maps;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
@@ -235,18 +233,12 @@ public class F5MonitorTask implements Callable<Boolean> {
 
         try {
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm");
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String response = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
             if (response == null) {
-                LOGGER.info("Unable to get any response from F5");
-                return false;
-            }
-
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                success = true;
+                success = false;
             } else {
-                LOGGER.error("Received response code [" + statusCode + "] when tried to connect to F5");
+                success = true;
             }
 
         } catch (Exception e) {

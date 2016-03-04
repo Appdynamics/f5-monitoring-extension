@@ -9,22 +9,20 @@ import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.config.MetricsFilter;
 import com.appdynamics.extensions.f5.http.HttpExecutor;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class TCPMetricsCollector extends AbstractMetricsCollector {
 
@@ -54,17 +52,18 @@ public class TCPMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/profile/tcp/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String tcpStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (tcpStatsResponse == null) {
                 LOGGER.info("Unable to get any response for TCP metrics");
                 return null;
             }
 
-            String tcpStatsResponse = EntityUtils.toString(response.getEntity());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("TCP profile response : "+ tcpStatsResponse);
+            }
 
-
-            Map<String, BigInteger> aggregatedStats = PoolResponseProcessor.aggregateStatsResponse(tcpStatsResponse);
+            Map<String, BigInteger> aggregatedStats = ResponseProcessor.aggregateStatsResponse(tcpStatsResponse);
 
             String tcpMetricPrefix = getTCPMetricPrefix();
             Pattern excludePatterns = createPattern(metricExcludes);
@@ -80,8 +79,6 @@ public class TCPMetricsCollector extends AbstractMetricsCollector {
 
             }
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching tcp statistics", e);
         } catch (Exception e) {
             LOGGER.error("An issue occurred while fetching tcp statistics", e);
         }

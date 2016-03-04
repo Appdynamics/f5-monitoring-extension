@@ -20,9 +20,9 @@ import java.util.regex.Pattern;
 /**
  * @author Satish Muddam
  */
-public class PoolResponseProcessor {
+public class ResponseProcessor {
 
-    public static Stats processPoolStatsResponse(String poolStatsResponse, Pattern poolIncludesPattern, KeyField keyField) {
+    public static Stats processStatsResponse(String poolStatsResponse, Pattern poolIncludesPattern, KeyField keyField) {
         JSONObject object = new JSONObject(poolStatsResponse);
 
         Stats stats = new Stats();
@@ -111,7 +111,7 @@ public class PoolResponseProcessor {
         return aggregatedStats;
     }
 
-    public PoolResponseProcessor() {
+    public ResponseProcessor() {
     }
 
     public static List<HostCPUMemoryStats> parseHostInfoResponse(String hostInfoResponse) {

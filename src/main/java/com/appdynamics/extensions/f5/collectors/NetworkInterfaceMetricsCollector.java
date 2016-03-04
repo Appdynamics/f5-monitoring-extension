@@ -15,17 +15,14 @@ import com.appdynamics.extensions.f5.models.StatEntry;
 import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.Field;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import com.appdynamics.extensions.f5.util.F5Util.NetworkInterfaceStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
 
@@ -69,15 +67,16 @@ public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/net/interface/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String networkInterfaceStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (networkInterfaceStatsResponse == null) {
                 LOGGER.info("Unable to get any response for network interface metrics");
                 return null;
             }
 
-            String networkInterfaceStatsResponse = EntityUtils.toString(response.getEntity());
-
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Network Interface response : "+ networkInterfaceStatsResponse);
+            }
 
             Field nodeName = new Field();
             nodeName.setFieldName("tmName");
@@ -87,7 +86,7 @@ public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
 
             Pattern networkInterfaceIncludesPattern = createPattern(networkInterfaceIncludes);
 
-            Stats networkInterfaceStats = PoolResponseProcessor.processPoolStatsResponse(networkInterfaceStatsResponse, networkInterfaceIncludesPattern, keyField);
+            Stats networkInterfaceStats = ResponseProcessor.processStatsResponse(networkInterfaceStatsResponse, networkInterfaceIncludesPattern, keyField);
 
 
             Map<String, List<StatEntry>> stats = networkInterfaceStats.getPoolStats();
@@ -123,11 +122,8 @@ public class NetworkInterfaceMetricsCollector extends AbstractMetricsCollector {
                     }
                 }
             }
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching network interface list", e);
-
         } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching network interface list", e);
+            LOGGER.error("An issue occurred while fetching network interface metrics", e);
         }
 
         return null;

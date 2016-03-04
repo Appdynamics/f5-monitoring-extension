@@ -16,16 +16,13 @@ import com.appdynamics.extensions.f5.models.StatEntry;
 import com.appdynamics.extensions.f5.models.Stats;
 import com.appdynamics.extensions.f5.responseProcessor.Field;
 import com.appdynamics.extensions.f5.responseProcessor.KeyField;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class ClientSSLMetricsCollector extends AbstractMetricsCollector {
 
@@ -68,15 +66,16 @@ public class ClientSSLMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/ltm/profile/client-ssl/stats");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String clientSSLStatsResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (clientSSLStatsResponse == null) {
                 LOGGER.info("Unable to get any response for client ssl metrics");
                 return null;
             }
 
-            String clientSSLStatsResponse = EntityUtils.toString(response.getEntity());
-
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Client SSL Profile response : "+ clientSSLStatsResponse);
+            }
 
             Field nodeName = new Field();
             nodeName.setFieldName("tmName");
@@ -86,7 +85,7 @@ public class ClientSSLMetricsCollector extends AbstractMetricsCollector {
 
             Pattern clientSSLIncludesPattern = createPattern(clientSSLIncludes);
 
-            Stats clientSSLStats = PoolResponseProcessor.processPoolStatsResponse(clientSSLStatsResponse, clientSSLIncludesPattern, keyField);
+            Stats clientSSLStats = ResponseProcessor.processStatsResponse(clientSSLStatsResponse, clientSSLIncludesPattern, keyField);
 
 
             Map<String, List<StatEntry>> stats = clientSSLStats.getPoolStats();
@@ -117,11 +116,8 @@ public class ClientSSLMetricsCollector extends AbstractMetricsCollector {
                 }
             }
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching client ssl profile list", e);
-
         } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching client ssl profile list", e);
+            LOGGER.error("An issue occurred while fetching client ssl profile metrics", e);
         }
 
         return null;
@@ -131,5 +127,4 @@ public class ClientSSLMetricsCollector extends AbstractMetricsCollector {
         return String.format("%s%s%s%s%s", f5DisplayName, METRIC_PATH_SEPARATOR, SSL,
                 METRIC_PATH_SEPARATOR, CLIENTS);
     }
-
 }

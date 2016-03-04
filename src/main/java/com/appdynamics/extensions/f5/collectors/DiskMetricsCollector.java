@@ -8,19 +8,17 @@ import com.appdynamics.extensions.f5.F5Monitor;
 import com.appdynamics.extensions.f5.config.F5;
 import com.appdynamics.extensions.f5.http.HttpExecutor;
 import com.appdynamics.extensions.f5.models.DiskStats;
-import com.appdynamics.extensions.f5.responseProcessor.PoolResponseProcessor;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.appdynamics.extensions.f5.responseProcessor.ResponseProcessor;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
  * @author Florencio Sarmiento
+ * @author Satish Reddy M
  */
 public class DiskMetricsCollector extends AbstractMetricsCollector {
 
@@ -47,17 +45,18 @@ public class DiskMetricsCollector extends AbstractMetricsCollector {
 
             HttpGet httpGet = new HttpGet("https://" + f5.getHostname() + "/mgmt/tm/sys/disk/logical-disk");
 
-            CloseableHttpResponse response = HttpExecutor.execute(httpClient, httpGet, httpContext);
+            String logicalDisksResponse = HttpExecutor.execute(httpClient, httpGet, httpContext);
 
-            if(response == null) {
+            if (logicalDisksResponse == null) {
                 LOGGER.info("Unable to get any response for disk metrics");
                 return null;
             }
 
-            String logicalDisksResponse = EntityUtils.toString(response.getEntity());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Disk response : "+ logicalDisksResponse);
+            }
 
-
-            List<DiskStats> diskStatses = PoolResponseProcessor.parseDisksResponse(logicalDisksResponse);
+            List<DiskStats> diskStatses = ResponseProcessor.parseDisksResponse(logicalDisksResponse);
             String diskMetricPrefix = getDiskMetricPrefix();
 
             for (DiskStats diskStats : diskStatses) {
@@ -80,11 +79,8 @@ public class DiskMetricsCollector extends AbstractMetricsCollector {
                 printCollectiveObservedCurrent(spaceReservedMetric, diskStats.getReserved());
             }
 
-        } catch (RemoteException e) {
-            LOGGER.error("A connection issue occurred while fetching disk list", e);
-
         } catch (Exception e) {
-            LOGGER.error("An issue occurred while fetching disk list", e);
+            LOGGER.error("An issue occurred while fetching disk metrics", e);
         }
 
         return null;
