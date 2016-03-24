@@ -397,7 +397,7 @@ public class NewF5MonitorTask implements Runnable {
     private Map getFilter(Stat stat) {
         Map filter = (Map) YmlUtils.getNestedObject(server, "filter", stat.getFilterName());
         if (filter == null) {
-            filter = (Map) YmlUtils.getNestedObject(configuration.getConfig(), "filter", stat.getFilterName());
+            filter = (Map) YmlUtils.getNestedObject(configuration.getConfigYml(), "filter", stat.getFilterName());
         }
         return filter;
     }

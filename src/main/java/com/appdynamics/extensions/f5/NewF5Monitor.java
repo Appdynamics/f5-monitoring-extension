@@ -46,7 +46,7 @@ public class NewF5Monitor extends AManagedMonitor {
         logger.debug("The raw arguments are {}", map);
         try {
             initialize(map);
-            Map<String, ?> config = configuration.getConfig();
+            Map<String, ?> config = configuration.getConfigYml();
             Stat[] stats = ((Stat.Stats) configuration.getMetricsXmlConfiguration()).getStats();
             if (stats != null && stats.length > 0) {
                 List<Map> servers = (List) config.get("servers");

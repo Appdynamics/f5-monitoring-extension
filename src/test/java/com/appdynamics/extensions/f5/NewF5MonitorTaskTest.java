@@ -46,7 +46,7 @@ public class NewF5MonitorTaskTest {
         conf.setMetricWriter(writer);
         Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXmlConfiguration();
         Stat[] stats = wrapper.getStats();
-        List servers = (List) conf.getConfig().get("servers");
+        List servers = (List) conf.getConfigYml().get("servers");
         for (Stat stat : stats) {
             NewF5MonitorTask task = new NewF5MonitorTask(conf, (Map) servers.get(0), stat);
             task = Mockito.spy(task);
@@ -83,7 +83,7 @@ public class NewF5MonitorTaskTest {
         conf.setMetricWriter(writer);
         Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXmlConfiguration();
         Stat[] stats = wrapper.getStats();
-        List servers = (List) conf.getConfig().get("servers");
+        List servers = (List) conf.getConfigYml().get("servers");
         NewF5MonitorTask task = new NewF5MonitorTask(conf, (Map) servers.get(0), stats[0]);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readValue(new FileInputStream("src/test/resources/output/logical-disk.json"), JsonNode.class);
@@ -102,7 +102,7 @@ public class NewF5MonitorTaskTest {
         conf.setMetricWriter(writer);
         Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXmlConfiguration();
         Stat[] stats = wrapper.getStats();
-        List servers = (List) conf.getConfig().get("servers");
+        List servers = (List) conf.getConfigYml().get("servers");
         NewF5MonitorTask task = new NewF5MonitorTask(conf, (Map) servers.get(0), stats[0]);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readValue(new FileInputStream("src/test/resources/output/hostInfo.json"), JsonNode.class);
