@@ -4,14 +4,15 @@
 <log4j:configuration>
 	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ABSOLUTE}|%p|%C|%m%n" />
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p [%t] %c{1} - %m%n" />
 		</layout>
 	</appender>
 	
-	<logger name="com.singularity" additivity="false">
+	<logger name="com.appdynamics" additivity="false">
         <level value="debug"/>
         <appender-ref ref="stdout" />
     </logger>
+
 
 	<root>
 		<priority value="error"></priority>

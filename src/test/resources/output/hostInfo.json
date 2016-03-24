@@ -1,0 +1,465 @@
+{
+  "kind": "tm:sys:host-info:host-infostats",
+  "selfLink": "https://localhost/mgmt/tm/sys/host-info?ver=12.0.0",
+  "entries": {
+    "https://localhost/mgmt/tm/sys/host-info/0": {
+      "nestedStats": {
+        "entries": {
+          "activeCpuCount": {
+            "value": 4
+          },
+          "cpuCount": {
+            "value": 4
+          },
+          "https://localhost/mgmt/tm/sys/hostInfo/0/cpuInfo": {
+            "nestedStats": {
+              "entries": {
+                "https://localhost/mgmt/tm/sys/hostInfo/0/cpuInfo/0": {
+                  "nestedStats": {
+                    "entries": {
+                      "cpuId": {
+                        "value": 0
+                      },
+                      "fiveMinAvgIdle": {
+                        "value": 80
+                      },
+                      "fiveMinAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveMinAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSystem": {
+                        "value": 3
+                      },
+                      "fiveMinAvgUser": {
+                        "value": 10
+                      },
+                      "fiveSecAvgIdle": {
+                        "value": 79
+                      },
+                      "fiveSecAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveSecAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSystem": {
+                        "value": 4
+                      },
+                      "fiveSecAvgUser": {
+                        "value": 9
+                      },
+                      "idle": {
+                        "value": 124978148
+                      },
+                      "iowait": {
+                        "value": 346113
+                      },
+                      "irq": {
+                        "value": 160120
+                      },
+                      "niced": {
+                        "value": 93126
+                      },
+                      "oneMinAvgIdle": {
+                        "value": 79
+                      },
+                      "oneMinAvgIowait": {
+                        "value": 0
+                      },
+                      "oneMinAvgIrq": {
+                        "value": 0
+                      },
+                      "oneMinAvgNiced": {
+                        "value": 1
+                      },
+                      "oneMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "oneMinAvgStolen": {
+                        "value": 0
+                      },
+                      "oneMinAvgSystem": {
+                        "value": 3
+                      },
+                      "oneMinAvgUser": {
+                        "value": 10
+                      },
+                      "softirq": {
+                        "value": 68142
+                      },
+                      "stolen": {
+                        "value": 0
+                      },
+                      "system": {
+                        "value": 4617817
+                      },
+                      "usageRatio": {
+                        "value": 14
+                      },
+                      "user": {
+                        "value": 14020764
+                      }
+                    }
+                  }
+                },
+                "https://localhost/mgmt/tm/sys/hostInfo/0/cpuInfo/1": {
+                  "nestedStats": {
+                    "entries": {
+                      "cpuId": {
+                        "value": 1
+                      },
+                      "fiveMinAvgIdle": {
+                        "value": 79
+                      },
+                      "fiveMinAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveMinAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSystem": {
+                        "value": 3
+                      },
+                      "fiveMinAvgUser": {
+                        "value": 11
+                      },
+                      "fiveSecAvgIdle": {
+                        "value": 79
+                      },
+                      "fiveSecAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveSecAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSystem": {
+                        "value": 3
+                      },
+                      "fiveSecAvgUser": {
+                        "value": 13
+                      },
+                      "idle": {
+                        "value": 124025625
+                      },
+                      "iowait": {
+                        "value": 56496
+                      },
+                      "irq": {
+                        "value": 0
+                      },
+                      "niced": {
+                        "value": 719315
+                      },
+                      "oneMinAvgIdle": {
+                        "value": 77
+                      },
+                      "oneMinAvgIowait": {
+                        "value": 0
+                      },
+                      "oneMinAvgIrq": {
+                        "value": 0
+                      },
+                      "oneMinAvgNiced": {
+                        "value": 0
+                      },
+                      "oneMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "oneMinAvgStolen": {
+                        "value": 0
+                      },
+                      "oneMinAvgSystem": {
+                        "value": 3
+                      },
+                      "oneMinAvgUser": {
+                        "value": 13
+                      },
+                      "softirq": {
+                        "value": 35630
+                      },
+                      "stolen": {
+                        "value": 0
+                      },
+                      "system": {
+                        "value": 3629070
+                      },
+                      "usageRatio": {
+                        "value": 16
+                      },
+                      "user": {
+                        "value": 15095029
+                      }
+                    }
+                  }
+                },
+                "https://localhost/mgmt/tm/sys/hostInfo/0/cpuInfo/2": {
+                  "nestedStats": {
+                    "entries": {
+                      "cpuId": {
+                        "value": 2
+                      },
+                      "fiveMinAvgIdle": {
+                        "value": 77
+                      },
+                      "fiveMinAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveMinAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSystem": {
+                        "value": 3
+                      },
+                      "fiveMinAvgUser": {
+                        "value": 13
+                      },
+                      "fiveSecAvgIdle": {
+                        "value": 67
+                      },
+                      "fiveSecAvgIowait": {
+                        "value": 1
+                      },
+                      "fiveSecAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSystem": {
+                        "value": 6
+                      },
+                      "fiveSecAvgUser": {
+                        "value": 23
+                      },
+                      "idle": {
+                        "value": 123851828
+                      },
+                      "iowait": {
+                        "value": 277734
+                      },
+                      "irq": {
+                        "value": 32
+                      },
+                      "niced": {
+                        "value": 113107
+                      },
+                      "oneMinAvgIdle": {
+                        "value": 79
+                      },
+                      "oneMinAvgIowait": {
+                        "value": 0
+                      },
+                      "oneMinAvgIrq": {
+                        "value": 0
+                      },
+                      "oneMinAvgNiced": {
+                        "value": 0
+                      },
+                      "oneMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "oneMinAvgStolen": {
+                        "value": 0
+                      },
+                      "oneMinAvgSystem": {
+                        "value": 2
+                      },
+                      "oneMinAvgUser": {
+                        "value": 12
+                      },
+                      "softirq": {
+                        "value": 21491
+                      },
+                      "stolen": {
+                        "value": 0
+                      },
+                      "system": {
+                        "value": 3635706
+                      },
+                      "usageRatio": {
+                        "value": 29
+                      },
+                      "user": {
+                        "value": 15831614
+                      }
+                    }
+                  }
+                },
+                "https://localhost/mgmt/tm/sys/hostInfo/0/cpuInfo/3": {
+                  "nestedStats": {
+                    "entries": {
+                      "cpuId": {
+                        "value": 3
+                      },
+                      "fiveMinAvgIdle": {
+                        "value": 75
+                      },
+                      "fiveMinAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveMinAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveMinAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveMinAvgSystem": {
+                        "value": 4
+                      },
+                      "fiveMinAvgUser": {
+                        "value": 14
+                      },
+                      "fiveSecAvgIdle": {
+                        "value": 69
+                      },
+                      "fiveSecAvgIowait": {
+                        "value": 0
+                      },
+                      "fiveSecAvgIrq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgNiced": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSoftirq": {
+                        "value": 0
+                      },
+                      "fiveSecAvgStolen": {
+                        "value": 0
+                      },
+                      "fiveSecAvgSystem": {
+                        "value": 5
+                      },
+                      "fiveSecAvgUser": {
+                        "value": 19
+                      },
+                      "idle": {
+                        "value": 124012708
+                      },
+                      "iowait": {
+                        "value": 56060
+                      },
+                      "irq": {
+                        "value": 0
+                      },
+                      "niced": {
+                        "value": 127539
+                      },
+                      "oneMinAvgIdle": {
+                        "value": 75
+                      },
+                      "oneMinAvgIowait": {
+                        "value": 0
+                      },
+                      "oneMinAvgIrq": {
+                        "value": 0
+                      },
+                      "oneMinAvgNiced": {
+                        "value": 0
+                      },
+                      "oneMinAvgSoftirq": {
+                        "value": 0
+                      },
+                      "oneMinAvgStolen": {
+                        "value": 0
+                      },
+                      "oneMinAvgSystem": {
+                        "value": 4
+                      },
+                      "oneMinAvgUser": {
+                        "value": 14
+                      },
+                      "softirq": {
+                        "value": 40488
+                      },
+                      "stolen": {
+                        "value": 0
+                      },
+                      "system": {
+                        "value": 3714655
+                      },
+                      "usageRatio": {
+                        "value": 25
+                      },
+                      "user": {
+                        "value": 15714406
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "hostId": {
+            "description": "0"
+          },
+          "memoryTotal": {
+            "value": 8394092544
+          },
+          "memoryUsed": {
+            "value": 1798312384
+          }
+        }
+      }
+    }
+  }
+}

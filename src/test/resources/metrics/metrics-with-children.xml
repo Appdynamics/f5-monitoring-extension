@@ -1,0 +1,36 @@
+<stats>
+    <stat url="mgmt/tm/sys/disk/logical-disk" label="Logical Disks" filter-name="logicalDisks"
+          children="items" metric-type="AVG.AVG.COL">
+        <naming attrs="name"/>
+        <metric attr="vgFree"/>
+    </stat>
+    <stat url="mgmt/tm/net/interface/stats" label="Network Interfaces" filter-name="networkInterfaces"
+          children="entries" metric-type="AVG.AVG.COL">
+        <naming use-entry-name="false" attrs="nestedStats|entries|tmName|description"/>
+        <metric attr="nestedStats|entries|counters.bitsIn" label="Incoming MB" multiplier="1.25e-7"
+                calculate-per-min="true" show-only-per-min="true"/>
+        <metric attr="nestedStats|entries|counters.bitsOut" label="Outgoing MB" multiplier="1.25e-7"
+                calculate-per-min="true" show-only-per-min="true"/>
+        <metric attr="nestedStats|entries|counters.dropsAll" label="Packets Dropped" calculate-per-min="true"
+                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"/>
+        <metric attr="nestedStats|entries|counters.errorsAll" label="Errors" calculate-per-min="true"
+                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"/>
+        <metric attr="nestedStats|entries|status" label="Status">
+            <converter str="up" value="1"/>
+            <converter str="$default" value="0"/>
+        </metric>
+    </stat>
+    <stat url="mgmt/tm/sys/hostInfo" label="Hosts" filter-name="hostInfo"
+          children="entries" metric-type="AVG.AVG.COL">
+        <naming attrs="nestedStats|entries|hostId"/>
+        <metric attr="nestedStats|entries|activeCpuCount" label="Active CPU Count"/>
+        <metric attr="nestedStats|entries|cpuCount" label="Total CPU Count"/>
+        <metric attr="nestedStats|entries|memoryTotal" label="Total Memory" multiplier="1e-6"/>
+        <metric attr="nestedStats|entries|memoryUsed" label="Used Memory" multiplier="1e-6"/>
+        <stat label="CPU" filter-name="perCpu" children="nestedStats|entries|$$NAME|nestedStats|entries|$$NAME"
+              metric-type="AVG.AVG.IND">
+            <naming attrs="nestedStats|entries|cpuId"/>
+            <metric attr="nestedStats|entries|oneMinAvgIdle" aggregate="true"/>
+        </stat>
+    </stat>
+</stats>

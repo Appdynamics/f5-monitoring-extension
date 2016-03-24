@@ -1,0 +1,30 @@
+{
+  "kind": "tm:sys:disk:logical-disk:logical-diskcollectionstate",
+  "selfLink": "https://localhost/mgmt/tm/sys/disk/logical-disk?ver=12.0.0",
+  "items": [
+    {
+      "kind": "tm:sys:disk:logical-disk:logical-diskstate",
+      "name": "CF1",
+      "fullPath": "CF1",
+      "generation": 59,
+      "selfLink": "https://localhost/mgmt/tm/sys/disk/logical-disk/CF1?ver=12.0.0",
+      "mode": "control",
+      "size": 7815,
+      "vgFree": 6476,
+      "vgInUse": 200,
+      "vgReserved": 1563
+    },
+    {
+      "kind": "tm:sys:disk:logical-disk:logical-diskstate",
+      "name": "HD1",
+      "fullPath": "HD1",
+      "generation": 59,
+      "selfLink": "https://localhost/mgmt/tm/sys/disk/logical-disk/HD1?ver=12.0.0",
+      "mode": "mixed",
+      "size": 286168,
+      "vgFree": 213292,
+      "vgInUse": 71392,
+      "vgReserved": 30720
+    }
+  ]
+}

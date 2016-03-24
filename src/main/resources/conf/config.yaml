@@ -1,49 +1,66 @@
-f5s:
-  - name: "AppD F5 - 13"
-    hostname: ""
-    username: ""
-    password: ""
-    passwordEncrypted: ""
-    encryptionKey: ""
-    poolIncludes: [ ".*" ]
-    poolMemberIncludes: [ ".*" ]
-    snatPoolIncludes: [ ".*" ]
-    virtualServerIncludes: [ ".*" ]
-    iRuleIncludes: [ ".*" ]
-    clientSSLProfileIncludes: [ ".*" ]
-    serverSSLProfileIncludes: [ ".*" ]
-    networkInterfaceIncludes: [ ".*" ]
-
-
-# Global Metrics Filter - exclude patterns for unwanted metrics
-# This filter will apply to all F5 instances configured above
-metricsFilter:
-    poolMetricExcludes: [ ]
-    snatPoolMetricExcludes: [ ]
-    virtualServerMetricExcludes: [ ]
-    iRuleMetricExcludes: [ ]
-    clientSSLProfileMetricExcludes: [ ]
-    serverSSLProfileMetricExcludes: [ ]
-    networkInterfaceMetricExcludes: [ ]
-    tcpMetricExcludes: [ ]
-    httpMetricExcludes: [ ]
-    httpCompressionMetricExcludes: [ ]
-
-# Number of concurrent threads for 
-# dealing with multiple F5 instances
-# Note: You don't necessarily have to match the no of threads
-# to the no of F5 instances configured above
-# unless you have a lot of CPUs in your machine    
-numberOfF5Threads: 3
-
-# Number concurrent threads per F5 used in fetching metrics
-numberOfThreadsPerF5: 5
-
-#F5 thread timeout in seconds
-f5ThreadTimeout: 30
-
-# Total no of threads = (numberOfF5Threads * numberOfThreadsPerF5) + 1 (main)
-
-#prefix used to show up metrics in AppDynamics 
+#prefix used to show up metrics in AppDynamics
 metricPrefix:  "Custom Metrics|F5 Monitor|"
 
+#This will create it in specific Tier. Replace <TIER_NAME>
+#metricPrefix:  "Server|Component:<TIER_NAME>|Custom Metrics|F5 Monitor|"
+
+servers:
+  - uri: ""
+    name: "" #Optional if only one server
+    username: "user"
+    password: "password"
+#    filter:
+#      pools:
+#        includes: [.*]
+
+connection:
+  socketTimeout: 2000
+  connectTimeout: 3000
+  sslCertCheckEnabled: false
+  sslVerifyHostname: false
+
+numberOfThreads: 5
+encryptionKey: "welcome"
+
+# Filters are applied on the name of the member. All the possible urls are given below.
+filter:
+  #The / is replaced by ~ eg: ~Common~Pool
+  pools:
+    includes: [".*"]
+  #The format is MEMBERNAME:PORT eg. ~Common~dev:8084
+  poolMembers:
+    includes: [".*"]
+  rules:
+    includes: [".*"]
+  clientSSLProfile:
+    includes: [".*"]
+  serverSSLProfile:
+    includes: [".*"]
+  networkInterfaces:
+    includes: [".*"]
+  tcp:
+    includes: [".*"]
+  http:
+    includes: [".*"]
+  logicalDisks:
+    includes: [".*"]
+  hostInfo:
+    includes: [".*"]
+  perCpu:
+    includes: [".*"]
+  virtualServers:
+    includes: [".*"]
+
+#https://host/mgmt/tm/ltm/pool/stats
+#https://host/mgmt/tm/ltm/pool/<PoolName>/members/stats
+#https://host/mgmt/tm/ltm/snatpool/stats
+#https://host/mgmt/tm/ltm/virtual/stats
+#https://host/mgmt/tm/ltm/rule/stats
+#https://host/mgmt/tm/ltm/profile/client-ssl/stats
+#https://host/mgmt/tm/ltm/profile/server-ssl/stats
+#https://host/mgmt/tm/net/interface/stats
+#https://host/mgmt/tm/ltm/profile/tcp/stats
+#https://host/mgmt/tm/ltm/profile/http/stats
+#https://host/mgmt/tm/ltm/profile/http-compression/stats
+#https://host/mgmt/tm/sys/disk/logical-disk
+#https://host/mgmt/tm/sys/hostInfo

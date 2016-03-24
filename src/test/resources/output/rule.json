@@ -1,0 +1,2176 @@
+{
+  "kind": "tm:ltm:rule:rulecollectionstats",
+  "selfLink": "https://localhost/mgmt/tm/ltm/rule/stats?ver=12.0.0",
+  "entries": {
+    "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas:CLIENT_ACCEPTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas:CLIENT_ACCEPTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 17144
+          },
+          "eventType": {
+            "description": "CLIENT_ACCEPTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 83961
+          },
+          "minCycles": {
+            "value": 6192
+          },
+          "tmName": {
+            "description": "/Common/Appdynamics_saas"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 224
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 4454
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 28485
+          },
+          "minCycles": {
+            "value": 2097
+          },
+          "tmName": {
+            "description": "/Common/Appdynamics_saas"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 411
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas_4.0:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas_4.0:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 42716
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 589986
+          },
+          "minCycles": {
+            "value": 8307
+          },
+          "tmName": {
+            "description": "/Common/Appdynamics_saas_4.0"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 166500866
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas_4.2:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~Appdynamics_saas_4.2:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 39203
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 369288
+          },
+          "minCycles": {
+            "value": 14058
+          },
+          "tmName": {
+            "description": "/Common/Appdynamics_saas_4.2"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 126912
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~Http_to_https:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~Http_to_https:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 18530
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 621
+          },
+          "maxCycles": {
+            "value": 4137174
+          },
+          "minCycles": {
+            "value": 8856
+          },
+          "tmName": {
+            "description": "/Common/Http_to_https"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 166501487
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:ACCESS_ACL_ALLOWED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:ACCESS_ACL_ALLOWED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_ACL_ALLOWED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:ACCESS_POLICY_COMPLETED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:ACCESS_POLICY_COMPLETED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_POLICY_COMPLETED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:ACCESS_SESSION_STARTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:ACCESS_SESSION_STARTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_SESSION_STARTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:RULE_INIT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_BasicAuth:RULE_INIT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 49725
+          },
+          "eventType": {
+            "description": "RULE_INIT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 49725
+          },
+          "minCycles": {
+            "value": 17730
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 4
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ACCESS_ACL_ALLOWED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ACCESS_ACL_ALLOWED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_ACL_ALLOWED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ACCESS_POLICY_COMPLETED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ACCESS_POLICY_COMPLETED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_POLICY_COMPLETED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ACCESS_SESSION_STARTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ACCESS_SESSION_STARTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_SESSION_STARTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ECA_REQUEST_ALLOWED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ECA_REQUEST_ALLOWED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ECA_REQUEST_ALLOWED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ECA_REQUEST_DENIED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:ECA_REQUEST_DENIED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ECA_REQUEST_DENIED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:HTTP_RESPONSE_RELEASE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:HTTP_RESPONSE_RELEASE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE_RELEASE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:RULE_INIT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_OA_NtlmAuth:RULE_INIT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 41562
+          },
+          "eventType": {
+            "description": "RULE_INIT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 41562
+          },
+          "minCycles": {
+            "value": 31320
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_OA_NtlmAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 4
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_helper:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_helper:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_helper"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_helper:HTTP_REQUEST_DATA/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_helper:HTTP_REQUEST_DATA/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST_DATA"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_helper"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:ACCESS_ACL_ALLOWED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:ACCESS_ACL_ALLOWED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_ACL_ALLOWED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:ACCESS_POLICY_COMPLETED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:ACCESS_POLICY_COMPLETED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_POLICY_COMPLETED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:ACCESS_SESSION_STARTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:ACCESS_SESSION_STARTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_SESSION_STARTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:HTTP_RESPONSE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:HTTP_RESPONSE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:HTTP_RESPONSE_DATA/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:HTTP_RESPONSE_DATA/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE_DATA"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:RULE_INIT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_ExchangeSupport_main:RULE_INIT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 74133
+          },
+          "eventType": {
+            "description": "RULE_INIT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 74133
+          },
+          "minCycles": {
+            "value": 52470
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_ExchangeSupport_main"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 4
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:ACCESS_SESSION_STARTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:ACCESS_SESSION_STARTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_SESSION_STARTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_Office365_SAML_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_Office365_SAML_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:HTTP_RESPONSE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:HTTP_RESPONSE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_Office365_SAML_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:RULE_INIT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_Office365_SAML_BasicAuth:RULE_INIT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 5130
+          },
+          "eventType": {
+            "description": "RULE_INIT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 5130
+          },
+          "minCycles": {
+            "value": 4140
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_Office365_SAML_BasicAuth"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 4
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:ACCESS_POLICY_COMPLETED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:ACCESS_POLICY_COMPLETED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_POLICY_COMPLETED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_activesync"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:ACCESS_SESSION_STARTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:ACCESS_SESSION_STARTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "ACCESS_SESSION_STARTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_activesync"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_activesync"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:RULE_INIT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_APM_activesync:RULE_INIT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 48024
+          },
+          "eventType": {
+            "description": "RULE_INIT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 48024
+          },
+          "minCycles": {
+            "value": 21969
+          },
+          "tmName": {
+            "description": "/Common/_sys_APM_activesync"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 4
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_krbdelegate:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_krbdelegate:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_krbdelegate"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_krbdelegate:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_krbdelegate:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_krbdelegate"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_krbdelegate:HTTP_RESPONSE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_krbdelegate:HTTP_RESPONSE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_krbdelegate"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ldap:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ldap:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ldap"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ldap:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ldap:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ldap"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_radius:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_radius:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_radius"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_radius:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_radius:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_radius"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_cc_ldap"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:CLIENTSSL_CLIENTCERT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:CLIENTSSL_CLIENTCERT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENTSSL_CLIENTCERT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_cc_ldap"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:CLIENTSSL_HANDSHAKE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:CLIENTSSL_HANDSHAKE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENTSSL_HANDSHAKE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_cc_ldap"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:CLIENT_ACCEPTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_cc_ldap:CLIENT_ACCEPTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENT_ACCEPTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_cc_ldap"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_crldp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:CLIENTSSL_CLIENTCERT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:CLIENTSSL_CLIENTCERT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENTSSL_CLIENTCERT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_crldp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:CLIENTSSL_HANDSHAKE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:CLIENTSSL_HANDSHAKE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENTSSL_HANDSHAKE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_crldp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:CLIENT_ACCEPTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_crldp:CLIENT_ACCEPTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENT_ACCEPTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_crldp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_ocsp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:CLIENTSSL_CLIENTCERT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:CLIENTSSL_CLIENTCERT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENTSSL_CLIENTCERT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_ocsp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:CLIENTSSL_HANDSHAKE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:CLIENTSSL_HANDSHAKE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENTSSL_HANDSHAKE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_ocsp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:CLIENT_ACCEPTED/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_ssl_ocsp:CLIENT_ACCEPTED/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "CLIENT_ACCEPTED"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_ssl_ocsp"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_tacacs:AUTH_RESULT/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_tacacs:AUTH_RESULT/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "AUTH_RESULT"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_tacacs"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_tacacs:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_auth_tacacs:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_auth_tacacs"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_https_redirect:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~_sys_https_redirect:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/_sys_https_redirect"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~bigip_maintenance_1.0:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~bigip_maintenance_1.0:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/bigip_maintenance_1.0"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~hsl_logging:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~hsl_logging:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/hsl_logging"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~hsl_logging:HTTP_RESPONSE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~hsl_logging:HTTP_RESPONSE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/hsl_logging"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~Common~secure_cookie_response:HTTP_RESPONSE/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~Common~secure_cookie_response:HTTP_RESPONSE/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 41229
+          },
+          "eventType": {
+            "description": "HTTP_RESPONSE"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 441153
+          },
+          "minCycles": {
+            "value": 6966
+          },
+          "tmName": {
+            "description": "/Common/secure_cookie_response"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 152427124
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/rule/~extension-test~extension-test-rule-http-https:HTTP_REQUEST/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:rule:rulestats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/rule/~extension-test~extension-test-rule-http-https:HTTP_REQUEST/stats?ver=12.0.0",
+        "entries": {
+          "aborts": {
+            "value": 0
+          },
+          "avgCycles": {
+            "value": 0
+          },
+          "eventType": {
+            "description": "HTTP_REQUEST"
+          },
+          "failures": {
+            "value": 0
+          },
+          "maxCycles": {
+            "value": 0
+          },
+          "minCycles": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/extension-test/extension-test-rule-http-https"
+          },
+          "priority": {
+            "value": 500
+          },
+          "totalExecutions": {
+            "value": 0
+          }
+        }
+      }
+    }
+  }
+}

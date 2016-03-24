@@ -1,0 +1,2016 @@
+{
+  "kind": "tm:ltm:virtual:virtualcollectionstats",
+  "selfLink": "https://localhost/mgmt/tm/ltm/virtual/stats?ver=12.0.0",
+  "entries": {
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~Outbound_Forwarding/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~Outbound_Forwarding/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 19778102400
+          },
+          "clientside.bitsOut": {
+            "value": 3823451856
+          },
+          "clientside.curConns": {
+            "value": 8
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 29
+          },
+          "clientside.pktsIn": {
+            "value": 4632944
+          },
+          "clientside.pktsOut": {
+            "value": 4399297
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 61010
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 356924661
+          },
+          "csMeanConnDur": {
+            "value": 205352
+          },
+          "csMinConnDur": {
+            "value": 4
+          },
+          "destination": {
+            "description": "any:any"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/Outbound_Forwarding"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "unknown"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) either don't have service checking enabled, or service check results are not available yet"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 3097
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr1_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr1_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 2625443891032
+          },
+          "clientside.bitsOut": {
+            "value": 780743821128
+          },
+          "clientside.curConns": {
+            "value": 6633
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 9294
+          },
+          "clientside.pktsIn": {
+            "value": 343164546
+          },
+          "clientside.pktsOut": {
+            "value": 267874718
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 7433527
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 223225313
+          },
+          "csMeanConnDur": {
+            "value": 4867538
+          },
+          "csMinConnDur": {
+            "value": 4
+          },
+          "destination": {
+            "description": "172.17.0.21:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 1
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 1
+          },
+          "tmName": {
+            "description": "/Common/devcontr1_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 1
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 24888013
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 39925950
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr1_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr1_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 176999384
+          },
+          "clientside.bitsOut": {
+            "value": 4412630784
+          },
+          "clientside.curConns": {
+            "value": 8
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 41
+          },
+          "clientside.pktsIn": {
+            "value": 245273
+          },
+          "clientside.pktsOut": {
+            "value": 218612
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 1496
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 20164430
+          },
+          "csMeanConnDur": {
+            "value": 362820
+          },
+          "csMinConnDur": {
+            "value": 17
+          },
+          "destination": {
+            "description": "172.17.0.21:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr1_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 2
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 12535
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr2_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr2_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 1145655140272
+          },
+          "clientside.bitsOut": {
+            "value": 69767100384
+          },
+          "clientside.curConns": {
+            "value": 21
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 100
+          },
+          "clientside.pktsIn": {
+            "value": 113738854
+          },
+          "clientside.pktsOut": {
+            "value": 70409908
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 1008444
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 180569179
+          },
+          "csMeanConnDur": {
+            "value": 25262
+          },
+          "csMinConnDur": {
+            "value": 45
+          },
+          "destination": {
+            "description": "172.17.0.22:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr2_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 14463
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 6266907
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr2_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr2_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 3020127355384
+          },
+          "clientside.bitsOut": {
+            "value": 3459013290992
+          },
+          "clientside.curConns": {
+            "value": 66
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 117
+          },
+          "clientside.pktsIn": {
+            "value": 321251870
+          },
+          "clientside.pktsOut": {
+            "value": 215051453
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 65992
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 88553555
+          },
+          "csMeanConnDur": {
+            "value": 995642
+          },
+          "csMinConnDur": {
+            "value": 18
+          },
+          "destination": {
+            "description": "172.17.0.22:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr2_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 8997
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 18478771
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr4_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr4_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 12315351720
+          },
+          "clientside.bitsOut": {
+            "value": 1497604328
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 169
+          },
+          "clientside.pktsIn": {
+            "value": 1351763
+          },
+          "clientside.pktsOut": {
+            "value": 888845
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 27006
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 991067
+          },
+          "csMeanConnDur": {
+            "value": 695
+          },
+          "csMinConnDur": {
+            "value": 4
+          },
+          "destination": {
+            "description": "172.17.0.19:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr4_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 1
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 89411
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr4_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr4_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 9782344
+          },
+          "clientside.bitsOut": {
+            "value": 266269128
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 30
+          },
+          "clientside.pktsIn": {
+            "value": 15340
+          },
+          "clientside.pktsOut": {
+            "value": 12927
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 444
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 2438768
+          },
+          "csMeanConnDur": {
+            "value": 110250
+          },
+          "csMinConnDur": {
+            "value": 18
+          },
+          "destination": {
+            "description": "172.17.0.19:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr4_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 1
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 534
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr5_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr5_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 1075869862648
+          },
+          "clientside.bitsOut": {
+            "value": 52873586352
+          },
+          "clientside.curConns": {
+            "value": 169
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 2871
+          },
+          "clientside.pktsIn": {
+            "value": 98646913
+          },
+          "clientside.pktsOut": {
+            "value": 58783052
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 680743
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 5211657
+          },
+          "csMeanConnDur": {
+            "value": 21913
+          },
+          "csMinConnDur": {
+            "value": 47
+          },
+          "destination": {
+            "description": "172.17.0.20:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr5_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 1281435
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 2956081
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr5_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr5_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 201898184
+          },
+          "clientside.bitsOut": {
+            "value": 1037363344
+          },
+          "clientside.curConns": {
+            "value": 3
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 33
+          },
+          "clientside.pktsIn": {
+            "value": 146374
+          },
+          "clientside.pktsOut": {
+            "value": 120968
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 7116
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 1425225
+          },
+          "csMeanConnDur": {
+            "value": 74032
+          },
+          "csMinConnDur": {
+            "value": 17
+          },
+          "destination": {
+            "description": "172.17.0.20:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr5_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 31
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 15924
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr6_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr6_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 4351623483704
+          },
+          "clientside.bitsOut": {
+            "value": 18015914486504
+          },
+          "clientside.curConns": {
+            "value": 6054
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 8207
+          },
+          "clientside.pktsIn": {
+            "value": 1279711564
+          },
+          "clientside.pktsOut": {
+            "value": 1512999094
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 16600354
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 651434390
+          },
+          "csMeanConnDur": {
+            "value": 266201
+          },
+          "csMinConnDur": {
+            "value": 4
+          },
+          "destination": {
+            "description": "172.17.0.23:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 1
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 3
+          },
+          "tmName": {
+            "description": "/Common/devcontr6_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 1
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 102237
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 1
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 69719122
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr6_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr6_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 117130120
+          },
+          "clientside.bitsOut": {
+            "value": 3335624552
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 34
+          },
+          "clientside.pktsIn": {
+            "value": 180886
+          },
+          "clientside.pktsOut": {
+            "value": 158662
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 937
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 3022468
+          },
+          "csMeanConnDur": {
+            "value": 269737
+          },
+          "csMinConnDur": {
+            "value": 19
+          },
+          "destination": {
+            "description": "172.17.0.23:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr6_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 2
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 7168
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr7_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr7_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 838840
+          },
+          "clientside.bitsOut": {
+            "value": 664368
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 89
+          },
+          "clientside.pktsIn": {
+            "value": 1242
+          },
+          "clientside.pktsOut": {
+            "value": 919
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 259
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 763689
+          },
+          "csMeanConnDur": {
+            "value": 34317
+          },
+          "csMinConnDur": {
+            "value": 79
+          },
+          "destination": {
+            "description": "172.17.0.17:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr7_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "offline"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) are down"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 0
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr7_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr7_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 1276144
+          },
+          "clientside.bitsOut": {
+            "value": 6496632
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 28
+          },
+          "clientside.pktsIn": {
+            "value": 1909
+          },
+          "clientside.pktsOut": {
+            "value": 1339
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 330
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 40877
+          },
+          "csMeanConnDur": {
+            "value": 2906
+          },
+          "csMinConnDur": {
+            "value": 16
+          },
+          "destination": {
+            "description": "172.17.0.17:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr7_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "offline"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) are down"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 1
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr8_VIP/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr8_VIP/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 810984
+          },
+          "clientside.bitsOut": {
+            "value": 658480
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 89
+          },
+          "clientside.pktsIn": {
+            "value": 1251
+          },
+          "clientside.pktsOut": {
+            "value": 909
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 264
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 560521
+          },
+          "csMeanConnDur": {
+            "value": 28189
+          },
+          "csMinConnDur": {
+            "value": 65
+          },
+          "destination": {
+            "description": "172.17.0.18:80"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr8_VIP"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 0
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr8_VIP_SSL/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:virtual:virtualstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/virtual/~Common~devcontr8_VIP_SSL/stats?ver=12.0.0",
+        "entries": {
+          "clientside.bitsIn": {
+            "value": 1343096
+          },
+          "clientside.bitsOut": {
+            "value": 6959440
+          },
+          "clientside.curConns": {
+            "value": 0
+          },
+          "clientside.evictedConns": {
+            "value": 0
+          },
+          "clientside.maxConns": {
+            "value": 29
+          },
+          "clientside.pktsIn": {
+            "value": 2008
+          },
+          "clientside.pktsOut": {
+            "value": 1420
+          },
+          "clientside.slowKilled": {
+            "value": 0
+          },
+          "clientside.totConns": {
+            "value": 347
+          },
+          "cmpEnableMode": {
+            "description": "all-cpus"
+          },
+          "cmpEnabled": {
+            "description": "enabled"
+          },
+          "csMaxConnDur": {
+            "value": 40909
+          },
+          "csMeanConnDur": {
+            "value": 3248
+          },
+          "csMinConnDur": {
+            "value": 12
+          },
+          "destination": {
+            "description": "172.17.0.18:443"
+          },
+          "ephemeral.bitsIn": {
+            "value": 0
+          },
+          "ephemeral.bitsOut": {
+            "value": 0
+          },
+          "ephemeral.curConns": {
+            "value": 0
+          },
+          "ephemeral.evictedConns": {
+            "value": 0
+          },
+          "ephemeral.maxConns": {
+            "value": 0
+          },
+          "ephemeral.pktsIn": {
+            "value": 0
+          },
+          "ephemeral.pktsOut": {
+            "value": 0
+          },
+          "ephemeral.slowKilled": {
+            "value": 0
+          },
+          "ephemeral.totConns": {
+            "value": 0
+          },
+          "fiveMinAvgUsageRatio": {
+            "value": 0
+          },
+          "fiveSecAvgUsageRatio": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/devcontr8_VIP_SSL"
+          },
+          "oneMinAvgUsageRatio": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The virtual server is available"
+          },
+          "syncookieStatus": {
+            "description": "not-activated"
+          },
+          "syncookie.accepts": {
+            "value": 0
+          },
+          "syncookie.hwAccepts": {
+            "value": 0
+          },
+          "syncookie.hwSyncookies": {
+            "value": 0
+          },
+          "syncookie.hwsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.rejects": {
+            "value": 1
+          },
+          "syncookie.swsyncookieInstance": {
+            "value": 0
+          },
+          "syncookie.syncacheCurr": {
+            "value": 0
+          },
+          "syncookie.syncacheOver": {
+            "value": 0
+          },
+          "syncookie.syncookies": {
+            "value": 0
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    }
+  }
+}

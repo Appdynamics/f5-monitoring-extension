@@ -1,0 +1,7 @@
+<stats>
+    <stat url="mgmt/tm/sys/disk/logical-disk" label="Logical Disks" filter-name="logicalDisks"
+          children="items" metric-type="AVG.AVG.COL">
+        <naming attrs="name"/>
+        <metric attr="vgFree"/>
+    </stat>
+</stats>

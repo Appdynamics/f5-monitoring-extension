@@ -1,0 +1,2230 @@
+{
+  "kind": "tm:ltm:profile:client-ssl:client-sslcollectionstats",
+  "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/stats?ver=12.0.0",
+  "entries": {
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~SSL_SaaS_Digi/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~SSL_SaaS_Digi/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 45693
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 275
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 198785
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 36603
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 235
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 244753
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 48
+          },
+          "common.curNativeConns": {
+            "value": 48
+          },
+          "common.decryptedBytesIn": {
+            "value": 766412163268
+          },
+          "common.decryptedBytesOut": {
+            "value": 880643230202
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 770116713382
+          },
+          "common.encryptedBytesOut": {
+            "value": 886009220283
+          },
+          "common.fatalAlerts": {
+            "value": 347
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 244241
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 8727
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 156
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 245
+          },
+          "common.maxNativeConns": {
+            "value": 229
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 464
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 244753
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 80
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 115
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 25
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 244533
+          },
+          "common.recordsIn": {
+            "value": 97542056
+          },
+          "common.recordsOut": {
+            "value": 139100384
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 244597
+          },
+          "common.sessCacheCurEntries": {
+            "value": 321
+          },
+          "common.sessCacheHits": {
+            "value": 212018
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 253109
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 244753
+          },
+          "tmName": {
+            "description": "/Common/SSL_SaaS_Digi"
+          },
+          "total": {
+            "value": 244753
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~SSL_SaaS_Digi_Poodle/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~SSL_SaaS_Digi_Poodle/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/SSL_SaaS_Digi_Poodle"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~clientssl/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~clientssl/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/clientssl"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~clientssl-insecure-compatible/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~clientssl-insecure-compatible/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/clientssl-insecure-compatible"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~clientssl-secure/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~clientssl-secure/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/clientssl-secure"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~crypto-server-default-clientssl/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~crypto-server-default-clientssl/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/crypto-server-default-clientssl"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~wom-default-clientssl/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~Common~wom-default-clientssl/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/Common/wom-default-clientssl"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/profile/client-ssl/~extension-test~extension-test-client-ssl/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:profile:client-ssl:client-sslstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/profile/client-ssl/~extension-test~extension-test-client-ssl/stats?ver=12.0.0",
+        "entries": {
+          "common.aggregateRenegotiationsRejected": {
+            "value": 0
+          },
+          "common.badRecords": {
+            "value": 0
+          },
+          "common.cipherUses.adhKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.aesBulk": {
+            "value": 0
+          },
+          "common.cipherUses.aesGcmBulk": {
+            "value": 0
+          },
+          "common.cipherUses.camelliaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.desBulk": {
+            "value": 0
+          },
+          "common.cipherUses.dhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.dheDssKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheEcdsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ecdheRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.edhRsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.ideaBulk": {
+            "value": 0
+          },
+          "common.cipherUses.md5Digest": {
+            "value": 0
+          },
+          "common.cipherUses.nullBulk": {
+            "value": 0
+          },
+          "common.cipherUses.nullDigest": {
+            "value": 0
+          },
+          "common.cipherUses.rc2Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rc4Bulk": {
+            "value": 0
+          },
+          "common.cipherUses.rsaKeyxchg": {
+            "value": 0
+          },
+          "common.cipherUses.shaDigest": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxRecv": {
+            "value": 0
+          },
+          "common.connectionMirroring.haCtxSent": {
+            "value": 0
+          },
+          "common.connectionMirroring.haFailure": {
+            "value": 0
+          },
+          "common.connectionMirroring.haHsSuccess": {
+            "value": 0
+          },
+          "common.connectionMirroring.haPeerReady": {
+            "value": 0
+          },
+          "common.connectionMirroring.haTimeout": {
+            "value": 0
+          },
+          "common.curCompatConns": {
+            "value": 0
+          },
+          "common.curConns": {
+            "value": 0
+          },
+          "common.curNativeConns": {
+            "value": 0
+          },
+          "common.decryptedBytesIn": {
+            "value": 0
+          },
+          "common.decryptedBytesOut": {
+            "value": 0
+          },
+          "common.dtlsTxPushbacks": {
+            "value": 0
+          },
+          "common.encryptedBytesIn": {
+            "value": 0
+          },
+          "common.encryptedBytesOut": {
+            "value": 0
+          },
+          "common.fatalAlerts": {
+            "value": 0
+          },
+          "common.fullyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.fwdpUses.cachedCerts": {
+            "value": 0
+          },
+          "common.fwdpUses.conns": {
+            "value": 0
+          },
+          "common.fwdpUses.dipBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.hnBypasses": {
+            "value": 0
+          },
+          "common.fwdpUses.sipBypasses": {
+            "value": 0
+          },
+          "common.handshakeFailures": {
+            "value": 0
+          },
+          "common.insecureHandshakeAccepts": {
+            "value": 0
+          },
+          "common.insecureHandshakeRejects": {
+            "value": 0
+          },
+          "common.insecureRenegotiationRejects": {
+            "value": 0
+          },
+          "common.maxCompatConns": {
+            "value": 0
+          },
+          "common.maxConns": {
+            "value": 0
+          },
+          "common.maxNativeConns": {
+            "value": 0
+          },
+          "common.midstreamRenegotiations": {
+            "value": 0
+          },
+          "common.nonHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.ocspStplUses.certStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.conns": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnFailures": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnHttpErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.ocspConnTimeouts": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseStatusErrors": {
+            "value": 0
+          },
+          "common.ocspStplUses.responseValidationErrors": {
+            "value": 0
+          },
+          "common.partiallyHwAcceleratedConns": {
+            "value": 0
+          },
+          "common.peercertInvalid": {
+            "value": 0
+          },
+          "common.peercertNone": {
+            "value": 0
+          },
+          "common.peercertValid": {
+            "value": 0
+          },
+          "common.prematureDisconnects": {
+            "value": 0
+          },
+          "common.protocolUses.dtlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.sslv2": {
+            "value": 0
+          },
+          "common.protocolUses.sslv3": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_1": {
+            "value": 0
+          },
+          "common.protocolUses.tlsv1_2": {
+            "value": 0
+          },
+          "common.recordsIn": {
+            "value": 0
+          },
+          "common.recordsOut": {
+            "value": 0
+          },
+          "common.renegotiationsRejected": {
+            "value": 0
+          },
+          "common.secureHandshakes": {
+            "value": 0
+          },
+          "common.sessCacheCurEntries": {
+            "value": 0
+          },
+          "common.sessCacheHits": {
+            "value": 0
+          },
+          "common.sessCacheInvalidations": {
+            "value": 0
+          },
+          "common.sessCacheLookups": {
+            "value": 0
+          },
+          "common.sessCacheOverflows": {
+            "value": 0
+          },
+          "common.sessionMirroring.failure": {
+            "value": 0
+          },
+          "common.sessionMirroring.success": {
+            "value": 0
+          },
+          "common.sesstickUses.reuseFailed": {
+            "value": 0
+          },
+          "common.sesstickUses.reused": {
+            "value": 0
+          },
+          "common.sniRejects": {
+            "value": 0
+          },
+          "common.totCompatConns": {
+            "value": 0
+          },
+          "common.totNativeConns": {
+            "value": 0
+          },
+          "tmName": {
+            "description": "/extension-test/extension-test-client-ssl"
+          },
+          "total": {
+            "value": 0
+          },
+          "typeId": {
+            "description": "ltm profile client-ssl"
+          },
+          "vsName": {
+            "description": "N/A"
+          }
+        }
+      }
+    }
+  }
+}
