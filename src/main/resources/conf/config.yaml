@@ -14,8 +14,8 @@ servers:
 #        includes: [.*]
 
 connection:
-  socketTimeout: 2000
-  connectTimeout: 3000
+  socketTimeout: 5000
+  connectTimeout: 2500
   sslCertCheckEnabled: false
   sslVerifyHostname: false
 
