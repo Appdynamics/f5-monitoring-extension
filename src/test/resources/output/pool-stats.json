@@ -1,0 +1,3042 @@
+{
+  "kind": "tm:ltm:pool:poolcollectionstats",
+  "selfLink": "https://localhost/mgmt/tm/ltm/pool/stats?ver=12.0.0",
+  "entries": {
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr1"
+          },
+          "serverside.bitsIn": {
+            "value": 602089056
+          },
+          "serverside.bitsOut": {
+            "value": 15844694176
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 19
+          },
+          "serverside.pktsIn": {
+            "value": 783901
+          },
+          "serverside.pktsOut": {
+            "value": 1377927
+          },
+          "serverside.totConns": {
+            "value": 6132
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 52047
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr1_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 3837062520640
+          },
+          "serverside.bitsOut": {
+            "value": 863605150888
+          },
+          "serverside.curConns": {
+            "value": 24
+          },
+          "serverside.maxConns": {
+            "value": 1340
+          },
+          "serverside.pktsIn": {
+            "value": 621583723
+          },
+          "serverside.pktsOut": {
+            "value": 391573374
+          },
+          "serverside.totConns": {
+            "value": 713474
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 131920402
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr1_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 6526047356376
+          },
+          "serverside.bitsOut": {
+            "value": 107519974275664
+          },
+          "serverside.curConns": {
+            "value": 56
+          },
+          "serverside.maxConns": {
+            "value": 1167
+          },
+          "serverside.pktsIn": {
+            "value": 5159261591
+          },
+          "serverside.pktsOut": {
+            "value": 9303851062
+          },
+          "serverside.totConns": {
+            "value": 976204
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 212202703
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_dbmon/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_dbmon/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr1_dbmon"
+          },
+          "serverside.bitsIn": {
+            "value": 16433404824
+          },
+          "serverside.bitsOut": {
+            "value": 1961362008
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 61
+          },
+          "serverside.pktsIn": {
+            "value": 2052171
+          },
+          "serverside.pktsOut": {
+            "value": 1946447
+          },
+          "serverside.totConns": {
+            "value": 3082
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 421087
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr1_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 1
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr1_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 28751220589912
+          },
+          "serverside.bitsOut": {
+            "value": 990643076344
+          },
+          "serverside.curConns": {
+            "value": 39
+          },
+          "serverside.maxConns": {
+            "value": 2607
+          },
+          "serverside.pktsIn": {
+            "value": 2774558747
+          },
+          "serverside.pktsOut": {
+            "value": 1010272479
+          },
+          "serverside.totConns": {
+            "value": 1173435
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 244330452
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr2"
+          },
+          "serverside.bitsIn": {
+            "value": 129430373608
+          },
+          "serverside.bitsOut": {
+            "value": 28235658520
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 20
+          },
+          "serverside.pktsIn": {
+            "value": 12489877
+          },
+          "serverside.pktsOut": {
+            "value": 12913046
+          },
+          "serverside.totConns": {
+            "value": 124679
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 5811001
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 1
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr2_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 15010087291040
+          },
+          "serverside.bitsOut": {
+            "value": 1013840202200
+          },
+          "serverside.curConns": {
+            "value": 49
+          },
+          "serverside.maxConns": {
+            "value": 1358
+          },
+          "serverside.pktsIn": {
+            "value": 764801287
+          },
+          "serverside.pktsOut": {
+            "value": 722648926
+          },
+          "serverside.totConns": {
+            "value": 9106996
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 153152561
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 2
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr2_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 2204279077360
+          },
+          "serverside.bitsOut": {
+            "value": 38408973013632
+          },
+          "serverside.curConns": {
+            "value": 17
+          },
+          "serverside.maxConns": {
+            "value": 47
+          },
+          "serverside.pktsIn": {
+            "value": 1704595199
+          },
+          "serverside.pktsOut": {
+            "value": 3298379223
+          },
+          "serverside.totConns": {
+            "value": 270978
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 64590714
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_dbmon/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_dbmon/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr2_dbmon"
+          },
+          "serverside.bitsIn": {
+            "value": 47841922744
+          },
+          "serverside.bitsOut": {
+            "value": 4295798432
+          },
+          "serverside.curConns": {
+            "value": 21
+          },
+          "serverside.maxConns": {
+            "value": 47
+          },
+          "serverside.pktsIn": {
+            "value": 5564649
+          },
+          "serverside.pktsOut": {
+            "value": 3084979
+          },
+          "serverside.totConns": {
+            "value": 4027
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 1031418
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr2_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr2_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 35750209850672
+          },
+          "serverside.bitsOut": {
+            "value": 669672297952
+          },
+          "serverside.curConns": {
+            "value": 30
+          },
+          "serverside.maxConns": {
+            "value": 491
+          },
+          "serverside.pktsIn": {
+            "value": 1084265851
+          },
+          "serverside.pktsOut": {
+            "value": 1168715509
+          },
+          "serverside.totConns": {
+            "value": 4473765
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 89184989
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr4"
+          },
+          "serverside.bitsIn": {
+            "value": 116727688
+          },
+          "serverside.bitsOut": {
+            "value": 2767897304
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 15
+          },
+          "serverside.pktsIn": {
+            "value": 142152
+          },
+          "serverside.pktsOut": {
+            "value": 241399
+          },
+          "serverside.totConns": {
+            "value": 1730
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 11343
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr4_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 119673525368
+          },
+          "serverside.bitsOut": {
+            "value": 5047989672
+          },
+          "serverside.curConns": {
+            "value": 5
+          },
+          "serverside.maxConns": {
+            "value": 146
+          },
+          "serverside.pktsIn": {
+            "value": 4261365
+          },
+          "serverside.pktsOut": {
+            "value": 5278559
+          },
+          "serverside.totConns": {
+            "value": 38540
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 633568
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr4_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 9058796760
+          },
+          "serverside.bitsOut": {
+            "value": 8276477040
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 16
+          },
+          "serverside.pktsIn": {
+            "value": 1011815
+          },
+          "serverside.pktsOut": {
+            "value": 1248174
+          },
+          "serverside.totConns": {
+            "value": 71969
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 196708
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_dbmon/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_dbmon/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr4_dbmon"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr4_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr4_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 59104949560
+          },
+          "serverside.bitsOut": {
+            "value": 1076995776
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 26
+          },
+          "serverside.pktsIn": {
+            "value": 1908240
+          },
+          "serverside.pktsOut": {
+            "value": 1830396
+          },
+          "serverside.totConns": {
+            "value": 62041
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 151071
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr5"
+          },
+          "serverside.bitsIn": {
+            "value": 907886784
+          },
+          "serverside.bitsOut": {
+            "value": 8061692704
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 33
+          },
+          "serverside.pktsIn": {
+            "value": 562980
+          },
+          "serverside.pktsOut": {
+            "value": 802640
+          },
+          "serverside.totConns": {
+            "value": 10706
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 100691
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr5_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 16787182210592
+          },
+          "serverside.bitsOut": {
+            "value": 4824065889944
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 2443
+          },
+          "serverside.pktsIn": {
+            "value": 1468334758
+          },
+          "serverside.pktsOut": {
+            "value": 1058770688
+          },
+          "serverside.totConns": {
+            "value": 17220461
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 46770317
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr5_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 276146507632
+          },
+          "serverside.bitsOut": {
+            "value": 5281615069072
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 42
+          },
+          "serverside.pktsIn": {
+            "value": 235598884
+          },
+          "serverside.pktsOut": {
+            "value": 453166258
+          },
+          "serverside.totConns": {
+            "value": 663065
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 7699519
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_dbmon/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_dbmon/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr5_dbmon"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr5_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr5_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 8393931217336
+          },
+          "serverside.bitsOut": {
+            "value": 199835101776
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 332
+          },
+          "serverside.pktsIn": {
+            "value": 479571415
+          },
+          "serverside.pktsOut": {
+            "value": 368663217
+          },
+          "serverside.totConns": {
+            "value": 12208716
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 20073635
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr6"
+          },
+          "serverside.bitsIn": {
+            "value": 333339000
+          },
+          "serverside.bitsOut": {
+            "value": 8720714408
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 19
+          },
+          "serverside.pktsIn": {
+            "value": 432032
+          },
+          "serverside.pktsOut": {
+            "value": 756742
+          },
+          "serverside.totConns": {
+            "value": 3170
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 31133
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr6_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 1849676909736
+          },
+          "serverside.bitsOut": {
+            "value": 425103656456
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 2898
+          },
+          "serverside.pktsIn": {
+            "value": 431425267
+          },
+          "serverside.pktsOut": {
+            "value": 373028438
+          },
+          "serverside.totConns": {
+            "value": 49748634
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 79595673
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr6_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 7250605874128
+          },
+          "serverside.bitsOut": {
+            "value": 126594834045304
+          },
+          "serverside.curConns": {
+            "value": 1
+          },
+          "serverside.maxConns": {
+            "value": 5288
+          },
+          "serverside.pktsIn": {
+            "value": 6319131313
+          },
+          "serverside.pktsOut": {
+            "value": 11340201089
+          },
+          "serverside.totConns": {
+            "value": 198947427
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 204163124
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_dbmon/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_dbmon/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr6_dbmon"
+          },
+          "serverside.bitsIn": {
+            "value": 690566050128
+          },
+          "serverside.bitsOut": {
+            "value": 55818889464
+          },
+          "serverside.curConns": {
+            "value": 58
+          },
+          "serverside.maxConns": {
+            "value": 139
+          },
+          "serverside.pktsIn": {
+            "value": 70418910
+          },
+          "serverside.pktsOut": {
+            "value": 46691298
+          },
+          "serverside.totConns": {
+            "value": 71484
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 12341108
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr6_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller_4.0"
+          },
+          "tmName": {
+            "description": "/Common/devcontr6_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 21313660196424
+          },
+          "serverside.bitsOut": {
+            "value": 1479280733552
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 7281
+          },
+          "serverside.pktsIn": {
+            "value": 2426585361
+          },
+          "serverside.pktsOut": {
+            "value": 2291438615
+          },
+          "serverside.totConns": {
+            "value": 203315626
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 204276289
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 0
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr7"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "offline"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) are down"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 0
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr7_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "offline"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) are down"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 0
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr7_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "offline"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) are down"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr7_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 0
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr7_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "offline"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The children pool member(s) are down"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr8"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8_agent/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8_agent/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr8_agent"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8_configuration/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8_configuration/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr8_configuration"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    },
+    "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8_metrics/stats": {
+      "nestedStats": {
+        "kind": "tm:ltm:pool:poolstats",
+        "selfLink": "https://localhost/mgmt/tm/ltm/pool/~Common~devcontr8_metrics/stats?ver=12.0.0",
+        "entries": {
+          "activeMemberCnt": {
+            "value": 1
+          },
+          "connqAll.ageEdm": {
+            "value": 0
+          },
+          "connqAll.ageEma": {
+            "value": 0
+          },
+          "connqAll.ageHead": {
+            "value": 0
+          },
+          "connqAll.ageMax": {
+            "value": 0
+          },
+          "connqAll.depth": {
+            "value": 0
+          },
+          "connqAll.serviced": {
+            "value": 0
+          },
+          "connq.ageEdm": {
+            "value": 0
+          },
+          "connq.ageEma": {
+            "value": 0
+          },
+          "connq.ageHead": {
+            "value": 0
+          },
+          "connq.ageMax": {
+            "value": 0
+          },
+          "connq.depth": {
+            "value": 0
+          },
+          "connq.serviced": {
+            "value": 0
+          },
+          "curSessions": {
+            "value": 0
+          },
+          "minActiveMembers": {
+            "value": 0
+          },
+          "monitorRule": {
+            "description": "/Common/http_controller"
+          },
+          "tmName": {
+            "description": "/Common/devcontr8_metrics"
+          },
+          "serverside.bitsIn": {
+            "value": 0
+          },
+          "serverside.bitsOut": {
+            "value": 0
+          },
+          "serverside.curConns": {
+            "value": 0
+          },
+          "serverside.maxConns": {
+            "value": 0
+          },
+          "serverside.pktsIn": {
+            "value": 0
+          },
+          "serverside.pktsOut": {
+            "value": 0
+          },
+          "serverside.totConns": {
+            "value": 0
+          },
+          "status.availabilityState": {
+            "description": "available"
+          },
+          "status.enabledState": {
+            "description": "enabled"
+          },
+          "status.statusReason": {
+            "description": "The pool is available"
+          },
+          "totRequests": {
+            "value": 0
+          }
+        }
+      }
+    }
+  }
+}
