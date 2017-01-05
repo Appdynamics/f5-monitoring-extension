@@ -8,6 +8,8 @@ This is an addon to the Appdynamics Machine Agent. This extension collects the m
 The instructions are available at [AppDynamics Community](https://www.appdynamics.com/community/exchange/extension/f5-monitoring-extension)
 
 ##BIG-IP user account properties
+https://devcentral.f5.com/d/the-user-guide-for-the-icontrol-rest-interface-in-big-ip-version-1160?download=true
+
 ### Create User
 To use this extension, the user account should have the property `Partition Access = All` selected.
 ![](https://github.com/Appdynamics/f5-monitoring-extension/raw/master/F5-access-control.png)
