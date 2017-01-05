@@ -13,12 +13,12 @@ To use this extension, the user account should have the property `Partition Acce
 ![](https://github.com/Appdynamics/f5-monitoring-extension/raw/master/F5-access-control.png)
 
 ###Grant REST Interface Access
-1. Get the "selfLink" of the guest user(created in step #1) from the response JSON of the following API
+Get the "selfLink" of the guest user from the response JSON of the following API
 ```
 curl -i -k -u <adminuser>:<pwd> https://f5-ip/mgmt/shared/authz/users
 ```
 
-2. Replace the "link" in the request json with the value of "selfLink" from the response of step #2 
+Grant Access to rest Interface. Replace the "link" in the request json with the value of "selfLink" from the response of previous step
 ```
 curl -i -k -u <adminuser>:<pwd> --request PATCH --data '{"userReferences":[{"link":"https://localhost/mgmt/shared/authz/users/guestuser"}]}' https://f5-ip/mgmt/shared/authz/roles/iControl_REST_API_User
 ```
