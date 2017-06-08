@@ -1,0 +1,28 @@
+{
+  "username": "USERNAME",
+  "loginReference": {
+    "link": "https://localhost/mgmt/cm/system/authn/providers/ldap/298d4aa5-d255-438f-997d-7f984109dd5d/login"
+  },
+  "token": {
+    "uuid": "69c4b1c8-efdc-429a-b50c-723e92703a2b",
+    "name": "492D3316E5456378B4AC9B5E2FA923595F0DA65A",
+    "token": "492D3316E5456378B4AC9B5E2FA923595F0DA65A",
+    "userName": "USERNAME",
+    "user": {
+      "link": "https://localhost/mgmt/cm/system/authn/providers/ldap/298d4aa5-d255-438f-997d-7f984109dd5d/users/a25e2147-92e0-4349-ac99-7c844b3d30c2"
+    },
+    "groupReferences": [
+    ],
+    "timeout": 1200,
+    "startTime": "2014-07-08T17:14:34.305-0700",
+    "address": "192.168.2.2",
+    "partition": "[All]",
+    "generation": 1,
+    "lastUpdateMicros": 1404864874295548,
+    "expirationMicros": 1404866074305000,
+    "kind": "shared:authz:tokens:authtokenitemstate",
+    "selfLink": "https://localhost/mgmt/shared/authz/tokens/69c4b1c8-efdc-429a-b50c-723e92703a2b"
+  },
+  "generation": 0,
+  "lastUpdateMicros": 0
+}

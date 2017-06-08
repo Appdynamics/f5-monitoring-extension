@@ -5,10 +5,17 @@ metricPrefix:  "Custom Metrics|F5 Monitor|"
 #metricPrefix:  "Server|Component:<TIER_NAME>|Custom Metrics|F5 Monitor|"
 
 servers:
-  - uri: ""
-    name: "" #Optional if only one server
-    username: "user"
-    password: "password"
+  - uri: "http://uri.of.server:9090"
+    name: ""
+    username: "admin"
+    password: "welcome"
+
+    ### Uncomment this to enable the token based authentication instead of BASIC
+    ### The loginReference is mandatory for non local authentication.
+#    authType: "TOKEN"
+#    loginReference: ""
+
+    ### This filter configuration is server specific.
 #    filter:
 #      pools:
 #        includes: [.*]

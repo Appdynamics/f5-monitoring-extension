@@ -1,0 +1,206 @@
+<h1>F5 Monitoring Extension</h1>
+<h4>Use Case</h4>
+<p>
+    The F5 load balancer from F5 Networks, Inc. directs traffic away from
+    servers that are overloaded or down to other servers that can handle the
+    load. The F5 load balancer extension collects key performance metrics from an
+    F5 load balancer and presents them in the AppDynamics Metric Browser.
+</p>
+<p>This extension works only with the standalone machine agent.</p>
+
+<h4>Prerequisites</h4>
+<ol>
+    <li>The extension collects the data from the REST API. Please make sure that the API is available and accessible. To access F5 REST API, user account must have <strong>admin</strong> level access.
+        Try this URL from the Browser
+        <code>https://f5-host:f5-port/mgmt/tm/ltm/pool/stats</code>
+    </li>
+    <li>Start the Machine Agent without the extension and make sure that it is reporting the data fine.</li>
+</ol>
+
+<h4>Installation</h4>
+<ol>
+    <li>Download and Unzip the attachment into <code>MachineAgent/monitors</code> directory</li>
+    <li>
+        Edit the file <code>MachineAgent/monitors/F5Monitor/config.yml</code> and update the following.
+        Yaml is very strict with the syntax, please make sure that you validate your YML
+        <a href="http://www.yamllint.com" target="_blank">here</a>
+        <ol>
+            <li>
+                <strong>Metric Prefix</strong>
+                <pre>
+metricPrefix:  "Custom Metrics|F5 Monitor|"
+#or
+metricPrefix:  "Server|Component:$TIER_NAME|Custom Metrics|F5 Monitor|"
+</pre>
+            </li>
+            <li>
+                <strong>Server Details</strong>
+                <pre>
+servers:
+  - uri: "https://server1:8443"
+    name: "Server1"
+    username: "user"
+    password: "password"
+
+  - uri: "https://server2:443"
+    name: "server2"
+    username: "user"
+    passwordEncrypted: "y444543gt3="
+</pre>
+                <p>If <code>passwordEncrypted</code> is used, make sure to update the <code>encryptionKey</code> in <code>config.yml</code></p>
+            </li>
+            <li>
+                <strong>Filters</strong>
+                <p>By default, everything is included as shown in the filters with the <code>.*</code> regex.
+                    This will report a lot of data. Set the correct filters to make sure that you only collect the data you will need
+                </p>
+                <pre>
+filter:
+  pools:
+    includes: [".*"]
+  poolMembers:
+    includes: [".*"]
+  rules:
+    includes: [".*"]
+  ...
+  ...
+</pre>
+                Please refer to the <code>config.yml</code> for the complete configuration.
+            </li>
+
+        </ol>
+    </li>
+</ol>
+<h4>Using a Non Admin account</h4>
+This is applicable only for BIG IP versions 11.6+. To use a non-admin, you have to explicitly grant access to the rest interface. Please follow the steps.
+
+<ol>
+    <li>Create a user with guest role from the F5 Admin UI.</li>
+
+    <li>Run the following command and get the <code>selfLink</code> of the guest user(created in step #1) from the response JSON</li>
+    <pre>
+curl -i -k -u &lt;adminuser&gt;:&lt;pwd&gt; https://f5-ip/mgmt/shared/authz/users
+</pre>
+    <li>Replace the <code>link</code> in the <code>--data</code> argument json with the value of <code>selfLink</code> from the response of step #2</li>
+    <pre>
+curl -i -k -u &lt;adminuser&gt;:&lt;pwd&gt; --request PATCH \
+    --data '{"userReferences":[{"link":"https://localhost/mgmt/shared/authz/users/guestuser"}]}' \
+    https://f5-ip/mgmt/shared/authz/roles/iControl_REST_API_User
+</pre>
+</ol>
+<p>
+    This should give access to the user created in step #1 to invoke the rest api to invoke GET. If the guest role doesn't work, try "manager" role in step#1
+</p>
+<h4>Password Encryption Support</h4>
+<p>To avoid setting the clear text password in the config.yml, please follow the process to encrypt the password and set the encrypted password and the key in the config.yml</p>
+<ol>
+    <li>
+        Download the util jar to encrypt the password from
+        <a href="https://github.com/Appdynamics/maven-repo/raw/master/releases/com/appdynamics/appd-exts-commons/1.1.2/appd-exts-commons-1.1.2.jar" rel="nofollow" target="_blank">here</a>
+    </li>
+    <li>Encrypt password from the commandline
+        <pre>java -cp "appd-exts-commons-1.1.2.jar" com.appdynamics.extensions.crypto.Encryptor myKey myPassword</pre>
+    </li>
+    <li>These values should be used in the <code>passwordEncrypted</code> and <code>encryptionKey</code> fields in <code>config.yml</code></li>
+</ol>
+<h4>Troubleshooting</h4>
+<ol>
+    <li><strong>Verify Machine Agent Data:</strong>
+        Please start the Machine Agent without the extension and make sure that it reports data.
+        Verify that the machine agent status is UP and it is reporting Hardware Metrics
+    </li>
+    <li>
+        <strong>config.yml:</strong>
+        Validate the file <a href="http://www.yamllint.com" target="_blank">here</a>
+    </li>
+    <li>
+        <strong>F5 REST API:</strong>
+        Please make sure that the F5 REST API is available and accessible.
+        Try this URL from the Browser <code>https://f5-host:f5-port/mgmt/tm/ltm/pool/stats</code>
+    </li>
+    <li>
+        <strong>Metric Limit:</strong>
+        Please start the machine agent with the argument <code>-Dappdynamics.agent.maxMetrics=5000</code> if there is a metric limit reached error in the logs.
+        If you dont see the expected metrics, this could be the cause.
+    </li>
+    <li>
+        <strong>Check Logs:</strong>
+        There could be some obvious errors in the machine agent logs. Please take a look.
+    </li>
+    <li>
+        <strong>Collect Debug Logs:</strong>
+        Edit the file, <code>&lt;MachineAgent&gt;/conf/logging/log4j.xml</code> and update the level of the appender <code>com.appdynamics</code> to debug
+        Let it run for 5-10 minutes and attach the logs to a support ticket
+    </li>
+</ol>
+<h4>Workbench</h4>
+<p>
+    Workbench is a feature by which you can preview the metrics before registering it with the controller.
+    This is useful if you want to fine tune the configurations. Workbench is embedded into the extension jar.
+</p>
+To use the workbench
+<ol>
+    <li>Follow all the installation steps</li>
+    <li>
+        Start the workbench with the command
+        <pre>java -jar /path/to/MachineAgent/monitors/F5Monitor/f5-monitoring-extension.jar</pre>
+        This starts an http server at <code>http://host:9090/</code>. This can be accessed from the browser.
+    </li>
+    <li>
+        If the server is not accessible from outside/browser, you can use the following end points to see the list of registered metrics and errors.
+        <pre>
+#Get the stats
+curl http://localhost:9090/api/stats
+#Get the registered metrics
+curl http://localhost:9090/api/metric-paths
+</pre>
+    </li>
+    <li>You can make the changes to <code>config.yml</code> and validate it from the browser or the API</li>
+    <li>Once the configuration is complete, you can kill the workbench and start the Machine Agent</li>
+</ol>
+
+<h4>Metrics</h4>
+<p>The metrics will be reported under the tree <code>Application Infrastructure Performance|$TIER|Custom Metrics|F5 Monitor|</code></p>
+<p>Please refer to this <a href="https://raw.githubusercontent.com/Appdynamics/extensions-resources/master/f5/f5_metric_browser.png" target="_blank">screenshot</a> to view the complete list of metrics reported by the F5 extension. These metrics can be filtered, please refer to the installation section for details.<p>
+<h4>Contributing</h4>
+<p>Always feel free to fork and contribute any changes directly
+    via&nbsp;<a href="https://github.com/Appdynamics/f5-monitoring-extension"
+                rel="nofollow" target="_blank">GitHub</a>.</p>
+<h4>Support</h4>
+<p>For any questions or feature request, please contact
+    <a href="mailto:help@appdynamics.com" rel="nofollow" target="_blank">AppDynamics Help</a>.
+</p>
+<h4>Compatibility</h4>
+<table border="0" cellpadding="0">
+    <tbody>
+    <tr>
+        <td style="text-align: right; width: 210px">Version</td>
+        <td>2.4.5</td>
+    </tr>
+    <tr>
+        <td style="text-align: right">Machine Agent Compatibility</td>
+        <td>4.0+</td>
+    </tr>
+    <tr>
+        <td style="text-align: right">Tested With F5 Version</td>
+        <td>11.5.1</td>
+    </tr>
+    <tr>
+        <td style="text-align: right">Last Update</td>
+        <td>4/12/16</td>
+    </tr>
+    </tbody>
+</table>
+<h4>Releases</h4>
+<ul>
+    <li>2.0.0: Re-write with added metrics and configurations for
+        monitoring inclusions and metric exclusions</li>
+    <li>2.1.0: Added total pool member count and availability
+        metrics</li>
+    <li>2.2.1: Added capability to get metrics from all
+        available partitions. Fixed issues with class loading which is causing CPU
+        spike</li>
+    <li>2.4.3: Using the REST API and advanced Filtering and Metric Support</li>
+    <li>2.4.5: Preemptive Authentication  Support</li>
+
+</ul>

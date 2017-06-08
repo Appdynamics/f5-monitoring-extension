@@ -30,15 +30,17 @@ public class NewF5MonitorTask implements Runnable {
 
     private Map server;
     private Stat stat;
+    private String token;
     private MonitorConfiguration configuration;
     private String serverPrefix;
     private Map<String, String> varMap;
 
     //This is for main stats
-    public NewF5MonitorTask(MonitorConfiguration configuration, Map server, Stat stat) {
+    public NewF5MonitorTask(MonitorConfiguration configuration, Map server, Stat stat, String token) {
         this.configuration = configuration;
         this.server = server;
         this.stat = stat;
+        this.token = token;
         String serverName = (String) server.get("name");
         String serverPrefix = configuration.getMetricPrefix();
         if (!Strings.isNullOrEmpty(serverName)) {
@@ -49,12 +51,13 @@ public class NewF5MonitorTask implements Runnable {
 
     // This is for child stats
     public NewF5MonitorTask(MonitorConfiguration configuration, Map server,
-                            Stat stat, String serverPrefix, Map<String, String> varMap) {
+                            Stat stat, String serverPrefix, Map<String, String> varMap, String token) {
         this.server = server;
         this.stat = stat;
         this.configuration = configuration;
         this.serverPrefix = serverPrefix;
         this.varMap = varMap;
+        this.token = token;
     }
 
     public void run() {
@@ -99,7 +102,13 @@ public class NewF5MonitorTask implements Runnable {
     }
 
     protected JsonNode getResponseAsJson(String url) {
-        return HttpClientUtils.getResponseAsJson(configuration.getHttpClient(), url, JsonNode.class);
+        Map<String, String> headers;
+        if (token != null) {
+            headers = Collections.singletonMap("X-F5-Auth-Token", token);
+        } else {
+            headers = Collections.emptyMap();
+        }
+        return HttpClientUtils.getResponseAsJson(configuration.getHttpClient(), url, JsonNode.class, headers);
     }
 
     /**
@@ -223,7 +232,7 @@ public class NewF5MonitorTask implements Runnable {
                 logger.debug("Running the task for the child stat [{}] of parent [{}]", childStat.getUrl(), parentName);
                 if (!Strings.isNullOrEmpty(childStat.getUrl())) {
                     Map<String, String> varMap = Collections.singletonMap("$PARENT_NAME", parentName);
-                    NewF5MonitorTask task = new NewF5MonitorTask(configuration, server, childStat, entryPrefix, varMap);
+                    NewF5MonitorTask task = new NewF5MonitorTask(configuration, server, childStat, entryPrefix, varMap, token);
                     configuration.getExecutorService().submit(task);
                 } else {
                     //TODO children attribute with $PARENT_NAME replace?

@@ -1,0 +1,7 @@
+{
+  "username": "USER",
+  "password": "PASSWORD",
+  "loginReference": {
+    "link": "https://localhost/mgmt/cm/system/authn/providers/ldap/298d4aa5-d255-438f-997d-7f984109dd5d/login"
+  }
+}

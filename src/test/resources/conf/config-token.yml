@@ -1,0 +1,12 @@
+servers:
+  - uri: "https://192.168.1.132"
+    username: "user"
+    password: "password"
+    authType: "TOKEN"
+    loginReference: ""
+
+connection:
+  socketTimeout: 2000
+  connectTimeout: 3000
+  sslCertCheckEnabled: false
+  sslVerifyHostname: false
