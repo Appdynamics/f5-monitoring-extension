@@ -1,0 +1,26 @@
+servers:
+  - uri: "https://192.168.1.132"
+    username: "admin"
+    password: "welcome"
+
+connection:
+  socketTimeout: 2000
+  connectTimeout: 3000
+  sslCertCheckEnabled: false
+  sslVerifyHostname: false
+
+numberOfThreads: 5
+
+filter:
+  pools:
+    includes: [".*"]
+  poolMembers:
+    includes: [".*"]
+  logicalDisks:
+    includes: [".*"]
+  networkInterfaces:
+    includes: [".*"]
+  hostInfo:
+    includes: [".*"]
+  perCpu:
+    includes: [".*"]

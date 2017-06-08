@@ -36,7 +36,7 @@ public class AuthTokenFetcherTest {
 //        MetricWriteHelper writer = Mockito.mock(MetricWriteHelper.class);
 //        Runnable runner = Mockito.mock(Runnable.class);
 //        MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|F5 Monitor|", runner, writer);
-//        conf.setConfigYml("src/test/resources/conf/config-token.yml");
+//        conf.setConfigYml("src/test/resources/conf/test-config-token.yml");
 //        Map<String, ?> configYml = conf.getConfigYml();
 //        AuthTokenFetcher fetcher = new AuthTokenFetcher(configYml, conf.getHttpClient());
 //        List servers = (List) configYml.get("servers");

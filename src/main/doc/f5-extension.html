@@ -71,7 +71,27 @@ filter:
         </ol>
     </li>
 </ol>
-<h4>Using a Non Admin account</h4>
+<h4>Token Based Authentication (BIG IP 12+)</h4>
+<p>
+    <a href="https://devcentral.f5.com/wiki/iControl.Authentication_with_the_F5_REST_API.ashx" target="_blank">Token-based authentication</a> can be used in BIG IP v12+.
+    Please refer to <a href="https://devcentral.f5.com/wiki/iControl.Authentication_with_the_F5_REST_API.ashx" target="_blank">F5 documentation</a> for more details.
+    To enabled token based auth, please modify the <code>config.yml</code> as shown
+</p>
+<pre>
+servers:
+  - uri: "https://server1:8443"
+    name: "Server1"
+    username: "user"
+    password: "password"
+    authType: "TOKEN"
+    loginReference: ""
+</pre>
+<ul>
+    <li>If you are using an external authentication provider, get the <code>loginReference</code> from your system administrator.
+        It looks something like <code>https://localhost/mgmt/cm/system/authn/providers/ldap/-id-/login</code></li>
+    <li>If you are using local authentication (that is, there is no external authentication provider), then leave the <code>loginReference</code> blank</li>
+</ul>
+<h4>Using a Non Admin account (BI IP 11.6+)</h4>
 This is applicable only for BIG IP versions 11.6+. To use a non-admin, you have to explicitly grant access to the rest interface. Please follow the steps.
 
 <ol>
@@ -175,7 +195,7 @@ curl http://localhost:9090/api/metric-paths
     <tbody>
     <tr>
         <td style="text-align: right; width: 210px">Version</td>
-        <td>2.4.5</td>
+        <td>2.4.7</td>
     </tr>
     <tr>
         <td style="text-align: right">Machine Agent Compatibility</td>
@@ -183,11 +203,11 @@ curl http://localhost:9090/api/metric-paths
     </tr>
     <tr>
         <td style="text-align: right">Tested With F5 Version</td>
-        <td>11.5.1</td>
+        <td>12.x</td>
     </tr>
     <tr>
         <td style="text-align: right">Last Update</td>
-        <td>4/12/16</td>
+        <td>6/8/17</td>
     </tr>
     </tbody>
 </table>
@@ -202,5 +222,6 @@ curl http://localhost:9090/api/metric-paths
         spike</li>
     <li>2.4.3: Using the REST API and advanced Filtering and Metric Support</li>
     <li>2.4.5: Preemptive Authentication  Support</li>
+    <li>2.4.7: Support for Token Authentication</li>
 
 </ul>
