@@ -7,44 +7,58 @@
 
 package com.appdynamics.extensions.f5;
 
-import com.appdynamics.extensions.StringUtils;
-import com.appdynamics.extensions.conf.MonitorConfiguration;
+import com.appdynamics.extensions.AMonitorTaskRunnable;
+import com.appdynamics.extensions.MetricWriteHelper;
+import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.f5.config.input.Metric;
 import com.appdynamics.extensions.f5.config.input.Naming;
 import com.appdynamics.extensions.f5.config.input.Stat;
 import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.http.UrlBuilder;
-import com.appdynamics.extensions.util.*;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
+import com.appdynamics.extensions.metrics.Aggregator;
+import com.appdynamics.extensions.metrics.AggregatorFactory;
+import com.appdynamics.extensions.metrics.AggregatorKey;
+import com.appdynamics.extensions.metrics.PerMinValueCalculator;
+import static com.appdynamics.extensions.util.AssertUtils.assertNotNull;
+import com.appdynamics.extensions.util.JsonUtils;
+import com.appdynamics.extensions.util.StringUtils;
+import com.appdynamics.extensions.util.YmlUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Strings;
 import org.apache.commons.lang.math.NumberUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-
-import static com.appdynamics.extensions.util.AssertUtils.assertNotNull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by abey.tom on 3/11/16.
  */
-public class NewF5MonitorTask implements Runnable {
-    public static final Logger logger = LoggerFactory.getLogger(NewF5MonitorTask.class);
+public class NewF5MonitorTask implements AMonitorTaskRunnable {
+    public static final Logger logger = ExtensionsLoggerFactory.getLogger(NewF5MonitorTask.class);
 
     private Map server;
+    private MetricWriteHelper metricWriteHelper;
     private Stat stat;
     private String token;
-    private MonitorConfiguration configuration;
+    private MonitorContextConfiguration configuration;
     private String serverPrefix;
     private Map<String, String> varMap;
 
     //This is for main stats
-    public NewF5MonitorTask(MonitorConfiguration configuration, Map server, Stat stat, String token) {
+    public NewF5MonitorTask(MonitorContextConfiguration configuration, MetricWriteHelper metricWriteHelper, Map server, Stat stat, String token) {
         this.configuration = configuration;
+        this.metricWriteHelper = metricWriteHelper;
         this.server = server;
         this.stat = stat;
         this.token = token;
@@ -57,8 +71,9 @@ public class NewF5MonitorTask implements Runnable {
     }
 
     // This is for child stats
-    public NewF5MonitorTask(MonitorConfiguration configuration, Map server,
+    public NewF5MonitorTask(MonitorContextConfiguration configuration, MetricWriteHelper metricWriteHelper, Map server,
                             Stat stat, String serverPrefix, Map<String, String> varMap, String token) {
+        this.metricWriteHelper = metricWriteHelper;
         this.server = server;
         this.stat = stat;
         this.configuration = configuration;
@@ -71,7 +86,7 @@ public class NewF5MonitorTask implements Runnable {
         try {
             runTask();
         } catch (Exception e) {
-            configuration.getMetricWriter().registerError(e.getMessage(), e);
+            metricWriteHelper.registerError(e.getMessage(), e);
             logger.error("Error while running the task", e);
         }
     }
@@ -95,7 +110,7 @@ public class NewF5MonitorTask implements Runnable {
                     logger.error("The response content for url {} doesn't contain children [{}]", url, stat.getChildren());
                 }
             } else {
-                configuration.getMetricWriter().registerError("Error while getting the data from "
+                metricWriteHelper.registerError("Error while getting the data from "
                         + url + ". Please check logs for more information.", null);
             }
         } else {
@@ -115,7 +130,7 @@ public class NewF5MonitorTask implements Runnable {
         } else {
             headers = Collections.emptyMap();
         }
-        return HttpClientUtils.getResponseAsJson(configuration.getHttpClient(), url, JsonNode.class, headers);
+        return HttpClientUtils.getResponseAsJson(configuration.getContext().getHttpClient(), url, JsonNode.class, headers);
     }
 
     /**
@@ -143,7 +158,7 @@ public class NewF5MonitorTask implements Runnable {
             } else if (children != null) {
                 //In other cases, it is a map with key-value.
                 // The entity name is extracted from the key
-                Iterator<String> fields = children.getFieldNames();
+                Iterator<String> fields = children.fieldNames();
                 while (fields.hasNext()) {
                     String field = fields.next();
                     JsonNode child = children.get(field);
@@ -213,7 +228,7 @@ public class NewF5MonitorTask implements Runnable {
                         String msg = "Error while getting the metrics for "
                                 + entityNamePrefix + "|" + metric.getAttr();
                         logger.error(msg, e);
-                        configuration.getMetricWriter().registerError(msg, e);
+                        metricWriteHelper.registerError(msg, e);
                     }
                 }
                 // If there are any child <stat> elements for a parent <stat>
@@ -239,8 +254,9 @@ public class NewF5MonitorTask implements Runnable {
                 logger.debug("Running the task for the child stat [{}] of parent [{}]", childStat.getUrl(), parentName);
                 if (!Strings.isNullOrEmpty(childStat.getUrl())) {
                     Map<String, String> varMap = Collections.singletonMap("$PARENT_NAME", parentName);
-                    NewF5MonitorTask task = new NewF5MonitorTask(configuration, server, childStat, entryPrefix, varMap, token);
-                    configuration.getExecutorService().submit(task);
+                    NewF5MonitorTask task = new NewF5MonitorTask(configuration, metricWriteHelper, server, childStat, entryPrefix, varMap, token);
+                    configuration.getContext().getExecutorService().execute("NewF5MonitotTask-" +
+                            stat.getLabel(), task);
                 } else {
                     //TODO children attribute with $PARENT_NAME replace?
                     // need to clone the stat for that.
@@ -345,7 +361,7 @@ public class NewF5MonitorTask implements Runnable {
         // Per minute metrics
         Boolean calculatePerMin = metric.getCalculatePerMin();
         if (Boolean.TRUE.equals(calculatePerMin) || !Strings.isNullOrEmpty(metric.getPerMinLabel())) {
-            PerMinValueCalculator perMin = configuration.getPerMinValueCalculator();
+            PerMinValueCalculator perMin = configuration.getContext().getPerMinValueCalculator();
             BigDecimal perMinuteValue = perMin.getPerMinuteValue(metricPath, value);
             if (perMinuteValue != null) {
                 String perMinLabel = getPerMinLabel(metric, label);
@@ -378,7 +394,7 @@ public class NewF5MonitorTask implements Runnable {
     }
 
     private void printMetrics(String metricPath, BigDecimal value, String metricType) {
-        configuration.getMetricWriter().printMetric(metricPath, value, metricType);
+        metricWriteHelper.printMetric(metricPath, value, metricType);
     }
 
     //Apply the filters
@@ -482,7 +498,7 @@ public class NewF5MonitorTask implements Runnable {
             }
             JsonNode description = jsonNode.get("description");
             if (description != null) {
-                return description.getTextValue();
+                return description.textValue();
             }
         }
         return null;
@@ -493,7 +509,7 @@ public class NewF5MonitorTask implements Runnable {
         if (jsonObject != null) {
             if (jsonObject.isValueNode()) {
                 if (jsonObject.isTextual()) {
-                    return jsonObject.getTextValue();
+                    return jsonObject.textValue();
                 } else {
                     return jsonObject.toString();
                 }
@@ -525,7 +541,7 @@ public class NewF5MonitorTask implements Runnable {
         } catch (URISyntaxException e) {
             String msg = String.format("Error while getting the name from URL %mag", url);
             logger.error(msg, e);
-            configuration.getMetricWriter().registerError(msg, e);
+            metricWriteHelper.registerError(msg, e);
         }
         logger.debug("The entity name was resolved to [{}] from the url [{}]", name, url);
         return name;
@@ -549,5 +565,9 @@ public class NewF5MonitorTask implements Runnable {
         }
         UrlBuilder builder = UrlBuilder.fromYmlServerConfig(server);
         return builder.path(endpoint).build();
+    }
+
+    public void onTaskComplete() {
+
     }
 }

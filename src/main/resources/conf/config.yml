@@ -9,6 +9,7 @@ servers:
     name: ""
     username: "admin"
     password: "welcome"
+    encryptedPassword: ""
 
     ### Uncomment this to enable the token based authentication instead of BASIC
     ### The loginReference is mandatory for non local authentication.
@@ -27,7 +28,6 @@ connection:
   sslVerifyHostname: false
 
 numberOfThreads: 5
-encryptionKey: "welcome"
 
 # Filters are applied on the name of the member. All the possible urls are given below.
 filter:
@@ -57,6 +57,25 @@ filter:
     includes: [".*"]
   virtualServers:
     includes: [".*"]
+
+controllerInfo:
+  controllerHost: "controller"
+  controllerPort: 8090
+  account: "customer1"
+  username: "admin"
+  password: "admin"
+  encryptedPassword: ""
+  controllerSslEnabled: false
+  enableOrchestration: false
+  uniqueHostId: ""
+  accountAccessKey: ""
+  machinePath: ""
+  simEnabled: true
+  applicationName: ""
+  tierName: ""
+  nodeName: ""
+
+encryptionKey: "abcd"
 
 #https://host/mgmt/tm/ltm/pool/stats
 #https://host/mgmt/tm/ltm/pool/<PoolName>/members/stats

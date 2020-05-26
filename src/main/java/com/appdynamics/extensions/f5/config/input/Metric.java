@@ -7,11 +7,15 @@
 
 package com.appdynamics.extensions.f5.config.input;
 
-import com.appdynamics.extensions.StringUtils;
+import com.appdynamics.extensions.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
