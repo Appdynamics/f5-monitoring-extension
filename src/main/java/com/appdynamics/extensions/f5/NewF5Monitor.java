@@ -1,5 +1,5 @@
 /*
- * Copyright 2018. AppDynamics LLC and its affiliates.
+ * Copyright 2020. AppDynamics LLC and its affiliates.
  * All Rights Reserved.
  * This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
  * The copyright notice above does not evidence any actual or intended publication of such source code.
@@ -16,7 +16,6 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,16 +85,16 @@ public class NewF5Monitor extends ABaseMonitor {
     }
 
 
-    public static void main(String[] args) {
-
-        final Map<String, String> taskArgs = new HashMap();
-        taskArgs.put("config-file", "src/main/resources/conf/config.yaml");
-        taskArgs.put("metric-file", "src/main/resources/conf/metrics.xml");
-        try {
-            final NewF5Monitor monitor = new NewF5Monitor();
-            monitor.execute(taskArgs, null);
-        } catch (Exception e) {
-            logger.error("Error while running the task", e);
-        }
-    }
+//    public static void main(String[] args) {
+//
+//        final Map<String, String> taskArgs = new HashMap();
+//        taskArgs.put("config-file", "src/main/resources/conf/config.yml");
+//        taskArgs.put("metric-file", "src/main/resources/conf/metrics.xml");
+//        try {
+//            final NewF5Monitor monitor = new NewF5Monitor();
+//            monitor.execute(taskArgs, null);
+//        } catch (Exception e) {
+//            logger.error("Error while running the task", e);
+//        }
+//    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018. AppDynamics LLC and its affiliates.
+ * Copyright 2020. AppDynamics LLC and its affiliates.
  * All Rights Reserved.
  * This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
  * The copyright notice above does not evidence any actual or intended publication of such source code.
@@ -12,12 +12,12 @@ import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.util.CryptoUtils;
 import com.appdynamics.extensions.util.JsonUtils;
+import com.appdynamics.extensions.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -51,9 +51,9 @@ public class AuthTokenFetcher {
             logger.debug("Fetching the token from the server {}", uri);
             String username = (String) server.get("username");
             String password = (String) server.get(Constants.PASSWORD);
-            if (!com.appdynamics.extensions.util.StringUtils.hasText(password))
+            if (!StringUtils.hasText(password))
                 password = getPassword(server);
-            if (!StringUtils.isBlank(uri) && !StringUtils.isBlank(username) && !StringUtils.isBlank(password)) {
+            if (StringUtils.hasText(uri) && StringUtils.hasText(username) && StringUtils.hasText(password)) {
                 ObjectNode request = createRequestJson(mapper, server, username, password);
                 UrlBuilder urlBuilder = UrlBuilder.fromYmlServerConfig(server).path("mgmt/shared/authn/login");
                 String url = urlBuilder.build();
@@ -98,7 +98,7 @@ public class AuthTokenFetcher {
         request.put("username", username);
         request.put("password", password);
         String loginReference = (String) server.get("loginReference");
-        if (!StringUtils.isBlank(loginReference)) {
+        if (StringUtils.hasText(loginReference)) {
             ObjectNode linkNode = mapper.createObjectNode();
             linkNode.put("link", loginReference);
             request.put("loginReference", linkNode);

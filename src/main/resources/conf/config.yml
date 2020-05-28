@@ -1,15 +1,15 @@
 #prefix used to show up metrics in AppDynamics
-metricPrefix:  "Custom Metrics|F5 Monitor|"
+#metricPrefix:  "Custom Metrics|F5 Monitor|"
 
 #This will create it in specific Tier. Replace <TIER_NAME>
-#metricPrefix:  "Server|Component:<TIER_NAME>|Custom Metrics|F5 Monitor|"
+metricPrefix:  "Server|Component:<TIER_NAME>|Custom Metrics|F5 Monitor|"
 
 servers:
   - uri: "http://uri.of.server:9090"
     name: ""
     username: "admin"
     password: ""
-    encryptedPassword: ""
+    encryptedPassword: "" # put the password as empty when using encryptedPassword, Needs to be used in conjunction with `encryptionKey`. Please read the extension documentation to generate encrypted password. https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-use-Password-Encryption-with-Extensions/ta-p/29397
     ### Uncomment this to enable the token based authentication instead of BASIC
     ### The loginReference is mandatory for non local authentication.
 #    authType: "TOKEN"
