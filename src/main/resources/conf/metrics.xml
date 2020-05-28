@@ -6,216 +6,198 @@
   -->
 
 <!--
-metric-type = AggregationType.TimeRollup.ClusterRollup
 AggregationType = AVG | SUM | OBS
 TimeRollup = AVG | SUM | CUR
 ClusterRollup = IND | COL
 -->
 <stats>
-    <stat url="/mgmt/tm/ltm/pool/stats" label="Pools" filter-name="pools" metric-type="AVG.AVG.COL" children="entries">
-        <naming use-entry-name="true" attrs="" delimiter=":"/>
-        <metric attr="nestedStats|entries|activeMemberCnt" label="Active Members"/>
-        <metric attr="nestedStats|entries|curSessions" label="Current Sessions"/>
-        <metric attr="nestedStats|entries|serverside.curConns" label="Current Connections"/>
-        <metric attr="nestedStats|entries|serverside.maxConns" label="Max Connections"/>
-        <metric attr="nestedStats|entries|serverside.totConns" label="Total Connections" metric-type="OBS.CUR.COL"/>
-        <metric attr="nestedStats|entries|totRequests" label="Total Requests" calculate-per-min="true"
-                per-minute-label="Requests Per Minute" metric-type="OBS.CUR.COL"/>
-        <metric attr="nestedStats|entries|serverside.bitsIn" label="Incoming MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|serverside.bitsOut" label="Outgoing MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|status.availabilityState" label="Availability">
-            <converter str="available" value="1"/>
-            <converter str="$default" value="0"/>
+    <stat url="/mgmt/tm/ltm/pool/stats" label="Pools" filter-name="pools" children="entries">
+        <naming use-entry-name="true" attrs=""/>
+        <metric attr="nestedStats|entries|activeMemberCnt" alias="Active Members" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|curSessions" alias="Current Sessions" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|serverside.curConns" alias="Current Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|serverside.maxConns" alias="Max Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|serverside.totConns" alias="Total Connections" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|totRequests" alias="Total Requests" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|serverside.bitsIn" alias="Incoming MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|serverside.bitsOut" alias="Outgoing MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|status.availabilityState" alias="Availability" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+            <convert str="available" value="1"/>
+            <convert str="$default" value="0"/>
         </metric>
-        <metric attr="nestedStats|entries|status.enabledState" label="Enabled">
-            <converter str="enabled" value="1"/>
-            <converter str="$default" value="0"/>
+        <metric attr="nestedStats|entries|status.enabledState" alias="Enabled" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+            <convert str="enabled" value="1"/>
+            <convert str="$default" value="0"/>
         </metric>
         <stat url="/mgmt/tm/ltm/pool/$PARENT_NAME/members/stats" filter-name="poolMembers" label="Members"
-              children="entries" metric-type="AVG.AVG.COL">
-            <metric attr="nestedStats|entries|curSessions" label="Current Sessions"/>
-            <metric attr="nestedStats|entries|serverside.curConns" label="Current Connections"/>
-            <metric attr="nestedStats|entries|serverside.maxConns" label="Max Connections"/>
-            <metric attr="nestedStats|entries|serverside.totConns" label="Total Connections" metric-type="OBS.CUR.COL"/>
-            <metric attr="nestedStats|entries|totRequests" label="Total Requests"
-                    per-minute-label="Requests Per Minute" metric-type="OBS.CUR.COL"/>
-            <metric attr="nestedStats|entries|serverside.bitsIn" label="Incoming MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-            <metric attr="nestedStats|entries|serverside.bitsOut" label="Outgoing MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-            <metric attr="nestedStats|entries|status.availabilityState" label="Availability">
-                <converter str="available" value="1"/>
-                <converter str="$default" value="0"/>
+              children="entries">
+            <metric attr="nestedStats|entries|curSessions" alias="Current Sessions" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|serverside.curConns" alias="Current Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|serverside.maxConns" alias="Max Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|serverside.totConns" alias="Total Connections" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|totRequests" alias="Total Requests" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|serverside.bitsIn" alias="Incoming MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|serverside.bitsOut" alias="Outgoing MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|status.availabilityState" alias="Availability" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+                <convert str="available" value="1"/>
+                <convert str="$default" value="0"/>
             </metric>
-            <metric attr="nestedStats|entries|status.enabledState" label="Enabled">
-                <converter str="enabled" value="1"/>
-                <converter str="$default" value="0"/>
+            <metric attr="nestedStats|entries|status.enabledState" alias="Enabled" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+                <convert str="enabled" value="1"/>
+                <convert str="$default" value="0"/>
             </metric>
-            <metric attr="nestedStats|entries|sessionStatus" label="Session Status">
-                <converter str="enabled" value="1"/>
-                <converter str="$default" value="0"/>
+            <metric attr="nestedStats|entries|sessionStatus" alias="Session Status" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+                <convert str="enabled" value="1"/>
+                <convert str="$default" value="0"/>
             </metric>
         </stat>
     </stat>
     <stat url="mgmt/tm/net/interface/stats" label="Network Interfaces" filter-name="networkInterfaces"
-          children="entries" metric-type="AVG.AVG.COL">
+          children="entries">
         <naming use-entry-name="true"/>
-        <metric attr="nestedStats|entries|counters.bitsIn" label="Incoming MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|counters.bitsOut" label="Outgoing MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|counters.dropsAll" label="Packets Dropped" calculate-per-min="true"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"/>
-        <metric attr="nestedStats|entries|counters.errorsAll" label="Errors" calculate-per-min="true"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"/>
-        <metric attr="nestedStats|entries|status" label="Status">
-            <converter str="up" value="1"/>
-            <converter str="$default" value="0"/>
+        <metric attr="nestedStats|entries|counters.bitsIn" alias="Incoming MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|counters.bitsOut" alias="Outgoing MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|counters.dropsAll" alias="Packets Dropped" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|counters.errorsAll" alias="Errors" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|status" alias="Status" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+            <convert str="up" value="1"/>
+            <convert str="$default" value="0"/>
         </metric>
     </stat>
     <stat url="mgmt/tm/ltm/profile/tcp/stats" label="TCP" filter-name="tcp"
-          children="entries" metric-type="AVG.AVG.COL">
-        <metric attr="nestedStats|entries|connects" label="Connects" calculate-per-min="true"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|connfails" label="Connects Failed" calculate-per-min="true"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-
+          children="entries">
+        <metric attr="nestedStats|entries|connects" alias="Connects" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|connfails" alias="Connects Failed" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
     </stat>
 
     <stat url="mgmt/tm/ltm/profile/http/stats" label="HTTP" filter-name="http"
-          children="entries" metric-type="AVG.AVG.COL">
-        <metric attr="nestedStats|entries|getReqs" label="Total GET Requests" calculate-per-min="true" per-minute-label="GET Requests Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|postReqs" label="Total POST Requests" calculate-per-min="true" per-minute-label="POST Requests Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|numberReqs" label="Total Requests" calculate-per-min="true" per-minute-label="Requests Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"/>
-
-        <metric attr="nestedStats|entries|resp_2xxCnt" label="Total 2xx Response" calculate-per-min="true" per-minute-label="2xx Response Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|resp_3xxCnt" label="Total 3xx Response" calculate-per-min="true" per-minute-label="3xx Response Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|resp_4xxCnt" label="Total 4xx Response" calculate-per-min="true" per-minute-label="4xx Response Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|resp_5xxCnt" label="Total 5xx Response" calculate-per-min="true" per-minute-label="5xx Response Per Minute"
-                metric-type="OBS.CUR.COL" per-min-metric-type="AVG.AVG.COL"  show-only-per-min="true"/>
-
+          children="entries">
+        <metric attr="nestedStats|entries|getReqs" alias="Total GET Requests" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|postReqs" alias="Total POST Requests" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|numberReqs" alias="Total Requests" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|resp_2xxCnt" alias="Total 2xx Response" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|resp_3xxCnt" alias="Total 3xx Response" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|resp_4xxCnt" alias="Total 4xx Response" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|resp_5xxCnt" alias="Total 5xx Response" delta="true" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
     </stat>
     <stat url="mgmt/tm/sys/disk/logical-disk" label="Logical Disks" filter-name="logicalDisks"
-          children="items" metric-type="AVG.AVG.COL">
+          children="items">
         <naming attrs="name"/>
-        <metric attr="size" label="Size MB"/>
-        <metric attr="vgFree" label="VG Free MB"/>
-        <metric attr="vgInUse" label="VG Inuse MB"/>
-        <metric attr="vgReserved" label="VG Reserved MB"/>
+        <metric attr="size" alias="Size MB" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="vgFree" alias="VG Free MB" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="vgInUse" alias="VG Inuse MB" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="vgReserved" alias="VG Reserved MB" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
     </stat>
 
     <stat url="mgmt/tm/sys/hostInfo" label="Hosts" filter-name="hostInfo"
-          children="entries" metric-type="AVG.AVG.COL">
+          children="entries">
         <naming attrs="nestedStats|entries|hostId"/>
-        <metric attr="nestedStats|entries|activeCpuCount" label="CPU|Active Count"/>
-        <metric attr="nestedStats|entries|cpuCount" label="CPU|Total Count"/>
-        <metric attr="nestedStats|entries|memoryTotal" label="Memory|Total MB" multiplier="1e-6"/>
-        <metric attr="nestedStats|entries|memoryUsed" label="Memory|Used MB" multiplier="1e-6"/>
-        <stat label="CPU" filter-name="perCpu" children="nestedStats|entries|*|nestedStats|entries|*"
-              metric-type="AVG.AVG.IND">
+        <metric attr="nestedStats|entries|activeCpuCount" alias="CPU|Active Count" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|cpuCount" alias="CPU|Total Count" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|memoryTotal" alias="Memory|Total MB" multiplier="1e-6" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|memoryUsed" alias="Memory|Used MB" multiplier="1e-6" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <stat label="CPU" filter-name="perCpu" children="nestedStats|entries|*|nestedStats|entries|*">
             <naming attrs="nestedStats|entries|cpuId"/>
-            <metric attr="nestedStats|entries|oneMinAvgIdle" label="Idle %" aggregate="true"/>
-            <metric attr="nestedStats|entries|oneMinAvgIowait" label="IO Wait %" aggregate="true"/>
-            <metric attr="nestedStats|entries|oneMinAvgIrq" label="IRQ %" aggregate="true"/>
-            <metric attr="nestedStats|entries|oneMinAvgStolen" label="Stolen %" aggregate="true"/>
-            <metric attr="nestedStats|entries|oneMinAvgSystem" label="System %" aggregate="true"/>
-            <metric attr="nestedStats|entries|oneMinAvgUser" label="User %" aggregate="true"/>
+            <metric attr="nestedStats|entries|oneMinAvgIdle" alias="Idle %" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|oneMinAvgIowait" alias="IO Wait %" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|oneMinAvgIrq" alias="IRQ %" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|oneMinAvgStolen" alias="Stolen %" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|oneMinAvgSystem" alias="System %" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+            <metric attr="nestedStats|entries|oneMinAvgUser" alias="User %" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
         </stat>
     </stat>
 
     <stat url="mgmt/tm/ltm/virtual/stats" label="Virtual Servers" filter-name="virtualServers"
-          children="entries" metric-type="AVG.AVG.COL">
+          children="entries">
         <naming use-entry-name="true"/>
 
-        <metric attr="nestedStats|entries|clientside.slowKilled" label="ClientSide|Slow Killed"/>
-        <metric attr="nestedStats|entries|csMeanConnDur" label="ClientSide|Mean Connection Duration (ms)" metric-type="AVG.AVG.IND"/>
-        <metric attr="nestedStats|entries|csMinConnDur" label="ClientSide|Min Connection Duration (ms)" metric-type="AVG.AVG.IND"/>
-        <metric attr="nestedStats|entries|csMaxConnDur" label="ClientSide|Max Connection Duration (ms)" metric-type="AVG.AVG.IND"/>
-        <metric attr="nestedStats|entries|clientside.totConns" label="ClientSide|Total Connections" metric-type="OBS.CUR.COL"/>
-        <metric attr="nestedStats|entries|clientside.maxConns" label="ClientSide|Max Connections"/>
-        <metric attr="nestedStats|entries|clientside.evictedConns" label="ClientSide|Evicted Connections"/>
-        <metric attr="nestedStats|entries|clientside.curConns" label="ClientSide|Current Connections"/>
-        <metric attr="nestedStats|entries|clientside.bitsIn" label="ClientSide|Incoming MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|clientside.bitsOut" label="ClientSide|Outgoing MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
+        <metric attr="nestedStats|entries|clientside.slowKilled" alias="ClientSide|Slow Killed" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|csMeanConnDur" alias="ClientSide|Mean Connection Duration (ms)" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "INDIVIDUAL"/>
+        <metric attr="nestedStats|entries|csMinConnDur" alias="ClientSide|Min Connection Duration (ms)" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "INDIVIDUAL"/>
+        <metric attr="nestedStats|entries|csMaxConnDur" alias="ClientSide|Max Connection Duration (ms)" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "INDIVIDUAL"/>
+        <metric attr="nestedStats|entries|clientside.totConns" alias="ClientSide|Total Connections" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|clientside.maxConns" alias="ClientSide|Max Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|clientside.evictedConns" alias="ClientSide|Evicted Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|clientside.curConns" alias="ClientSide|Current Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|clientside.bitsIn" alias="ClientSide|Incoming MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|clientside.bitsOut" alias="ClientSide|Outgoing MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
 
-        <metric attr="nestedStats|entries|ephemeral.slowKilled" label="Ephemeral|Slow Killed"/>
-        <metric attr="nestedStats|entries|ephemeral.maxConns" label="Ephemeral|Max Connections"/>
-        <metric attr="nestedStats|entries|ephemeral.evictedConns" label="Ephemeral|Evicted Connections"/>
-        <metric attr="nestedStats|entries|ephemeral.curConns" label="Ephemeral|Current Connections"/>
-        <metric attr="nestedStats|entries|ephemeral.bitsIn" label="Ephemeral|Incoming MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|ephemeral.bitsOut" label="Ephemeral|Outgoing MB" multiplier="1.25e-7" calculate-per-min="true" show-only-per-min="true"/>
+        <metric attr="nestedStats|entries|ephemeral.slowKilled" alias="Ephemeral|Slow Killed" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|ephemeral.maxConns" alias="Ephemeral|Max Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|ephemeral.evictedConns" alias="Ephemeral|Evicted Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|ephemeral.curConns" alias="Ephemeral|Current Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|ephemeral.bitsIn" alias="Ephemeral|Incoming MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|ephemeral.bitsOut" alias="Ephemeral|Outgoing MB" multiplier="1.25e-7" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
 
-        <metric attr="nestedStats|entries|oneMinAvgUsageRatio" label="Usage Ratio"/>
+        <metric attr="nestedStats|entries|oneMinAvgUsageRatio" alias="Usage Ratio" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
 
-        <metric attr="nestedStats|entries|cmpEnabled" label="CMP Enabled">
-            <converter str="enabled" value="1"/>
-            <converter str="$default" value="0"/>
+        <metric attr="nestedStats|entries|cmpEnabled" alias="CMP Enabled" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+            <convert str="enabled" value="1"/>
+            <convert str="$default" value="0"/>
         </metric>
 
-        <metric attr="nestedStats|entries|status.enabledState" label="Enabled">
-            <converter str="enabled" value="1"/>
-            <converter str="$default" value="0"/>
+        <metric attr="nestedStats|entries|status.enabledState" alias="Enabled" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+            <convert str="enabled" value="1"/>
+            <convert str="$default" value="0"/>
         </metric>
-        <metric attr="nestedStats|entries|status.availabilityState" label="Availability">
-            <converter str="available" value="1"/>
-            <converter str="$default" value="0"/>
+        <metric attr="nestedStats|entries|status.availabilityState" alias="Availability" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE">
+            <convert str="available" value="1"/>
+            <convert str="$default" value="0"/>
         </metric>
     </stat>
 
     <stat url="mgmt/tm/ltm/rule/stats" label="Rules" filter-name="rules"
-          children="entries" metric-type="AVG.AVG.COL">
+          children="entries">
         <naming use-entry-name="true"/>
 
-        <metric attr="nestedStats|entries|aborts" label="Aborts"/>
-        <metric attr="nestedStats|entries|avgCycles" label="Avg Cycles"/>
-        <metric attr="nestedStats|entries|maxCycles" label="Max Cycles"/>
-        <metric attr="nestedStats|entries|minCycles" label="Min Cycles"/>
-        <metric attr="nestedStats|entries|failures" label="Failures"/>
-        <metric attr="nestedStats|entries|priority" label="Priority"/>
-        <metric attr="nestedStats|entries|totalExecutions" label="Failures" metric-type="OBS.CUR.COL"/>
+        <metric attr="nestedStats|entries|aborts" alias="Aborts" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|avgCycles" alias="Avg Cycles" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|maxCycles" alias="Max Cycles" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|minCycles" alias="Min Cycles" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|failures" alias="Failures" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|priority" alias="Priority" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|totalExecutions" alias="Failures" aggregationType = "OBSERVATION" timeRollUpType = "CURRENT" clusterRollUpType = "COLLECTIVE"/>
 
     </stat>
 
     <stat url="mgmt/tm/ltm/profile/server-ssl/stats" label="Server SSL Profile" filter-name="serverSSLProfile"
-          children="entries" metric-type="AVG.AVG.COL">
+          children="entries">
         <naming use-entry-name="true"/>
 
-        <metric attr="nestedStats|entries|common.curConns" label="Current Connections"/>
-        <metric attr="nestedStats|entries|common.fatalAlerts" label="Fatal Alerts"/>
-        <metric attr="nestedStats|entries|common.secureHandshakes" label="Secure Handshakes" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.handshakeFailures" label="Handshake Failures" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.insecureHandshakeAccepts" label="Insecure Handshake Accepts"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.insecureHandshakeRejects" label="Insecure Handshake Rejects"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.insecureRenegotiationRejects" label="Insecure Renegotiation Rejects"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.maxConns" label="Max Connections"/>
-        <metric attr="nestedStats|entries|common.protocolUses.dtlsv1" label="Protocol Uses - DTLSv1"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.sslv2" label="Protocol Uses - SSLv2"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.sslv3" label="Protocol Uses - SSLV3"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.tlsv1" label="Protocol Uses - TLSv1"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_1" label="Protocol Uses - TLSv1.1"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_2" label="Protocol Uses - TLSv1.2"  calculate-per-min="true" show-only-per-min="true"/>
+        <metric attr="nestedStats|entries|common.curConns" alias="Current Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.fatalAlerts" alias="Fatal Alerts" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.secureHandshakes" alias="Secure Handshakes" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.handshakeFailures" alias="Handshake Failures" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.insecureHandshakeAccepts" alias="Insecure Handshake Accepts"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.insecureHandshakeRejects" alias="Insecure Handshake Rejects"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.insecureRenegotiationRejects" alias="Insecure Renegotiation Rejects"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.maxConns" alias="Max Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.dtlsv1" alias="Protocol Uses - DTLSv1" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.sslv2" alias="Protocol Uses - SSLv2" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.sslv3" alias="Protocol Uses - SSLV3" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.tlsv1" alias="Protocol Uses - TLSv1" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_1" alias="Protocol Uses - TLSv1.1" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_2" alias="Protocol Uses - TLSv1.2" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
     </stat>
 
     <stat url="mgmt/tm/ltm/profile/client-ssl/stats" label="Client SSL Profile" filter-name="clientSSLProfile"
-          children="entries" metric-type="AVG.AVG.COL">
+          children="entries">
         <naming use-entry-name="true"/>
 
-        <metric attr="nestedStats|entries|common.curConns" label="Current Connections"/>
-        <metric attr="nestedStats|entries|common.fatalAlerts" label="Fatal Alerts"/>
-        <metric attr="nestedStats|entries|common.secureHandshakes" label="Secure Handshakes" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.handshakeFailures" label="Handshake Failures" calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.insecureHandshakeAccepts" label="Insecure Handshake Accepts"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.insecureHandshakeRejects" label="Insecure Handshake Rejects"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.insecureRenegotiationRejects" label="Insecure Renegotiation Rejects"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.maxConns" label="Max Connections"/>
-        <metric attr="nestedStats|entries|common.protocolUses.dtlsv1" label="Protocol Uses - DTLSv1"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.sslv2" label="Protocol Uses - SSLv2"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.sslv3" label="Protocol Uses - SSLV3"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.tlsv1" label="Protocol Uses - TLSv1"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_1" label="Protocol Uses - TLSv1.1"  calculate-per-min="true" show-only-per-min="true"/>
-        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_2" label="Protocol Uses - TLSv1.2"  calculate-per-min="true" show-only-per-min="true"/>
+        <metric attr="nestedStats|entries|common.curConns" alias="Current Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.fatalAlerts" alias="Fatal Alerts" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.secureHandshakes" alias="Secure Handshakes" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.handshakeFailures" alias="Handshake Failures" delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.insecureHandshakeAccepts" alias="Insecure Handshake Accepts"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.insecureHandshakeRejects" alias="Insecure Handshake Rejects"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.insecureRenegotiationRejects" alias="Insecure Renegotiation Rejects"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.maxConns" alias="Max Connections" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.dtlsv1" alias="Protocol Uses - DTLSv1"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.sslv2" alias="Protocol Uses - SSLv2"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.sslv3" alias="Protocol Uses - SSLV3"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.tlsv1" alias="Protocol Uses - TLSv1"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_1" alias="Protocol Uses - TLSv1.1"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
+        <metric attr="nestedStats|entries|common.protocolUses.tlsv1_2" alias="Protocol Uses - TLSv1.2"  delta="true" aggregationType = "AVERAGE" timeRollUpType = "AVERAGE" clusterRollUpType = "COLLECTIVE"/>
     </stat>
 
 </stats>

@@ -7,17 +7,20 @@
 
 package com.appdynamics.extensions.f5;
 
-import com.appdynamics.extensions.conf.MonitorConfiguration;
-import com.appdynamics.extensions.f5.config.input.Stat;
-import com.appdynamics.extensions.util.MetricWriteHelper;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.appdynamics.extensions.AMonitorJob;
+import com.appdynamics.extensions.MetricWriteHelper;
+import com.appdynamics.extensions.conf.MonitorContextConfiguration;
+import com.appdynamics.extensions.f5.config.Stat;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,8 +32,11 @@ import java.util.Map;
  */
 public class NewF5MonitorTaskTest {
 
+    @Mock
+    AMonitorJob aMonitorJob;
+
     @Test
-    public void nameFromUrlTest() throws Exception {
+    public void nameFromUrlTest() {
         NewF5MonitorTask task = new NewF5MonitorTask(null, null, null, null, null, null);
         String nameFromUrl = task.getNameFromUrl("https://localhost/mgmt/tm/ltm/virtual/~Common~Outbound_Forwarding/stats?a=b&c=d");
         Assert.assertEquals("~Common~Outbound_Forwarding", nameFromUrl);
@@ -40,10 +46,9 @@ public class NewF5MonitorTaskTest {
     @Test
     public void run() {
         MetricWriteHelper writer = Mockito.mock(MetricWriteHelper.class);
-        Runnable runner = Mockito.mock(Runnable.class);
-        MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|F5 Monitor|", runner, writer);
+        MonitorContextConfiguration conf = new MonitorContextConfiguration("F5Monitor","Custom Metrics|F5 Monitor|", new File("demo"), aMonitorJob);
         conf.setConfigYml("src/test/resources/conf/test-config.yml");
-        conf.setMetricsXml("src/test/resources/metrics/metrics-with-children.xml", Stat.Stats.class);
+        conf.setMetricXml("src/test/resources/metrics/metrics-with-children.xml", Stat.Stats.class);
         Mockito.doAnswer(new Answer() {
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Object[] args = invocationOnMock.getArguments();
@@ -51,12 +56,11 @@ public class NewF5MonitorTaskTest {
                 return null;
             }
         }).when(writer).printMetric(Mockito.anyString(), Mockito.any(BigDecimal.class), Mockito.anyString());
-        conf.setMetricWriter(writer);
-        Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXmlConfiguration();
+        Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXml();
         Stat[] stats = wrapper.getStats();
         List servers = (List) conf.getConfigYml().get("servers");
         for (Stat stat : stats) {
-            NewF5MonitorTask task = new NewF5MonitorTask(conf, (Map) servers.get(0), stat, null);
+            NewF5MonitorTask task = new NewF5MonitorTask(conf, writer, (Map) servers.get(0), stat, null);
             task = Mockito.spy(task);
             spyForJson(task);
             task.run();
@@ -83,17 +87,16 @@ public class NewF5MonitorTaskTest {
     }
 
     @Test
-    public void metricsWithChildrenArray() throws InterruptedException, IOException {
+    public void metricsWithChildrenArray() throws IOException {
         MetricWriteHelper writer = Mockito.mock(MetricWriteHelper.class);
         Runnable runner = Mockito.mock(Runnable.class);
-        MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|F5 Monitor|", runner, writer);
+        MonitorContextConfiguration conf = new MonitorContextConfiguration("F5Monitor","Custom Metrics|F5 Monitor|", new File("demo"), aMonitorJob);
         conf.setConfigYml("src/test/resources/conf/test-config.yml");
-        conf.setMetricsXml("src/test/resources/metrics/metrics-logical-disk.xml", Stat.Stats.class);
-        conf.setMetricWriter(writer);
-        Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXmlConfiguration();
+        conf.setMetricXml("src/test/resources/metrics/metrics-logical-disk.xml", Stat.Stats.class);
+        Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXml();
         Stat[] stats = wrapper.getStats();
         List servers = (List) conf.getConfigYml().get("servers");
-        NewF5MonitorTask task = new NewF5MonitorTask(conf, (Map) servers.get(0), stats[0], null);
+        NewF5MonitorTask task = new NewF5MonitorTask(conf, writer, (Map) servers.get(0), stats[0], null);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readValue(new FileInputStream("src/test/resources/output/logical-disk.json"), JsonNode.class);
         Map<String, JsonNode> children = task.getChildren(jsonNode, stats[0]);
@@ -103,17 +106,16 @@ public class NewF5MonitorTaskTest {
     }
 
     @Test
-    public void metricsWithChildrenMap() throws InterruptedException, IOException {
+    public void metricsWithChildrenMap() throws IOException {
         MetricWriteHelper writer = Mockito.mock(MetricWriteHelper.class);
         Runnable runner = Mockito.mock(Runnable.class);
-        MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|F5 Monitor|", runner, writer);
+        MonitorContextConfiguration conf = new MonitorContextConfiguration("F5Monitor","Custom Metrics|F5 Monitor|", new File("demo"), aMonitorJob);
         conf.setConfigYml("src/test/resources/conf/test-config.yml");
-        conf.setMetricsXml("src/test/resources/metrics/metrics-hostInfo.xml", Stat.Stats.class);
-        conf.setMetricWriter(writer);
-        Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXmlConfiguration();
+        conf.setMetricXml("src/test/resources/metrics/metrics-hostInfo.xml", Stat.Stats.class);
+        Stat.Stats wrapper = (Stat.Stats) conf.getMetricsXml();
         Stat[] stats = wrapper.getStats();
         List servers = (List) conf.getConfigYml().get("servers");
-        NewF5MonitorTask task = new NewF5MonitorTask(conf, (Map) servers.get(0), stats[0], null);
+        NewF5MonitorTask task = new NewF5MonitorTask(conf, writer, (Map) servers.get(0), stats[0], null);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readValue(new FileInputStream("src/test/resources/output/hostInfo.json"), JsonNode.class);
         Map<String, JsonNode> children = task.getChildren(jsonNode, stats[0]);

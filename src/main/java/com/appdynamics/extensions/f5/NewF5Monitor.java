@@ -7,91 +7,95 @@
 
 package com.appdynamics.extensions.f5;
 
-import com.appdynamics.extensions.conf.MonitorConfiguration;
-import com.appdynamics.extensions.conf.MonitorConfiguration.ConfItem;
-import com.appdynamics.extensions.f5.config.input.Stat;
-import com.appdynamics.extensions.util.MetricWriteHelper;
-import com.appdynamics.extensions.util.MetricWriteHelperFactory;
-import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
-import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
-import com.singularity.ee.agent.systemagent.api.TaskOutput;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.apache.commons.lang.ArrayUtils;
+import com.appdynamics.extensions.ABaseMonitor;
+import com.appdynamics.extensions.TasksExecutionServiceProvider;
+import com.appdynamics.extensions.conf.MonitorContextConfiguration;
+import com.appdynamics.extensions.f5.config.Stat;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by abey.tom on 3/14/16.
+ * Created by abey.tom on 3/14/16. prashant.mehta => 26th May 20
  */
-public class NewF5Monitor extends AManagedMonitor {
-    public static final Logger logger = LoggerFactory.getLogger(NewF5Monitor.class);
+public class NewF5Monitor extends ABaseMonitor {
+    public static final Logger logger = ExtensionsLoggerFactory.getLogger(NewF5Monitor.class);
 
-    private MonitorConfiguration configuration;
+    private MonitorContextConfiguration configuration;
 
     public NewF5Monitor() {
-        logger.info(String.format("Using F5 Monitor Version [%s]",
-                getImplementationVersion()));
-
+        logger.info(String.format("Using F5 Monitor Version [%s]", getImplementationVersion()));
     }
 
-    protected void initialize(Map<String, String> argsMap) {
-        if (configuration == null) {
-            MetricWriteHelper metricWriteHelper = MetricWriteHelperFactory.create(this);
-            MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|F5",
-                    new TaskRunnable(), metricWriteHelper);
-            final String configFilePath = argsMap.get("config-file");
-            final String metricFilePath = argsMap.get("metric-file");
-            conf.setConfigYml(configFilePath);
-            conf.setMetricsXml(metricFilePath, Stat.Stats.class);
-            conf.setMetricWriter(MetricWriteHelperFactory.create(this));
-            conf.checkIfInitialized(ConfItem.METRIC_PREFIX, ConfItem.CONFIG_YML, ConfItem.HTTP_CLIENT
-                    , ConfItem.EXECUTOR_SERVICE, ConfItem.METRICS_XML, ConfItem.METRIC_WRITE_HELPER);
-            this.configuration = conf;
-        }
+    protected String getDefaultMetricPrefix() {
+        return "Custom Metrics|F5 Monitor|";
     }
 
-    private class TaskRunnable implements Runnable {
+    public String getMonitorName() {
+        return "F5Monitor";
+    }
 
-        public void run() {
-            Map<String, ?> config = configuration.getConfigYml();
-            Stat.Stats metricConfig = (Stat.Stats) configuration.getMetricsXmlConfiguration();
-            if (config != null && metricConfig != null && !ArrayUtils.isEmpty(metricConfig.getStats())) {
-                AuthTokenFetcher tokenFetcher = new AuthTokenFetcher(config, configuration.getHttpClient());
-                Stat[] stats = metricConfig.getStats();
-                List<Map> servers = (List) config.get("servers");
-                if (servers != null && !servers.isEmpty()) {
-                    for (Map server : servers) {
-                        String token = tokenFetcher.getToken(server);
-                        for (Stat stat : stats) {
-                            NewF5MonitorTask task = new NewF5MonitorTask(configuration, server, stat,token);
-                            configuration.getExecutorService().execute(task);
-                        }
+    protected void doRun(TasksExecutionServiceProvider tasksExecutionServiceProvider) {
+        configuration = getContextConfiguration();
+        Map<String, ?> config = configuration.getConfigYml();
+        Stat.Stats metricConfig = (Stat.Stats) configuration.getMetricsXml();
+        if (config != null && metricConfig != null && !ArrayUtils.isEmpty(metricConfig.getStats())) {
+            AuthTokenFetcher tokenFetcher = new AuthTokenFetcher(configuration.getContext().getHttpClient());
+            Stat[] stats = metricConfig.getStats();
+            List<Map> servers = (List) config.get("servers");
+            if (servers != null && !servers.isEmpty()) {
+                for (Map server : servers) {
+                    server.put(Constants.ENCRYPTION_KEY, config.get(Constants.ENCRYPTION_KEY));
+                    String token = tokenFetcher.getToken(server);
+                    for (Stat stat : stats) {
+                        NewF5MonitorTask task = new NewF5MonitorTask(configuration, tasksExecutionServiceProvider.getMetricWriteHelper(), server, stat,token);
+                        tasksExecutionServiceProvider.submit("F5 Stats task", task);
                     }
                 }
-            } else {
-                if (config == null) {
-                    logger.error("The config.yml is not loaded due to previous errors.The task will not run");
-                }
-                if (metricConfig == null) {
-                    logger.error("The metrics.xml is not loaded due to previous errors.The task will not run");
-                } else if (ArrayUtils.isEmpty(metricConfig.getStats())) {
-                    logger.error("The stats read from the metric xml is empty. Please make sure that the metrics xml is correct");
-                }
+            }
+        } else {
+            if (config == null) {
+                logger.error("The config.yml is not loaded due to previous errors.The task will not run");
+            }
+            if (metricConfig == null) {
+                logger.error("The metrics.xml is not loaded due to previous errors.The task will not run");
+            } else if (ArrayUtils.isEmpty(metricConfig.getStats())) {
+                logger.error("The stats read from the metric xml is empty. Please make sure that the metrics xml is correct");
             }
         }
     }
 
-    public TaskOutput execute(Map<String, String> map, TaskExecutionContext taskExecutionContext) throws TaskExecutionException {
-        logger.debug("The raw arguments are {}", map);
-        initialize(map);
-        configuration.executeTask();
-        return null;
+    protected List<Map<String, ?>> getServers() {
+        return Lists.newArrayList();
     }
 
-    private static String getImplementationVersion() {
-        return NewF5Monitor.class.getPackage().getImplementationTitle();
+    /**
+     * An Overridden method which gets called to set metrics-xml into the {@code MonitorContextConfiguration}
+     *
+     * @param args
+     */
+    @Override
+    protected void initializeMoreStuff(Map<String, String> args) {
+        logger.info("initializing metric.xml file");
+        this.getContextConfiguration().setMetricXml(args.get("metric-file"), Stat.Stats.class);
+    }
+
+
+    public static void main(String[] args) {
+
+        final Map<String, String> taskArgs = new HashMap();
+        taskArgs.put("config-file", "src/main/resources/conf/config.yaml");
+        taskArgs.put("metric-file", "src/main/resources/conf/metrics.xml");
+        try {
+            final NewF5Monitor monitor = new NewF5Monitor();
+            monitor.execute(taskArgs, null);
+        } catch (Exception e) {
+            logger.error("Error while running the task", e);
+        }
     }
 }

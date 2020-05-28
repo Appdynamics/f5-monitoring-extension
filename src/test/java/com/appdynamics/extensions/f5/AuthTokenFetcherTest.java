@@ -7,17 +7,16 @@
 
 package com.appdynamics.extensions.f5;
 
-import com.appdynamics.TaskInputArgs;
 import com.appdynamics.extensions.crypto.Encryptor;
 import com.appdynamics.extensions.util.JsonUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -37,19 +36,6 @@ public class AuthTokenFetcherTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-
-//    @Test
-//    public void getToken() throws Exception {
-//        MetricWriteHelper writer = Mockito.mock(MetricWriteHelper.class);
-//        Runnable runner = Mockito.mock(Runnable.class);
-//        MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|F5 Monitor|", runner, writer);
-//        conf.setConfigYml("src/test/resources/conf/test-config-token.yml");
-//        Map<String, ?> configYml = conf.getConfigYml();
-//        AuthTokenFetcher fetcher = new AuthTokenFetcher(configYml, conf.getHttpClient());
-//        List servers = (List) configYml.get("servers");
-//        String token = fetcher.getToken((Map<String, Object>) servers.get(0));
-//    }
-
     @Test
     public void getTokenNoLoginRef() throws IOException {
         Map<String, Object> server = createServerMap();
@@ -64,7 +50,7 @@ public class AuthTokenFetcherTest {
             }
         }).when(httpClient).execute(Mockito.any(HttpUriRequest.class));
         HashMap<String, ObjectMapper> config = new HashMap<String, ObjectMapper>();
-        AuthTokenFetcher fetcher = new AuthTokenFetcher(config, httpClient);
+        AuthTokenFetcher fetcher = new AuthTokenFetcher(httpClient);
         String token = fetcher.getToken(server);
         Assert.assertEquals("492D3316E5456378B4AC9B5E2FA923595F0DA65A",token);
     }
@@ -72,8 +58,9 @@ public class AuthTokenFetcherTest {
     @Test
     public void getTokenWithLoginRefAndEncryptedPwd() throws IOException {
         Map<String, Object> server = createServerMap();
-        server.remove(TaskInputArgs.PASSWORD);
-        server.put("passwordEncrypted",new Encryptor("encryptionKey").encrypt("welcome"));
+        server.remove(Constants.PASSWORD);
+        server.put("encryptedPassword",new Encryptor("encryptionKey").encrypt("welcome"));
+        server.put("encryptionKey","encryptionKey");
         final String loginRef = "https://localhost/mgmt/cm/system/authn/providers/ldap/-id-/login";
         server.put("loginReference", loginRef);
         CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
@@ -87,8 +74,7 @@ public class AuthTokenFetcherTest {
             }
         }).when(httpClient).execute(Mockito.any(HttpUriRequest.class));
         HashMap<String, Object> config = new HashMap<String, Object>();
-        config.put("encryptionKey","encryptionKey");
-        AuthTokenFetcher fetcher = new AuthTokenFetcher(config, httpClient);
+        AuthTokenFetcher fetcher = new AuthTokenFetcher(httpClient);
         String token = fetcher.getToken(server);
         Assert.assertEquals("492D3316E5456378B4AC9B5E2FA923595F0DA65A",token);
     }
@@ -102,7 +88,7 @@ public class AuthTokenFetcherTest {
         Map<String, Object> server = Collections.emptyMap();
         CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
         HashMap<String, ObjectMapper> config = new HashMap<String, ObjectMapper>();
-        AuthTokenFetcher fetcher = new AuthTokenFetcher(config, httpClient);
+        AuthTokenFetcher fetcher = new AuthTokenFetcher(httpClient);
         String token = fetcher.getToken(server);
         Assert.assertNull(token);
     }
@@ -115,7 +101,7 @@ public class AuthTokenFetcherTest {
         Map<String, Object> server = Collections.singletonMap("authType",(Object) "TOKEN");
         CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
         HashMap<String, ObjectMapper> config = new HashMap<String, ObjectMapper>();
-        AuthTokenFetcher fetcher = new AuthTokenFetcher(config, httpClient);
+        AuthTokenFetcher fetcher = new AuthTokenFetcher(httpClient);
         String token = fetcher.getToken(server);
         Assert.assertNull(token);
     }
@@ -134,7 +120,7 @@ public class AuthTokenFetcherTest {
             }
         }).when(httpClient).execute(Mockito.any(HttpUriRequest.class));
         HashMap<String, ObjectMapper> config = new HashMap<String, ObjectMapper>();
-        AuthTokenFetcher fetcher = new AuthTokenFetcher(config, httpClient);
+        AuthTokenFetcher fetcher = new AuthTokenFetcher(httpClient);
         String token = fetcher.getToken(server);
         Assert.assertNull(token);
     }
@@ -148,8 +134,8 @@ public class AuthTokenFetcherTest {
     private Map<String, Object> createServerMap() {
         Map<String, Object> server = new HashMap<String, Object>();
         server.put("uri","http://192.168.1.132:8080");
-        server.put(TaskInputArgs.USER,"abey");
-        server.put(TaskInputArgs.PASSWORD,"welcome");
+        server.put(Constants.USER_NAME,"abey");
+        server.put(Constants.PASSWORD,"welcome");
         server.put("authType","TOKEN");
         return server;
     }

@@ -5,7 +5,7 @@
  * The copyright notice above does not evidence any actual or intended publication of such source code.
  */
 
-package com.appdynamics.extensions.f5.config.input;
+package com.appdynamics.extensions.f5.config;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

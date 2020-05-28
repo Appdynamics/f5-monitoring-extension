@@ -5,7 +5,7 @@
  * The copyright notice above does not evidence any actual or intended publication of such source code.
  */
 
-package com.appdynamics.extensions.f5.config.input;
+package com.appdynamics.extensions.f5.config;
 
 import javax.xml.bind.annotation.*;
 
@@ -20,12 +20,10 @@ public class Stat {
     private String label;
     @XmlAttribute(name = "filter-name")
     private String filterName;
-    @XmlAttribute(name = "metric-type")
-    private String metricType;
     @XmlAttribute
     public String children;
     @XmlElement(name = "metric")
-    private Metric[] metrics;
+    private MetricConfig[] metricConfig;
     @XmlElement(name = "naming")
     private Naming naming;
     @XmlElement(name = "stat")
@@ -46,22 +44,6 @@ public class Stat {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public Metric[] getMetrics() {
-        return metrics;
-    }
-
-    public void setMetrics(Metric[] metrics) {
-        this.metrics = metrics;
-    }
-
-    public String getMetricType() {
-        return metricType;
-    }
-
-    public void setMetricType(String metricType) {
-        this.metricType = metricType;
     }
 
     public String getUrl() {
@@ -94,6 +76,14 @@ public class Stat {
 
     public void setChildren(String children) {
         this.children = children;
+    }
+
+    public MetricConfig[] getMetricConfig() {
+        return metricConfig;
+    }
+
+    public void setMetricConfig(MetricConfig[] metricConfig) {
+        this.metricConfig = metricConfig;
     }
 
     @XmlRootElement

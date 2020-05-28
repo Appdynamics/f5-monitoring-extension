@@ -8,8 +8,8 @@ servers:
   - uri: "http://uri.of.server:9090"
     name: ""
     username: "admin"
-    password: "welcome"
-
+    password: ""
+    encryptedPassword: ""
     ### Uncomment this to enable the token based authentication instead of BASIC
     ### The loginReference is mandatory for non local authentication.
 #    authType: "TOKEN"
@@ -57,6 +57,25 @@ filter:
     includes: [".*"]
   virtualServers:
     includes: [".*"]
+
+controllerInfo:
+  controllerHost: "controller"
+  controllerPort: 8090
+  account: "customer1"
+  username: "admin"
+  password: "admin"
+  encryptedPassword: ""
+  controllerSslEnabled: false
+  enableOrchestration: false
+  uniqueHostId: ""
+  accountAccessKey: ""
+  machinePath: ""
+  simEnabled: true
+  applicationName: ""
+  tierName: ""
+  nodeName: ""
+
+encryptionKey: "abcd"
 
 #https://host/mgmt/tm/ltm/pool/stats
 #https://host/mgmt/tm/ltm/pool/<PoolName>/members/stats
