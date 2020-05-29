@@ -1,5 +1,5 @@
 /*
- * Copyright 2018. AppDynamics LLC and its affiliates.
+ * Copyright 2020. AppDynamics LLC and its affiliates.
  * All Rights Reserved.
  * This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
  * The copyright notice above does not evidence any actual or intended publication of such source code.
@@ -7,44 +7,60 @@
 
 package com.appdynamics.extensions.f5;
 
-import com.appdynamics.extensions.StringUtils;
-import com.appdynamics.extensions.conf.MonitorConfiguration;
-import com.appdynamics.extensions.f5.config.input.Metric;
-import com.appdynamics.extensions.f5.config.input.Naming;
-import com.appdynamics.extensions.f5.config.input.Stat;
+import com.appdynamics.extensions.AMonitorTaskRunnable;
+import com.appdynamics.extensions.MetricWriteHelper;
+import com.appdynamics.extensions.conf.MonitorContextConfiguration;
+import static com.appdynamics.extensions.f5.Constants.METRIC_SEPARATOR;
+import com.appdynamics.extensions.f5.config.MetricConfig;
+import com.appdynamics.extensions.f5.config.Naming;
+import com.appdynamics.extensions.f5.config.Stat;
 import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.http.UrlBuilder;
-import com.appdynamics.extensions.util.*;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
+import com.appdynamics.extensions.metrics.Metric;
+import static com.appdynamics.extensions.util.AssertUtils.assertNotNull;
+import com.appdynamics.extensions.util.JsonUtils;
+import com.appdynamics.extensions.util.NumberUtils;
+import com.appdynamics.extensions.util.StringUtils;
+import com.appdynamics.extensions.util.YmlUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Strings;
-import org.apache.commons.lang.math.NumberUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import static com.appdynamics.extensions.util.AssertUtils.assertNotNull;
 
 /**
  * Created by abey.tom on 3/11/16.
  */
-public class NewF5MonitorTask implements Runnable {
-    public static final Logger logger = LoggerFactory.getLogger(NewF5MonitorTask.class);
+public class NewF5MonitorTask implements AMonitorTaskRunnable {
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(NewF5MonitorTask.class);
 
     private Map server;
     private Stat stat;
     private String token;
-    private MonitorConfiguration configuration;
-    private String serverPrefix;
+    private MonitorContextConfiguration configuration;
+    private MetricWriteHelper metricWriteHelper;
+    private String metricPrefix;
     private Map<String, String> varMap;
+    private BigInteger heartBeatValue = BigInteger.ZERO;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     //This is for main stats
-    public NewF5MonitorTask(MonitorConfiguration configuration, Map server, Stat stat, String token) {
+    public NewF5MonitorTask(MonitorContextConfiguration configuration, MetricWriteHelper metricWriteHelper, Map server, Stat stat, String token) {
         this.configuration = configuration;
+        this.metricWriteHelper = metricWriteHelper;
         this.server = server;
         this.stat = stat;
         this.token = token;
@@ -53,69 +69,80 @@ public class NewF5MonitorTask implements Runnable {
         if (!Strings.isNullOrEmpty(serverName)) {
             serverPrefix = serverPrefix + "|" + serverName;
         }
-        this.serverPrefix = serverPrefix;
+        this.metricPrefix = serverPrefix;
     }
 
     // This is for child stats
-    public NewF5MonitorTask(MonitorConfiguration configuration, Map server,
+    public NewF5MonitorTask(MonitorContextConfiguration configuration, Map server,
                             Stat stat, String serverPrefix, Map<String, String> varMap, String token) {
         this.server = server;
         this.stat = stat;
         this.configuration = configuration;
-        this.serverPrefix = serverPrefix;
+        this.metricPrefix = serverPrefix;
         this.varMap = varMap;
         this.token = token;
     }
 
     public void run() {
-        try {
-            runTask();
-        } catch (Exception e) {
-            configuration.getMetricWriter().registerError(e.getMessage(), e);
-            logger.error("Error while running the task", e);
-        }
+        runTask();
     }
 
     private void runTask() {
-        Metric[] metrics = stat.getMetrics();
+        MetricConfig[] metricConfigs = stat.getMetricConfig();
         boolean isFilterConfigured = isFilterConfigured(stat);
-        if (metrics != null && isFilterConfigured) {
-            String endpoint = stat.getUrl();
-            String label = stat.getLabel();
-            assertNotNull(endpoint, "The url attribute cannot be empty for stat " + stat);
-            assertNotNull(label, "The label attribute cannot be empty for stat " + stat);
-            String url = buildUrl(server, endpoint, varMap);
-            logger.info("Fetching the F5 Stats from the URL {}", url);
-            JsonNode json = getResponseAsJson(url);
-            if (json != null) {
-                Map<String, JsonNode> childMap = getChildren(json, stat);
-                if (childMap != null && !childMap.isEmpty()) {
-                    extractMetrics(childMap, stat, serverPrefix);
+        List<Metric> metricsList = Lists.newCopyOnWriteArrayList();
+        try {
+            if (metricConfigs != null && isFilterConfigured) {
+                String endpoint = stat.getUrl();
+                String label = stat.getLabel();
+                assertNotNull(endpoint, "The url attribute cannot be empty for stat " + stat);
+                assertNotNull(label, "The label attribute cannot be empty for stat " + stat);
+                String url = buildUrl(server, endpoint, varMap);
+                logger.info("Fetching the F5 Stats from the URL {}", url);
+                JsonNode json = getResponseAsJson(url);
+                if (json != null) {
+                    Map<String, JsonNode> childMap = getChildren(json, stat);
+                    if (childMap != null && !childMap.isEmpty()) {
+                        extractMetrics(childMap, stat, metricPrefix, metricsList);
+                        logger.debug("Collected {} metrics Collection for stats {}, server {}", metricsList.size(), stat.getLabel(), server.get(Constants.DISPLAY_NAME));
+                    } else {
+                        logger.error("The response content for url {} doesn't contain children [{}]", url, stat.getChildren());
+                    }
+                    heartBeatValue = BigInteger.ONE;
                 } else {
-                    logger.error("The response content for url {} doesn't contain children [{}]", url, stat.getChildren());
+                    logger.error("Error while getting the data from " + url + ". Please check logs for more information.");
                 }
             } else {
-                configuration.getMetricWriter().registerError("Error while getting the data from "
-                        + url + ". Please check logs for more information.", null);
+                if (!isFilterConfigured) {
+                    logger.info("The filters are not configured for the stat {}. Skipping", stat.getUrl());
+                }
+                if (metricConfigs == null) {
+                    logger.info("The metrics are not configured for the stat {}. Skipping", stat.getUrl());
+                }
             }
-        } else {
-            if (!isFilterConfigured) {
-                logger.info("The filters are not configured for the stat {}. Skipping", stat.getUrl());
-            }
-            if (metrics == null) {
-                logger.info("The metrics are not configured for the stat {}. Skipping", stat.getUrl());
-            }
+        } catch (Exception e) {
+            logger.error("Error while collecting metrics for stat {} server {}", stat.getLabel(), server.get(Constants.DISPLAY_NAME));
+        } finally {
+            Metric heartBeat = new Metric("HeartBeat", String.valueOf(heartBeatValue), metricPrefix + METRIC_SEPARATOR + Constants.HEARTBEAT);
+            metricsList.add(heartBeat);
+            metricWriteHelper.transformAndPrintMetrics(metricsList);
         }
     }
 
     protected JsonNode getResponseAsJson(String url) {
+        JsonNode jsonNode = null;
         Map<String, String> headers;
         if (token != null) {
             headers = Collections.singletonMap("X-F5-Auth-Token", token);
         } else {
             headers = Collections.emptyMap();
         }
-        return HttpClientUtils.getResponseAsJson(configuration.getHttpClient(), url, JsonNode.class, headers);
+        try {
+            jsonNode = HttpClientUtils.getResponseAsJson(configuration.getContext().getHttpClient(), url, JsonNode.class, headers);
+        }catch (Exception e){
+            logger.error("Error for the http request", e);
+        }
+        return  jsonNode;
     }
 
     /**
@@ -143,7 +170,7 @@ public class NewF5MonitorTask implements Runnable {
             } else if (children != null) {
                 //In other cases, it is a map with key-value.
                 // The entity name is extracted from the key
-                Iterator<String> fields = children.getFieldNames();
+                Iterator<String> fields = children.fieldNames();
                 while (fields.hasNext()) {
                     String field = fields.next();
                     JsonNode child = children.get(field);
@@ -184,11 +211,9 @@ public class NewF5MonitorTask implements Runnable {
      * @param stat
      * @param serverPrefix
      */
-    private void extractMetrics(Map<String, JsonNode> childNodes, Stat stat, String serverPrefix) {
-        Metric[] metrics = stat.getMetrics();
+    private void extractMetrics(Map<String, JsonNode> childNodes, Stat stat, String serverPrefix, List<Metric> metricsList) {
+        MetricConfig[] metricConfigs = stat.getMetricConfig();
         String statPrefix = serverPrefix + "|" + StringUtils.trim(stat.getLabel(), "|");
-        //if aggregate=true in the <metric>, the it will be aggregated.
-        AggregatorFactory aggregatorFactory = new AggregatorFactory();
         for (Map.Entry<String, JsonNode> mapEntry : childNodes.entrySet()) {
             String name = mapEntry.getKey();
             JsonNode childNode = mapEntry.getValue();
@@ -200,118 +225,71 @@ public class NewF5MonitorTask implements Runnable {
                     logger.debug("Processing the prefix {} and entry {}", entityNamePrefix
                             , getTextValue(childNode, "nestedStats", "selfLink"));
                 }
-                for (Metric metric : metrics) {
+                for (MetricConfig metricConfig : metricConfigs) {
                     try {
-                        String metricType = getMetricType(stat, metric);
-                        if (metricType != null) {
-                            extractAndReport(metric, childNode, entityNamePrefix, metricType, aggregatorFactory);
-                        } else {
-                            logger.error("Cannot get the metric-type for {}|{}"
-                                    , entityNamePrefix, metric.getAttr());
-                        }
+                        extractAndReport(metricConfig, childNode, entityNamePrefix, metricsList);
                     } catch (Exception e) {
                         String msg = "Error while getting the metrics for "
-                                + entityNamePrefix + "|" + metric.getAttr();
+                                + entityNamePrefix + "|" + metricConfig.getAttr();
                         logger.error(msg, e);
-                        configuration.getMetricWriter().registerError(msg, e);
                     }
                 }
                 // If there are any child <stat> elements for a parent <stat>
-                processChildStats(childNode, stat.getStats(), entityNamePrefix, name);
+                processChildStats(childNode, stat.getStats(), entityNamePrefix, name, metricsList);
             } else {
                 logger.debug("Excluding the entry {} since it didn't match any filter",
                         getTextValue(childNode, "nestedStats", "selfLink"));
             }
         }
-        Collection<Aggregator<AggregatorKey>> aggregators = aggregatorFactory.getAggregators();
-        for (Aggregator<AggregatorKey> aggregator : aggregators) {
-            Set<AggregatorKey> keys = aggregator.keys();
-            for (AggregatorKey key : keys) {
-                BigDecimal value = aggregator.getAggregatedValue(key);
-                printMetrics(statPrefix + "|" + key.getMetricPath(), value, key.getMetricType());
-            }
-        }
     }
 
-    private void processChildStats(JsonNode parentNode, Stat[] childStats, String entryPrefix, String parentName) {
+    private void processChildStats(JsonNode parentNode, Stat[] childStats, String entryPrefix, String parentName, List<Metric> metricsList) {
         if (childStats != null && childStats.length > 0) {
             for (Stat childStat : childStats) {
                 logger.debug("Running the task for the child stat [{}] of parent [{}]", childStat.getUrl(), parentName);
                 if (!Strings.isNullOrEmpty(childStat.getUrl())) {
                     Map<String, String> varMap = Collections.singletonMap("$PARENT_NAME", parentName);
                     NewF5MonitorTask task = new NewF5MonitorTask(configuration, server, childStat, entryPrefix, varMap, token);
-                    configuration.getExecutorService().submit(task);
+                    configuration.getContext().getExecutorService().submit("ChildTasks", task);
                 } else {
                     //TODO children attribute with $PARENT_NAME replace?
                     // need to clone the stat for that.
                     Map<String, JsonNode> children = getChildren(parentNode, childStat);
-                    extractMetrics(children, childStat, entryPrefix);
+                    extractMetrics(children, childStat, entryPrefix, metricsList);
                 }
             }
         }
     }
 
     /**
-     * AVG.AVG.COL
-     * - Aggregation Type
-     * - Time Rollup
-     * - Cluster Rollup
+     * Extract the value based in <metric> from the childNode.
      *
-     * @param stat
-     * @param metric
-     * @return
-     */
-    private String getMetricType(Stat stat, Metric metric) {
-        if (!Strings.isNullOrEmpty(metric.getMetricType())) {
-            return metric.getMetricType();
-        } else if (!Strings.isNullOrEmpty(stat.getMetricType())) {
-            return stat.getMetricType();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Extract the value based in <metric> from the childNode. Apply converter and the multiplier to the value.
-     *
-     * @param metric
+     * @param metricConfig
      * @param childNode
      * @param metricPrefix
-     * @param metricType
-     * @param aggregatorFactory
      */
-    private void extractAndReport(Metric metric, JsonNode childNode, String metricPrefix, String metricType,
-                                  AggregatorFactory aggregatorFactory) {
-        String attr = metric.getAttr();
+    private void extractAndReport(MetricConfig metricConfig, JsonNode childNode, String metricPrefix, List<Metric> metricsList) {
+        String attr = metricConfig.getAttr();
         if (!Strings.isNullOrEmpty(attr)) {
             String[] attrs = attr.split("\\|");
             String valueStr = getTextValue(childNode, attrs);
             if (!Strings.isNullOrEmpty(valueStr)) {
                 logger.debug("The raw value of [{}|{}] = [{}]", metricPrefix, attr, valueStr);
-                //Apply the converter
-                if (metric.hasConverters()) {
-                    valueStr = metric.convertValue(attr, valueStr);
-                }
                 if (NumberUtils.isNumber(valueStr)) {
-                    //Apply the multiplier
                     BigDecimal value = new BigDecimal(valueStr);
-                    BigDecimal multiplier = metric.getMultiplier();
-                    if (multiplier != null) {
-                        value = value.multiply(multiplier);
-                    }
-                    String label = metric.getLabel();
+                    String label = metricConfig.getAlias();
                     if (Strings.isNullOrEmpty(label)) {
                         label = attrs[attrs.length - 1];
                     }
-                    reportMetric(metric, metricPrefix, metricType, value, label, aggregatorFactory);
+                    reportMetric(metricConfig, metricPrefix, value, label, metricsList);
                 } else {
                     logger.error("The metric value {} for {}|{} is not a number. Please add a converter if needed", valueStr, metricPrefix, attr);
                 }
             } else {
-                logger.warn("Cannot get metric {} from the entry {}.", metric.getAttr(), childNode);
+                logger.warn("Cannot get metric {} from the entry {}.", metricConfig.getAttr(), childNode);
             }
         } else {
-            logger.error("attr cannot be empty for the metric [{}]", metric.getLabel());
+            logger.error("attr cannot be empty for the metric [{}]", metricConfig.getAlias());
         }
 
 
@@ -320,65 +298,15 @@ public class NewF5MonitorTask implements Runnable {
     /**
      * Reports the value. aggregate=true and per-min calculation is done here
      *
-     * @param metric
+     * @param metricConfig
      * @param metricPrefix
-     * @param metricType
      * @param value
      * @param label
-     * @param aggregatorFactory
      */
-    private void reportMetric(Metric metric, String metricPrefix, String metricType, BigDecimal value,
-                              String label, AggregatorFactory aggregatorFactory) {
-        boolean aggregate = Boolean.TRUE.equals(metric.getAggregate());
-
+    private void reportMetric(MetricConfig metricConfig, String metricPrefix, BigDecimal value, String label, List<Metric> metricList) {
         String metricPath = metricPrefix + "|" + label;
-        // Direct Metric
-        if (!Boolean.TRUE.equals(metric.getShowOnlyPerMin())) {
-            printMetrics(metricPath, value, metricType);
-            if (aggregate) {
-                aggregatorFactory.getAggregator(metricType)
-                        .add(new AggregatorKey(label, metricType), value);
-            }
-        } else {
-            logger.debug("Skipping the metric {}|{}, since only perMin is needed", metricPrefix, metric.getAttr());
-        }
-        // Per minute metrics
-        Boolean calculatePerMin = metric.getCalculatePerMin();
-        if (Boolean.TRUE.equals(calculatePerMin) || !Strings.isNullOrEmpty(metric.getPerMinLabel())) {
-            PerMinValueCalculator perMin = configuration.getPerMinValueCalculator();
-            BigDecimal perMinuteValue = perMin.getPerMinuteValue(metricPath, value);
-            if (perMinuteValue != null) {
-                String perMinLabel = getPerMinLabel(metric, label);
-                String metricTypeForPerMin = getMetricTypeForPerMin(metric, metricType);
-                printMetrics(metricPrefix + "|" + perMinLabel, perMinuteValue, metricTypeForPerMin);
-                if (aggregate) {
-                    aggregatorFactory.getAggregator(metricTypeForPerMin)
-                            .add(new AggregatorKey(perMinLabel, metricTypeForPerMin), perMinuteValue);
-                }
-            } else {
-                logger.debug("The per minute value for {} hasnt been calculated yet. It will take a couple of executions.", metricPath);
-            }
-        }
-    }
-
-    private String getMetricTypeForPerMin(Metric metric, String metricType) {
-        if (StringUtils.hasText(metric.getPerMinMetricType())) {
-            return metric.getPerMinMetricType();
-        } else {
-            return metricType;
-        }
-    }
-
-    private String getPerMinLabel(Metric metric, String label) {
-        if (!Strings.isNullOrEmpty(metric.getPerMinLabel())) {
-            return metric.getPerMinLabel();
-        } else {
-            return label + " Per Minute";
-        }
-    }
-
-    private void printMetrics(String metricPath, BigDecimal value, String metricType) {
-        configuration.getMetricWriter().printMetric(metricPath, value, metricType);
+        Metric metric = new Metric(metricConfig.getAttr(), value.toString(), metricPath, objectMapper.convertValue(metricConfig, Map.class));
+        metricList.add(metric);
     }
 
     //Apply the filters
@@ -448,9 +376,7 @@ public class NewF5MonitorTask implements Runnable {
         if (naming != null) {
             Boolean useEntryName = naming.getUseEntryName();
             String attrs = naming.getAttrs();
-            String delimiter = naming.getDelimiter();
-            delimiter = Strings.isNullOrEmpty(delimiter) ? ":" : delimiter;
-            logger.trace("The useEntryName is [{}], attrs is [{}] and delimiter is [{}]", useEntryName, attrs, delimiter);
+            logger.trace("The useEntryName is [{}], attrs is [{}] and delimiter is [{}]", useEntryName, attrs);
             if (Boolean.TRUE.equals(useEntryName) || Strings.isNullOrEmpty(attrs)) {
                 return getNameFromUrl(field);
             } else if (!Strings.isNullOrEmpty(attrs)) {
@@ -482,7 +408,7 @@ public class NewF5MonitorTask implements Runnable {
             }
             JsonNode description = jsonNode.get("description");
             if (description != null) {
-                return description.getTextValue();
+                return description.textValue();
             }
         }
         return null;
@@ -493,7 +419,7 @@ public class NewF5MonitorTask implements Runnable {
         if (jsonObject != null) {
             if (jsonObject.isValueNode()) {
                 if (jsonObject.isTextual()) {
-                    return jsonObject.getTextValue();
+                    return jsonObject.textValue();
                 } else {
                     return jsonObject.toString();
                 }
@@ -525,7 +451,6 @@ public class NewF5MonitorTask implements Runnable {
         } catch (URISyntaxException e) {
             String msg = String.format("Error while getting the name from URL %mag", url);
             logger.error(msg, e);
-            configuration.getMetricWriter().registerError(msg, e);
         }
         logger.debug("The entity name was resolved to [{}] from the url [{}]", name, url);
         return name;
@@ -549,5 +474,10 @@ public class NewF5MonitorTask implements Runnable {
         }
         UrlBuilder builder = UrlBuilder.fromYmlServerConfig(server);
         return builder.path(endpoint).build();
+    }
+
+    @Override
+    public void onTaskComplete() {
+
     }
 }

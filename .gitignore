@@ -9,8 +9,8 @@ target
 .idea
 .DS_Store
 dist
-src/test/resources/conf/config.yaml
-src/test/resources/conf/dummy-config.yaml
-src/test/resources/conf/invalid_config.yaml
-src/test/resources/conf/itest-config.yaml
+src/test/resources/conf/config.yml
+src/test/resources/conf/dummy-config.yml
+src/test/resources/conf/invalid_config.yml
+src/test/resources/conf/itest-config.yml
 src/test/resources/conf/new-config.yml

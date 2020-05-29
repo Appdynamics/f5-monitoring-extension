@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2018. AppDynamics LLC and its affiliates.
+  ~ Copyright 2020. AppDynamics LLC and its affiliates.
   ~ All Rights Reserved.
   ~ This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
   ~ The copyright notice above does not evidence any actual or intended publication of such source code.
@@ -20,7 +20,7 @@
         <execution-timeout-in-secs>60</execution-timeout-in-secs>
         
 		<task-arguments>
-			<argument name="config-file" is-required="true" default-value="monitors/F5Monitor/config.yaml" />
+			<argument name="config-file" is-required="true" default-value="monitors/F5Monitor/config.yml" />
             <argument name="metric-file" is-required="true" default-value="monitors/F5Monitor/metrics.xml" />
 		</task-arguments>
                 
