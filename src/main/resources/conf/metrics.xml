@@ -6,9 +6,12 @@
   -->
 
 <!--
-AggregationType = AVG | SUM | OBS
-TimeRollup = AVG | SUM | CUR
-ClusterRollup = IND | COL
+aggregationType = AVERAGE | SUM | OBSERVATION
+timeRollUpType = AVERAGE | SUM | CURRENT
+clusterRollUpType = INDIVIDUAL | COLLECTIVE
+-->
+<!--
+Set delta = true for metric to report per-min data
 -->
 <stats>
     <stat url="/mgmt/tm/ltm/pool/stats" label="Pools" filter-name="pools" children="entries">

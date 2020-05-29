@@ -26,8 +26,8 @@ connection:
   sslCertCheckEnabled: false
   sslVerifyHostname: false
 
-numberOfThreads: 5
-encryptionKey: "welcome"
+# numberOfThreads = {servers configured} * {stats in metrics.xml}
+numberOfThreads: 12
 
 # Filters are applied on the name of the member. All the possible urls are given below.
 filter:
@@ -60,10 +60,10 @@ filter:
 
 controllerInfo:
   controllerHost: "controller"
-  controllerPort: 8090
-  account: "customer1"
+  controllerPort: 8080
+  account: ""
   username: "admin"
-  password: "admin"
+  password: ""
   encryptedPassword: ""
   controllerSslEnabled: false
   enableOrchestration: false

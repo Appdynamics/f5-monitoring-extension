@@ -10,6 +10,7 @@ package com.appdynamics.extensions.f5;
 import com.appdynamics.extensions.AMonitorTaskRunnable;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
+import static com.appdynamics.extensions.f5.Constants.METRIC_SEPARATOR;
 import com.appdynamics.extensions.f5.config.MetricConfig;
 import com.appdynamics.extensions.f5.config.Naming;
 import com.appdynamics.extensions.f5.config.Stat;
@@ -30,6 +31,7 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -43,15 +45,16 @@ import java.util.Map;
  * Created by abey.tom on 3/11/16.
  */
 public class NewF5MonitorTask implements AMonitorTaskRunnable {
-    public static final Logger logger = ExtensionsLoggerFactory.getLogger(NewF5MonitorTask.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(NewF5MonitorTask.class);
 
     private Map server;
     private Stat stat;
     private String token;
     private MonitorContextConfiguration configuration;
     private MetricWriteHelper metricWriteHelper;
-    private String serverPrefix;
+    private String metricPrefix;
     private Map<String, String> varMap;
+    private BigInteger heartBeatValue = BigInteger.ZERO;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     //This is for main stats
@@ -66,7 +69,7 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
         if (!Strings.isNullOrEmpty(serverName)) {
             serverPrefix = serverPrefix + "|" + serverName;
         }
-        this.serverPrefix = serverPrefix;
+        this.metricPrefix = serverPrefix;
     }
 
     // This is for child stats
@@ -75,61 +78,71 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
         this.server = server;
         this.stat = stat;
         this.configuration = configuration;
-        this.serverPrefix = serverPrefix;
+        this.metricPrefix = serverPrefix;
         this.varMap = varMap;
         this.token = token;
     }
 
     public void run() {
-        try {
-            runTask();
-        } catch (Exception e) {
-            logger.error("Error while running the task", e);
-        }
+        runTask();
     }
 
     private void runTask() {
-        MetricConfig[] metrics = stat.getMetricConfig();
+        MetricConfig[] metricConfigs = stat.getMetricConfig();
         boolean isFilterConfigured = isFilterConfigured(stat);
         List<Metric> metricsList = Lists.newCopyOnWriteArrayList();
-        if (metrics != null && isFilterConfigured) {
-            String endpoint = stat.getUrl();
-            String label = stat.getLabel();
-            assertNotNull(endpoint, "The url attribute cannot be empty for stat " + stat);
-            assertNotNull(label, "The label attribute cannot be empty for stat " + stat);
-            String url = buildUrl(server, endpoint, varMap);
-            logger.info("Fetching the F5 Stats from the URL {}", url);
-            JsonNode json = getResponseAsJson(url);
-            if (json != null) {
-                Map<String, JsonNode> childMap = getChildren(json, stat);
-                if (childMap != null && !childMap.isEmpty()) {
-                    extractMetrics(childMap, stat, serverPrefix, metricsList);
-                    metricWriteHelper.transformAndPrintMetrics(metricsList);
-                    logger.info("completed metrics Collection for stats");
+        try {
+            if (metricConfigs != null && isFilterConfigured) {
+                String endpoint = stat.getUrl();
+                String label = stat.getLabel();
+                assertNotNull(endpoint, "The url attribute cannot be empty for stat " + stat);
+                assertNotNull(label, "The label attribute cannot be empty for stat " + stat);
+                String url = buildUrl(server, endpoint, varMap);
+                logger.info("Fetching the F5 Stats from the URL {}", url);
+                JsonNode json = getResponseAsJson(url);
+                if (json != null) {
+                    Map<String, JsonNode> childMap = getChildren(json, stat);
+                    if (childMap != null && !childMap.isEmpty()) {
+                        extractMetrics(childMap, stat, metricPrefix, metricsList);
+                        logger.debug("Collected {} metrics Collection for stats {}, server {}", metricsList.size(), stat.getLabel(), server.get(Constants.DISPLAY_NAME));
+                    } else {
+                        logger.error("The response content for url {} doesn't contain children [{}]", url, stat.getChildren());
+                    }
+                    heartBeatValue = BigInteger.ONE;
                 } else {
-                    logger.error("The response content for url {} doesn't contain children [{}]", url, stat.getChildren());
+                    logger.error("Error while getting the data from " + url + ". Please check logs for more information.");
                 }
             } else {
-                logger.error("Error while getting the data from " + url + ". Please check logs for more information.");
+                if (!isFilterConfigured) {
+                    logger.info("The filters are not configured for the stat {}. Skipping", stat.getUrl());
+                }
+                if (metricConfigs == null) {
+                    logger.info("The metrics are not configured for the stat {}. Skipping", stat.getUrl());
+                }
             }
-        } else {
-            if (!isFilterConfigured) {
-                logger.info("The filters are not configured for the stat {}. Skipping", stat.getUrl());
-            }
-            if (metrics == null) {
-                logger.info("The metrics are not configured for the stat {}. Skipping", stat.getUrl());
-            }
+        } catch (Exception e) {
+            logger.error("Error while collecting metrics for stat {} server {}", stat.getLabel(), server.get(Constants.DISPLAY_NAME));
+        } finally {
+            Metric heartBeat = new Metric("HeartBeat", String.valueOf(heartBeatValue), metricPrefix + METRIC_SEPARATOR + Constants.HEARTBEAT);
+            metricsList.add(heartBeat);
+            metricWriteHelper.transformAndPrintMetrics(metricsList);
         }
     }
 
     protected JsonNode getResponseAsJson(String url) {
+        JsonNode jsonNode = null;
         Map<String, String> headers;
         if (token != null) {
             headers = Collections.singletonMap("X-F5-Auth-Token", token);
         } else {
             headers = Collections.emptyMap();
         }
-        return HttpClientUtils.getResponseAsJson(configuration.getContext().getHttpClient(), url, JsonNode.class, headers);
+        try {
+            jsonNode = HttpClientUtils.getResponseAsJson(configuration.getContext().getHttpClient(), url, JsonNode.class, headers);
+        }catch (Exception e){
+            logger.error("Error for the http request", e);
+        }
+        return  jsonNode;
     }
 
     /**
@@ -214,13 +227,7 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
                 }
                 for (MetricConfig metricConfig : metricConfigs) {
                     try {
-//                        String metricType = getMetricType(stat, metricConfig);
-//                        if (metricType != null) {
-                            extractAndReport(metricConfig, childNode, entityNamePrefix, metricsList);
-//                        } else {
-//                            logger.error("Cannot get the metric-type for {}|{}"
-//                                    , entityNamePrefix, metricConfig.getAttr());
-//                        }
+                        extractAndReport(metricConfig, childNode, entityNamePrefix, metricsList);
                     } catch (Exception e) {
                         String msg = "Error while getting the metrics for "
                                 + entityNamePrefix + "|" + metricConfig.getAttr();
@@ -253,25 +260,6 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
             }
         }
     }
-
-    /**
-     * - Aggregation Type
-     * - Time Rollup
-     * - Cluster Rollup
-     *
-     * @param stat
-     * @param metric
-     * @return
-     */
-//    private String getMetricType(Stat stat, MetricConfig metric) {
-//        if (!Strings.isNullOrEmpty(metric.getMetricType())) {
-//            return metric.getMetricType();
-//        } else if (!Strings.isNullOrEmpty(stat.getMetricType())) {
-//            return stat.getMetricType();
-//        } else {
-//            return null;
-//        }
-//    }
 
     /**
      * Extract the value based in <metric> from the childNode.

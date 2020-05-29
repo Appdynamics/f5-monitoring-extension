@@ -35,7 +35,7 @@ import java.util.Map;
  * https://devcentral.f5.com/wiki/iControl.Authentication_with_the_F5_REST_API.ashx
  */
 public class AuthTokenFetcher {
-    public static final Logger logger = ExtensionsLoggerFactory.getLogger(AuthTokenFetcher.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(AuthTokenFetcher.class);
     private final CloseableHttpClient httpClient;
     private final ObjectMapper mapper;
 

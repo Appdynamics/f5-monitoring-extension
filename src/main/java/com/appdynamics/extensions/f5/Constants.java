@@ -17,15 +17,17 @@ public class Constants {
     public static String METRIC_SEPARATOR;
     public static String METRIC_PREFIX;
     public static String MonitorName;
+    public static String HEARTBEAT;
 
     static {
         DISPLAY_NAME = "name";
         METRIC_PREFIX = "Custom Metrics|F5 Monitor|";
-        MonitorName = "F5 Monitor";
+        MonitorName = "F5Monitor";
         USER_NAME = "username";
         ENCRYPTED_PASSWORD = "encryptedPassword";
         ENCRYPTION_KEY = "encryptionKey";
         PASSWORD = "password";
         METRIC_SEPARATOR = "|";
+        HEARTBEAT = "HeartBeat";
     }
 }
