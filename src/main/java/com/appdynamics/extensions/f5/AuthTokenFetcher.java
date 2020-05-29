@@ -67,8 +67,7 @@ public class AuthTokenFetcher {
                     if (response != null && response.getStatusLine().getStatusCode() == 200) {
                         entity = response.getEntity();
                         JsonNode responseNode = mapper.readTree(entity.getContent());
-                        String[] tokens = {"token", "token"};
-                        String token = JsonUtils.getTextValue(responseNode, tokens);
+                        String token = JsonUtils.getTextValue(responseNode, "token", "token");
                         if (token != null) {
                             return token;
                         } else {
