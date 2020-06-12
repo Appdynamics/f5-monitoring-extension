@@ -275,16 +275,11 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
             String valueStr = getTextValue(childNode, attrs);
             if (!Strings.isNullOrEmpty(valueStr)) {
                 logger.debug("The raw value of [{}|{}] = [{}]", metricPrefix, attr, valueStr);
-                if (NumberUtils.isNumber(valueStr)) {
-                    BigDecimal value = new BigDecimal(valueStr);
-                    String label = metricConfig.getAlias();
-                    if (Strings.isNullOrEmpty(label)) {
-                        label = attrs[attrs.length - 1];
-                    }
-                    reportMetric(metricConfig, metricPrefix, value, label, metricsList);
-                } else {
-                    logger.error("The metric value {} for {}|{} is not a number. Please add a converter if needed", valueStr, metricPrefix, attr);
+                String label = metricConfig.getAlias();
+                if (Strings.isNullOrEmpty(label)) {
+                    label = attrs[attrs.length - 1];
                 }
+                reportMetric(metricConfig, metricPrefix, valueStr, label, metricsList);
             } else {
                 logger.warn("Cannot get metric {} from the entry {}.", metricConfig.getAttr(), childNode);
             }
@@ -303,9 +298,9 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
      * @param value
      * @param label
      */
-    private void reportMetric(MetricConfig metricConfig, String metricPrefix, BigDecimal value, String label, List<Metric> metricList) {
+    private void reportMetric(MetricConfig metricConfig, String metricPrefix, String value, String label, List<Metric> metricList) {
         String metricPath = metricPrefix + "|" + label;
-        Metric metric = new Metric(metricConfig.getAttr(), value.toString(), metricPath, objectMapper.convertValue(metricConfig, Map.class));
+        Metric metric = new Metric(metricConfig.getAttr(), value, metricPath, objectMapper.convertValue(metricConfig, Map.class));
         metricList.add(metric);
     }
 
