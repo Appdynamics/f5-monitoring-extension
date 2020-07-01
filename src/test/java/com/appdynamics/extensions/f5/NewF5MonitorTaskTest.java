@@ -37,7 +37,7 @@ public class NewF5MonitorTaskTest {
 
     @Test
     public void nameFromUrlTest() {
-        NewF5MonitorTask task = new NewF5MonitorTask(null, null, null, null, null, null);
+        NewF5MonitorTask task = new NewF5MonitorTask(null, null, null, null, null, null, null);
         String nameFromUrl = task.getNameFromUrl("https://localhost/mgmt/tm/ltm/virtual/~Common~Outbound_Forwarding/stats?a=b&c=d");
         Assert.assertEquals("~Common~Outbound_Forwarding", nameFromUrl);
 

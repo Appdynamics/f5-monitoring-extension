@@ -10,7 +10,6 @@ package com.appdynamics.extensions.f5;
 import com.appdynamics.extensions.AMonitorTaskRunnable;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
-import static com.appdynamics.extensions.f5.Constants.METRIC_SEPARATOR;
 import com.appdynamics.extensions.f5.config.MetricConfig;
 import com.appdynamics.extensions.f5.config.Naming;
 import com.appdynamics.extensions.f5.config.Stat;
@@ -18,9 +17,7 @@ import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.metrics.Metric;
-import static com.appdynamics.extensions.util.AssertUtils.assertNotNull;
 import com.appdynamics.extensions.util.JsonUtils;
-import com.appdynamics.extensions.util.NumberUtils;
 import com.appdynamics.extensions.util.StringUtils;
 import com.appdynamics.extensions.util.YmlUtils;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,15 +27,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.appdynamics.extensions.f5.Constants.METRIC_SEPARATOR;
+import static com.appdynamics.extensions.util.AssertUtils.assertNotNull;
 
 
 /**
@@ -73,14 +68,16 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
     }
 
     // This is for child stats
-    public NewF5MonitorTask(MonitorContextConfiguration configuration, Map server,
+    public NewF5MonitorTask(MonitorContextConfiguration configuration, MetricWriteHelper metricWriteHelper, Map server,
                             Stat stat, String serverPrefix, Map<String, String> varMap, String token) {
         this.server = server;
+        this.metricWriteHelper = metricWriteHelper;
         this.stat = stat;
         this.configuration = configuration;
         this.metricPrefix = serverPrefix;
         this.varMap = varMap;
         this.token = token;
+
     }
 
     public void run() {
@@ -249,7 +246,7 @@ public class NewF5MonitorTask implements AMonitorTaskRunnable {
                 logger.debug("Running the task for the child stat [{}] of parent [{}]", childStat.getUrl(), parentName);
                 if (!Strings.isNullOrEmpty(childStat.getUrl())) {
                     Map<String, String> varMap = Collections.singletonMap("$PARENT_NAME", parentName);
-                    NewF5MonitorTask task = new NewF5MonitorTask(configuration, server, childStat, entryPrefix, varMap, token);
+                    NewF5MonitorTask task = new NewF5MonitorTask(configuration, metricWriteHelper, server, childStat, entryPrefix, varMap, token);
                     configuration.getContext().getExecutorService().submit("ChildTasks", task);
                 } else {
                     //TODO children attribute with $PARENT_NAME replace?
