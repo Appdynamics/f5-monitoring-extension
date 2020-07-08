@@ -10,3 +10,6 @@
 ### Version 2.5.0
 * Extension revamp to appd-exts-commons 2.2.3 and the framework
 
+### Version 2.5.1
+* Fixed issue related to metric value conversion
+

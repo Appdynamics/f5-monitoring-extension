@@ -170,8 +170,8 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
 ## Version
 |          Name            |  Version   |
 |--------------------------|------------|
-|Extension Version         |2.5.0       |
+|Extension Version         |2.5.1       |
 |Controller Compatibility  |3.7 or Later|
 |Product Tested On         |15.0.0       |
-|Last Update               |28/05/2020  |
+|Last Update               |12/06/2020  |
 |Changes list              |[ChangeLog](https://github.com/Appdynamics/f5-monitoring-extension/blob/master/CHANGELOG.md)|
