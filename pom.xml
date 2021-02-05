@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appdynamics.extensions</groupId>
 	<artifactId>f5-monitoring-extension</artifactId>
-	<version>2.5.1</version>
+	<version>2.5.2</version>
 	<name>F5Monitor</name>
 	
    <properties>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>com.appdynamics</groupId>
 			<artifactId>appd-exts-commons</artifactId>
-			<version>2.2.3</version>
+			<version>2.2.4</version>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
