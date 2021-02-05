@@ -13,3 +13,5 @@
 ### Version 2.5.1
 * Fixed issue related to metric value conversion
 
+### Version 2.5.2
+* Updated to appd-exts-commons 2.2.4
