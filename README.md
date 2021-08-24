@@ -146,23 +146,6 @@ Workbench is an inbuilt feature provided with each extension in order to assist 
 3.  **F5 REST API:** Please make sure that the F5 REST API is available and accessible. Try this URL from the Browser `https://f5-host:f5-port/mgmt/tm/ltm/pool/stats`
 4.  **Metric Limit:** Please start the machine agent with the argument `-Dappdynamics.agent.maxMetrics=5000` if there is a metric limit reached error in the logs. If you dont see the expected metrics, this could be the cause.
 5.  **Check Logs:** There could be some obvious errors in the machine agent logs. Please take a look.
-6.  **Collect Debug Logs:** Edit the file, `<MachineAgent>/conf/logging/log4j.xml` and update the level of the appender `com.appdynamics` to debug Let it run for 5-10 minutes and attach the logs to a support ticket
-
-## Support Tickets
-If after going through the [Troubleshooting Document](https://community.appdynamics.com/t5/Knowledge-Base/How-to-troubleshoot-missing-custom-metrics-or-extensions-metrics/ta-p/28695) you have not been able to get your extension working, please file a ticket and add the following information.
-
-Please provide the following in order for us to assist you better.
-
-    1. Stop the running machine agent.
-    2. Delete all existing logs under <MachineAgent>/logs.
-    3. Please enable debug logging by editing the file <MachineAgent>/conf/logging/log4j.xml. Change the level value of the following <logger> elements to debug.
-        <logger name="com.singularity">
-        <logger name="com.appdynamics">
-    4. Start the machine agent and please let it run for 10 mins. Then zip and upload all the logs in the directory <MachineAgent>/logs/*.
-    5. Attach the zipped <MachineAgent>/conf/* directory here.
-    6. Attach the zipped <MachineAgent>/monitors/ExtensionFolderYouAreHavingIssuesWith directory here.
-
-For any support related questions, you can also contact help@appdynamics.com.
 
 ## Contributing
 Always feel free to fork and contribute any changes directly here on [GitHub](https://github.com/Appdynamics/f5-monitoring-extension).
