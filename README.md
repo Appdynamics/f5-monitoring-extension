@@ -1,17 +1,17 @@
 # F5 Monitoring Extension
 
-#### Use Case
+## Use Case
 
 The F5 load balancer from F5 Networks, Inc. directs traffic away from servers that are overloaded or down to other servers that can handle the load. The F5 load balancer extension collects key performance metrics from an F5 load balancer and presents them in the AppDynamics Metric Browser.
 
-#### Prerequisites
+## Prerequisites
 
 1.  Before the extension is installed, the prerequisites mentioned [here](https://community.appdynamics.com/t5/Knowledge-Base/Extensions-Prerequisites-Guide/ta-p/35213) need to be met. Please do not proceed with the extension installation if the specified prerequisites are not met.
 2.  The extension collects the data from the REST API. Please make sure that the API is available and accessible. To access F5 REST API, user account must have **admin** level access. Try this URL from the Browser `https://f5-host:f5-port/mgmt/tm/ltm/pool/stats`
 3.  In order to use this extension, you do need a [Standalone JAVA Machine Agent](https://docs.appdynamics.com/display/PRO44/Standalone+Machine+Agents) or [SIM Agent](https://docs.appdynamics.com/display/PRO44/Server+Visibility).  For more details on downloading these products, please  visit [here](https://download.appdynamics.com/).
     The extension needs to be able to connect to the F5 in order to collect and send metrics. To do this, you will have to either establish a remote connection in between the extension and the product, or have an agent on the same machine running the product in order for the extension to collect and send the metrics.
 
-#### Installation
+## Installation
 
 1. Download and unzip the F5Monitor-2.5.0.zip to the "<MachineAgent_Dir>/monitors" directory.
 2. Edit the file config.yml located at <MachineAgent_Dir>/monitors/F5Monitor The metricPrefix of the extension has to be configured as specified [here](https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-troubleshoot-missing-custom-metrics-or-extensions/ta-p/28695#Configuring%20an%20Extension). Please make sure that the right metricPrefix is chosen based on your machine agent deployment, otherwise this could lead to metrics not being visible in the controller.
@@ -139,9 +139,9 @@ Please visit [this page](https://community.appdynamics.com/t5/Knowledge-Base/How
 Workbench is an inbuilt feature provided with each extension in order to assist you to fine tune the extension setup before you actually deploy it on the controller. Please review the following document on [How to use the Extensions WorkBench](https://community.appdynamics.com/t5/Knowledge-Base/How-to-use-the-Extensions-WorkBench/ta-p/30130).
 
 
-#### Troubleshooting
+## Troubleshooting
 
-1.  Please look at the [troubleshooting document](https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-troubleshoot-missing-custom-metrics-or-extensions/ta-p/28695) and make sure that everything is followed correctly.
+1.  Please follow the steps listed in this [troubleshooting-document](https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-troubleshoot-missing-custom-metrics-or-extensions/ta-p/28695) in order to troubleshoot your issue. These are a set of common issues that customers might have faced during the installation of the extension.
 2.  **config.yml:** Validate the file [here](http://www.yamllint.com)
 3.  **F5 REST API:** Please make sure that the F5 REST API is available and accessible. Try this URL from the Browser `https://f5-host:f5-port/mgmt/tm/ltm/pool/stats`
 4.  **Metric Limit:** Please start the machine agent with the argument `-Dappdynamics.agent.maxMetrics=5000` if there is a metric limit reached error in the logs. If you dont see the expected metrics, this could be the cause.
