@@ -11,7 +11,7 @@ The F5 load balancer from F5 Networks, Inc. directs traffic away from servers th
 3.  The extension needs to be able to connect to the F5 in order to collect and send metrics. To do this, you will have to either establish a remote connection in between the extension and the product, or have an agent on the same machine running the product in order for the extension to collect and send the metrics.
 
 ## Installation
-1. Run 'mvn clean install' from "<F5MonitorRepo>"
+1. Run 'mvn clean install' from "F5MonitorRepo"
 2. Unzip the `F5Monitor-<version>.zip` from `target` directory into the "<MachineAgent_Dir>/monitors" directory.
 3. Edit the file config.yml located at <MachineAgent_Dir>/monitors/F5Monitor The metricPrefix of the extension has to be configured as specified [here](https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-troubleshoot-missing-custom-metrics-or-extensions/ta-p/28695#Configuring%20an%20Extension). Please make sure that the right metricPrefix is chosen based on your machine agent deployment, otherwise this could lead to metrics not being visible in the controller.
 4. All metrics to be reported are configured in metrics.xml. Users can remove entries from metrics.xml to stop the metric from reporting, or add new entries as well.
