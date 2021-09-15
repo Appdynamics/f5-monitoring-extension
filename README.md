@@ -47,7 +47,7 @@ Configure the extension by editing the config.yml file in `<MACHINE_AGENT_HOME>/
                             encryptedPassword: "y444543gt3="
         ```
 
-If `encryptedPassword` is used, make sure to update the `encryptionKey` in `config.yml`. Please [refer here](Please read the extension documentation to generate encrypted password. https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-use-Password-Encryption-with-Extensions/ta-p/29397) for more details.
+If `encryptedPassword` is used, make sure to update the `encryptionKey` in `config.yml`. Please read the documentation [here](https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-use-Password-Encryption-with-Extensions/ta-p/29397) to generate encrypted password.
 
 3.  **Filters**
     By default, everything is included as shown in the filters with the `.*` regex. This will report a lot of data. Set the correct filters to make sure that you only collect the data you will need
@@ -116,9 +116,9 @@ For configuring the metrics, the following properties can be used:
  |     Property      |   Default value |         Possible values         |                                               Description                                                      |
  | ----------------- | --------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------- |
  | alias             | metric name     | Any string                      | The substitute name to be used in the metric browser instead of metric name.                                   |
- | aggregationType   | "AVERAGE"       | "AVERAGE", "SUM", "OBSERVATION" | [Aggregation qualifier](https://docs.appdynamics.com/display/PRO44/Build+a+Monitoring+Extension+Using+Java)    |
- | timeRollUpType    | "AVERAGE"       | "AVERAGE", "SUM", "CURRENT"     | [Time roll-up qualifier](https://docs.appdynamics.com/display/PRO44/Build+a+Monitoring+Extension+Using+Java)   |
- | clusterRollUpType | "INDIVIDUAL"    | "INDIVIDUAL", "COLLECTIVE"      | [Cluster roll-up qualifier](https://docs.appdynamics.com/display/PRO44/Build+a+Monitoring+Extension+Using+Java)|
+ | aggregationType   | "AVERAGE"       | "AVERAGE", "SUM", "OBSERVATION" | [Aggregation qualifier](https://docs.appdynamics.com/display/latest/Build+a+Monitoring+Extension+Using+Java)    |
+ | timeRollUpType    | "AVERAGE"       | "AVERAGE", "SUM", "CURRENT"     | [Time roll-up qualifier](https://docs.appdynamics.com/display/latest/Build+a+Monitoring+Extension+Using+Java)   |
+ | clusterRollUpType | "INDIVIDUAL"    | "INDIVIDUAL", "COLLECTIVE"      | [Cluster roll-up qualifier](https://docs.appdynamics.com/display/latest/Build+a+Monitoring+Extension+Using+Java)|
  | multiplier        | 1               | Any number                      | Value with which the metric needs to be multiplied.                                                            |
  | convert           | null            | Any key value map               | Set of key value pairs that indicates the value to which the metrics need to be transformed. eg: UP:1, OPEN:1  |
  | delta             | false           | true, false                     | If enabled, gives the delta values of metrics instead of actual values.                                        |
@@ -141,7 +141,7 @@ Workbench is an inbuilt feature provided with each extension in order to assist 
 ## Troubleshooting
 
 1.  Please follow the steps listed in this [troubleshooting-document](https://community.appdynamics.com/t5/Knowledge-Base/How-do-I-troubleshoot-missing-custom-metrics-or-extensions/ta-p/28695) in order to troubleshoot your issue. These are a set of common issues that customers might have faced during the installation of the extension.
-2.  **config.yml:** Validate the file [here](http://www.yamllint.com)
+2.  **config.yml:** Validate the file [here](https://jsonformatter.org/yaml-validator)
 3.  **F5 REST API:** Please make sure that the F5 REST API is available and accessible. Try this URL from the Browser or via curl `https://f5-host:f5-port/mgmt/tm/ltm/pool/stats`
 4.  **Metric Limit:** Please start the machine agent with the argument `-Dappdynamics.agent.maxMetrics=5000` if there is a metric limit reached error in the logs. If you dont see the expected metrics, this could be the cause.
 5.  **Check Logs:** There could be some obvious errors in the machine agent logs. Please take a look.
