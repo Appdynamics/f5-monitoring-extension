@@ -7,8 +7,9 @@ The F5 load balancer from F5 Networks, Inc. directs traffic away from servers th
 ## Prerequisites
 
 1.  Before the extension is installed, the prerequisites mentioned [here](https://community.appdynamics.com/t5/Knowledge-Base/Extensions-Prerequisites-Guide/ta-p/35213) need to be met. Please do not proceed with the extension installation if the specified prerequisites are not met.
-2.  The extension collects the data from the REST API. Please make sure that the API is available and accessible. To access F5 REST API, user account must have **admin** level access. Try this URL from the Browser `https://f5-host:f5-port/mgmt/tm/ltm/pool/stats` or via curl.
-3.  The extension needs to be able to connect to the F5 in order to collect and send metrics. To do this, you will have to either establish a remote connection in between the extension and the product, or have an agent on the same machine running the product in order for the extension to collect and send the metrics.
+2.  Download and install [Apache Maven](https://maven.apache.org/) which is configured with `Java 8` to build the extension artifact from source. You can check the java version used in maven using command `mvn -v` or `mvn --version`. If your maven is using some other java version then please download java 8 for your platform and set JAVA_HOME parameter before starting maven.
+3.  The extension collects the data from the REST API. Please make sure that the API is available and accessible. To access F5 REST API, user account must have **admin** level access. Try this URL from the Browser `https://f5-host:f5-port/mgmt/tm/ltm/pool/stats` or via curl.
+4.  The extension needs to be able to connect to the F5 in order to collect and send metrics. To do this, you will have to either establish a remote connection in between the extension and the product, or have an agent on the same machine running the product in order for the extension to collect and send the metrics.
 
 ## Installation
 1. Run 'mvn clean install' from "F5MonitorRepo"
